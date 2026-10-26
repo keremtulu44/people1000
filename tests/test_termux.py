@@ -6,7 +6,7 @@ import tempfile
 import unittest
 from unittest.mock import patch,MagicMock
 
-from society.termux import create_pilot,report,ask_operator,main
+from society.termux import create_pilot,report,turkce_ozet,ask_operator,main
 from society.agenda import ReferenceAdvisor
 from society.agenda_api import AgendaProvider,OpenAICompatibleAdvisor
 from society.session import Session
@@ -21,6 +21,9 @@ class TermuxPilotTests(unittest.TestCase):
         for aid in sim.protocol['termux_pilot']['targets']:
             self.assertEqual(sim.agents[aid].behavior['agenda']['appointment']['qualification'],1)
         self.assertEqual(sum(a.behavior['switch_count'] for a in sim.agents.values()),0)
+        summary=turkce_ozet(sim)
+        for label in ('İktidar Yanlıları','Muhalifler','Yöneticiler','Zenginler','Hoşnutsuz Kesim','Gözlemciler','GENEL ÖZETİ'):
+            self.assertIn(label,summary)
 
     def test_offline_question_is_not_a_paid_request(self):
         sim=create_pilot();msg=ask_operator(sim,'Ne oldu?',ReferenceAdvisor())
