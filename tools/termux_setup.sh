@@ -4,7 +4,8 @@
 #
 #   cd "$HOME/people1000"
 #   git pull --ff-only origin arena/2869026b-people1000
-#   bash tools/termux_setup.sh
+#   bash tools/termux_setup.sh            # anahtari sorar / degistirme imkani verir
+#   bash tools/termux_setup.sh --new-key  # anahtari zorla yeniden sorar
 #
 # Anahtar ekrana yazilmaz; repo disinda, 600 izinli dosyada tutulur.
 # Bu script HIC ag istegi gondermez (pip install disinda); dogrulama cevrimdisidir.
@@ -29,31 +30,74 @@ if [ ! -x .venv/bin/people1000 ]; then
   python -m pip install -e . --disable-pip-version-check
 fi
 
-# 2) Ayar dosyasi: anahtari koru, diger satirlari guncel sablonla esitle.
-# Boylece eski Groq adresi veya gemini-flash-latest takma adi kalmaz.
+# 2) Eski ayari oku. Saglayici degismisse eski anahtar gecersizdir:
+#    Groq anahtari Gemini uc noktasinda 401/403 verir. Sessizce korunmamali.
+HAD_CONF=0; OLD_ENDPOINT=""; OLD_MODEL=""; OLD_KEY=""
+if [ -f "$CONF" ]; then
+  HAD_CONF=1
+  OLD_ENDPOINT="$(. "$CONF" >/dev/null 2>&1; printf '%s' "${PEOPLE1000_API_ENDPOINT:-}")"
+  OLD_MODEL="$(. "$CONF" >/dev/null 2>&1; printf '%s' "${PEOPLE1000_API_MODEL:-}")"
+  OLD_KEY="$(. "$CONF" >/dev/null 2>&1; printf '%s' "${PEOPLE1000_API_KEY:-}")"
+fi
+PINNED_ENDPOINT="$(. "$EXAMPLE" >/dev/null 2>&1; printf '%s' "${PEOPLE1000_API_ENDPOINT:-}")"
+[ -n "$PINNED_ENDPOINT" ] || { echo "Sablonda endpoint yok; git pull yapin."; exit 1; }
+
+OLD_HOST=""; PINNED_HOST=""
+if [[ "$OLD_ENDPOINT" =~ ^https://([^/]+)/ ]]; then OLD_HOST="${BASH_REMATCH[1]}"; fi
+if [[ "$PINNED_ENDPOINT" =~ ^https://([^/]+)/ ]]; then PINNED_HOST="${BASH_REMATCH[1]}"; fi
+
+NEED_KEY=0
+if [ "$HAD_CONF" -eq 0 ]; then
+  NEED_KEY=1
+  echo "Ilk kurulum: AI Studio anahtari gerekiyor."
+elif [ "${1:-}" = "--new-key" ]; then
+  NEED_KEY=1
+  echo "--new-key: yeni anahtar istenecek."
+elif [[ "$OLD_KEY" == gsk_* ]]; then
+  NEED_KEY=1
+  echo "UYARI: kayitli anahtar bir Groq anahtari (gsk_...). Gemini'de calismaz."
+  echo "       Yeni AI Studio anahtari isteyecegim."
+elif [ -n "$OLD_HOST" ] && [ "$OLD_HOST" != "$PINNED_HOST" ]; then
+  NEED_KEY=1
+  echo "UYARI: onceki adres baska bir saglayiciya ait: $OLD_HOST"
+  echo "       Eski anahtar gecersiz; yeni AI Studio anahtari isteyecegim."
+elif [ -n "$OLD_MODEL" ] && [[ "$OLD_MODEL" != gemini* ]]; then
+  NEED_KEY=1
+  echo "UYARI: onceki model Gemini degil ($OLD_MODEL). Yeni anahtar isteyecegim."
+else
+  # Ayni saglayici: yine de sor, sessizce eski anahtari kullanma.
+  read -r -p "Kayitli Gemini anahtarini kullanayim mi? [E=evet / h=yeni gir] " KEEP || true
+  case "${KEEP:-}" in
+    h|H) NEED_KEY=1; echo "Yeni anahtar istenecek." ;;
+    *) echo "Mevcut anahtar korunuyor." ;;
+  esac
+fi
+
+# 3) Yeni anahtar once degiskene alinir; bos giris eski dosyayi bozmaz.
+NEW_KEY_LINE=""
+if [ "$NEED_KEY" -eq 1 ]; then
+  read -r -s -p "AI Studio API anahtari (ekranda gorunmez): " KEY || true
+  printf '\n'
+  if [ -z "${KEY:-}" ]; then echo "Anahtar bos; ayar dosyasina dokunulmadi."; exit 1; fi
+  NEW_KEY_LINE="$(printf 'export PEOPLE1000_API_KEY=%q' "$KEY")"
+  unset KEY
+fi
+
+# 4) Ayar dosyasini yaz: anahtar disindaki satirlar guncel sablondan gelir.
+#    Boylece eski Groq adresi veya gemini-flash-latest takma adi kalmaz.
 mkdir -p "$CONF_DIR"
 umask 077
 TMP="$(mktemp "$CONF_DIR/api.env.XXXXXX")"
-if [ -f "$CONF" ]; then
-  grep -E '^[[:space:]]*export PEOPLE1000_API_KEY=' "$CONF" > "$TMP" || true
-  echo "Mevcut anahtar korundu; model/adres/hiz satirlari guncellendi."
+if [ "$NEED_KEY" -eq 1 ]; then
+  printf '%s\n' "$NEW_KEY_LINE" > "$TMP"
 else
-  : > "$TMP"
+  grep -E '^[[:space:]]*export PEOPLE1000_API_KEY=' "$CONF" > "$TMP" || true
 fi
 grep -E '^export ' "$EXAMPLE" | grep -v 'PEOPLE1000_API_KEY' >> "$TMP"
 mv "$TMP" "$CONF"
 chmod 600 "$CONF"
 
-# 3) Anahtar yoksa bir kez iste. Deger ekrana/gunluge yazilmaz.
-if ! grep -qE '^[[:space:]]*export PEOPLE1000_API_KEY=' "$CONF"; then
-  read -r -s -p "AI Studio API anahtari (ekranda gorunmez): " KEY || true
-  printf '\n'
-  if [ -z "${KEY:-}" ]; then echo "Anahtar bos; iptal edildi."; exit 1; fi
-  printf 'export PEOPLE1000_API_KEY=%q\n' "$KEY" >> "$CONF"
-  unset KEY
-fi
-
-# 4) Ağ isteği OLMADAN dogrula: hangi adaptor/model yuklendi?
+# 5) Ag istegi OLMADAN dogrula: hangi adaptor/model yuklendi?
 # shellcheck source=/dev/null
 source "$CONF"
 python - <<'PY'
@@ -67,7 +111,8 @@ print("Cikti   :", a.max_output_tokens, "token")
 PY
 
 echo
-echo "Kurulum tamam. Sonraki komutlar:"
+echo "Kurulum tamam. Anahtari degistirmek istersen: bash tools/termux_setup.sh --new-key"
+echo "Sonraki komutlar:"
 echo "  source .venv/bin/activate && source \"$CONF\""
 echo "  python -m society.termux --offline --state runs/offline-pilot.json   # ucretsiz deneme"
 echo "  python -m society.termux --state runs/gemini-pilot.json                # canli"

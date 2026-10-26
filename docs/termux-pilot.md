@@ -29,9 +29,9 @@ Termux'ta pip'i `pip install --upgrade pip` ile güncellemeyin; paket yöneticis
 ### Tek komutla kurulum (önerilen)
 
 Paketler yüklüyse aşağıdaki üç komut sanal ortamı, `.env.example` ayarını ve
-anahtar girişini halleder; eski Groq/`gemini-flash-latest` satırlarını temizler,
-var olan anahtarınızı korur. Script ağ isteği göndermez, yalnızca yüklü
-adaptörü/modeli yazdırır ve isterseniz canlı pilotu başlatır.
+anahtar girişini halleder; eski Groq/`gemini-flash-latest` satırlarını temizler.
+Script ağ isteği göndermez, yalnızca yüklü adaptörü/modeli yazdırır ve isterseniz
+canlı pilotu başlatır.
 
 ```bash
 cd "$HOME/people1000"
@@ -39,7 +39,18 @@ git pull --ff-only origin arena/2869026b-people1000
 bash tools/termux_setup.sh
 ```
 
-Elle kurmak isterseniz 3. bölümdeki adımlar aynı ayarı yapar.
+**Sağlayıcı değişince anahtar da değişir.** Groq anahtarı Gemini uç noktasında
+çalışmaz. Script `gsk_` ile başlayan anahtarı veya farklı bir sağlayıcı adresini
+görürse eski anahtarı **korumaz**, yenisini sorar. Aynı Gemini anahtarını
+kullanacaksanız "Kayıtlı anahtarı kullanayım mı? [E/h]" sorusuna `E` deyin.
+Anahtarı sonradan değiştirmek için:
+
+```bash
+bash tools/termux_setup.sh --new-key
+```
+
+Script boş anahtar girişinde ayar dosyasına dokunmaz. Elle kurmak isterseniz
+3. bölümdeki adımlar aynı ayarı yapar.
 
 ## 2. Önce ücretsiz deneme
 
