@@ -172,6 +172,19 @@ kimlik bilgilerini korumak için HTTP yönlendirmeleri izlenmez.
 - `PEOPLE1000_MAX_OUTPUT_TOKENS`: 1–8192; Gemini varsayılanı 2048, diğerleri 500.
   Bu üst sınırdır; gerçek kullanım veya maliyet garantisi değildir. Çok küçük tavan
   özellikle düşünme kullanan modellerde boş/eksik yanıt verebilir.
+- `PEOPLE1000_API_MIN_INTERVAL`: 0–60 saniye; `api.groq.com` için varsayılan `5.0`,
+  diğerlerinde `0.0`. Dakikalık hız/token sınırına (TPM/RPM) takılmamak için ardışık
+  API istekleri arasında bekler; çalışma sırasında `bekleme 5` komutuyla da değiştirilebilir.
+
+## Groq yapılandırması ve zincirleme senaryo komutları (`sor`, `devam`, `devam 10`, `olay`, `ozet`)
+
+Simülasyonun karakter ve kriz zinciri felsefesi: [simulasyon-felsefesi.md](simulasyon-felsefesi.md).
+
+- `ozet`: 6 kitleyi ayrı ayrı Türkçe açıklar ve mevcut uygulamanın özetini verir (ücretsiz).
+- `sor`: Yeni bir olayı/senaryoyu (Gün 1) başlatıp 6 kitle üzerinde dener veya mevcut durumu yorumlar.
+- `devam` / `devam 10`: Başlatılan senaryo zincirini nedensel kurallarla 1 gün veya 10 gün boyunca kendi kendine ileri taşır (her gün sonunda diske kaydeder ve `min_interval` kadar bekler).
+- `olay`: Devam eden zincire kullanıcının kendi yeni gelişmesini ekleyip 1 gün ilerletir.
+- `sor-limit 30`: `sor` / senaryo adım sınırını açıkça artırır.
 
 Gerçek anahtarla Google/Android doğrulaması yapılmadı. Metadata istekleri de HTTP
 isteğidir; ücretsiz/sınırsız olduğu varsayılmamalıdır. Hatalı üretimde sağlayıcının
