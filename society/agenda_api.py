@@ -6,6 +6,7 @@ Tests inject/mock transport. An API key is not needed for offline research.
 import json
 import os
 import re
+import time
 from urllib.parse import urlsplit
 from urllib.request import Request, build_opener, HTTPRedirectHandler
 
@@ -64,7 +65,7 @@ class AgendaProvider(BaselineProvider):
 
 class OpenAICompatibleAdvisor:
     network=True
-    def __init__(self,endpoint,model,key_env='PEOPLE1000_API_KEY',timeout=60,max_output_tokens=500):
+    def __init__(self,endpoint,model,key_env='PEOPLE1000_API_KEY',timeout=60,max_output_tokens=500,min_interval=0):
         u=urlsplit(endpoint)
         if (not isinstance(endpoint,str) or any(c.isspace() or c in '<>\"{}|`' for c in endpoint)
                 or u.scheme!='https' or not u.netloc or not re.fullmatch(r'[A-Za-z0-9.-]+',u.hostname or '')
@@ -72,10 +73,23 @@ class OpenAICompatibleAdvisor:
             raise ValueError('Use an HTTPS endpoint without credentials/query')
         if not isinstance(model,str) or not model or any(ord(c)<32 for c in model) or type(max_output_tokens) is not int or not 1<=max_output_tokens<=8192:
             raise ValueError('Invalid model/token limit (1–8192)')
-        if type(timeout) not in (int,float) or not 1<=timeout<=120:raise ValueError('API timeout must be 1–120 seconds')
+        if type(timeout) not in (int,float) or isinstance(timeout,bool) or not 1<=timeout<=120:
+            raise ValueError('API timeout must be 1–120 seconds')
+        if type(min_interval) not in (int,float) or isinstance(min_interval,bool) or not 0<=min_interval<=60:
+            raise ValueError('API min_interval must be 0–60 seconds')
         self.endpoint=endpoint;self.model=model;self.key_env=key_env;self.timeout=timeout;self.max_output_tokens=max_output_tokens
+        self.min_interval=float(min_interval);self._last_request_at=None
         self.cache_namespace=signature({"endpoint":endpoint,"model":model,"schema":1})
         self.last_usage=None
+
+    def pace(self):
+        if self.min_interval>0 and self._last_request_at is not None:
+            wait=self.min_interval-(time.monotonic()-self._last_request_at)
+            if wait>0:time.sleep(wait)
+        self._last_request_at=time.monotonic()
+
+    def mark_request_done(self):
+        self._last_request_at=time.monotonic()
 
     def review(self,packet):
         self.last_usage=None
@@ -88,6 +102,7 @@ class OpenAICompatibleAdvisor:
             'Content-Type':'application/json','Accept':'application/json','User-Agent':USER_AGENT,
             'Authorization':'Bearer '+key,
             'Idempotency-Key':signature({'packet':packet,'model':self.model})})
+        self.pace()
         try:
             data=_json_response(request,self.timeout)
             self.last_usage=token_usage(data.get('usage'))
@@ -98,6 +113,8 @@ class OpenAICompatibleAdvisor:
         except APIError:raise
         except Exception as exc:
             raise safe_api_error(exc) from None
+        finally:
+            self.mark_request_done()
 
 
 def safe_api_error(exc):
@@ -125,8 +142,15 @@ def safe_api_error(exc):
                     detail=' Sağlayıcı bu modelin bulunmadığını veya kullanımdan kaldırıldığını bildiriyor.'
                 elif exc.code==403 and ('model' in message or 'access' in message or 'permission' in message):
                     detail=' Sağlayıcı bu hesap/plan için modele erişim izni olmadığını bildiriyor.'
+                elif exc.code==404 and 'no longer available to new users' in message:
+                    detail=' Sağlayıcı bu modelin yeni kullanıcı/projelere kapatıldığını bildiriyor.'
                 elif exc.code==404 and 'api version' in message:
                     detail=' Sağlayıcı bu API sürümü/model/yöntem birleşimini desteklemediğini bildiriyor.'
+        except Exception:pass
+        try:
+            retry_after=int(str((exc.headers or {}).get('Retry-After','')).strip())
+            if exc.code==429 and 1<=retry_after<=3600:
+                detail+=f' Sağlayıcı {retry_after} saniye beklenmesini bildirdi (Retry-After).'
         except Exception:pass
         if 300<=exc.code<400:detail=' Kimlik bilgilerini korumak için yönlendirme izlenmedi.'
         return APIError(f'API HTTP {exc.code}: '+hints.get(exc.code,'Sağlayıcı isteği reddetti.')+detail+' Otomatik tekrar yapılmadı.',
@@ -141,8 +165,8 @@ def safe_api_error(exc):
 
 class GeminiAdvisor(OpenAICompatibleAdvisor):
     """Native Google generateContent, X-goog-api-key header; no URL key."""
-    def __init__(self,endpoint,model,key_env='PEOPLE1000_API_KEY',timeout=30,max_output_tokens=2048):
-        super().__init__(endpoint,model,key_env,timeout,max_output_tokens)
+    def __init__(self,endpoint,model,key_env='PEOPLE1000_API_KEY',timeout=30,max_output_tokens=2048,min_interval=0):
+        super().__init__(endpoint,model,key_env,timeout,max_output_tokens,min_interval=min_interval)
         u=urlsplit(endpoint)
         if u.hostname!='generativelanguage.googleapis.com' or not re.fullmatch(r'/v1(?:beta)?/models/[A-Za-z0-9][A-Za-z0-9._-]*:generateContent',u.path) or not u.path.endswith('/models/'+model+':generateContent'):
             raise ValueError('Gemini adresindeki model ile PEOPLE1000_API_MODEL aynı olmalı.')
@@ -157,8 +181,9 @@ class GeminiAdvisor(OpenAICompatibleAdvisor):
             'contents':[{'role':'user','parts':[{'text':user}]}],'generationConfig':config}
         request=Request(self.endpoint,data=json.dumps(payload).encode(),headers={
             'Content-Type':'application/json','Accept':'application/json','User-Agent':USER_AGENT,'X-goog-api-key':key})
-        data=_json_response(request,self.timeout)
+        self.pace()
         try:
+            data=_json_response(request,self.timeout)
             usage=data.get('usageMetadata',{})
             self.last_usage={dst:usage[src] for src,dst in (('promptTokenCount','prompt_tokens'),('candidatesTokenCount','completion_tokens'),('totalTokenCount','total_tokens'))
                 if type(usage.get(src)) is int and usage[src]>=0}
@@ -176,6 +201,7 @@ class GeminiAdvisor(OpenAICompatibleAdvisor):
             return answer
         except RuntimeError:raise
         except Exception as exc:raise safe_api_error(exc) from None
+        finally:self.mark_request_done()
 
     def _metadata(self,url):
         key=api_key(self.key_env)
@@ -215,7 +241,8 @@ def advisor_from_environment():
     try:
         timeout=int(os.environ.get('PEOPLE1000_API_TIMEOUT','30' if u.hostname=='generativelanguage.googleapis.com' else '60'))
         tokens=int(os.environ.get('PEOPLE1000_MAX_OUTPUT_TOKENS','2048' if u.hostname=='generativelanguage.googleapis.com' else '500'))
-    except ValueError:raise ValueError('API_TIMEOUT ve MAX_OUTPUT_TOKENS tam sayı olmalı.') from None
+        interval=float(os.environ.get('PEOPLE1000_API_MIN_INTERVAL','5' if u.hostname=='api.groq.com' else '0'))
+    except ValueError:raise ValueError('API_TIMEOUT, MAX_OUTPUT_TOKENS ve API_MIN_INTERVAL sayısal olmalı.') from None
     if u.hostname=='generativelanguage.googleapis.com':
         model=model.removeprefix('models/')
         if u.query or u.fragment or u.username or u.password or u.scheme!='https':raise ValueError('Gemini için anahtarsız, tam HTTPS uç noktası kullan.')
@@ -227,6 +254,6 @@ def advisor_from_environment():
             if any(c not in 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789._-' for c in model):raise ValueError('Geçersiz Gemini model kimliği.')
             endpoint='https://generativelanguage.googleapis.com/v1beta/models/'+model+':generateContent'
         else:raise ValueError('Gemini adresi eksik/geçersiz. Tam models/<model>:generateContent adresi kullan.')
-        return GeminiAdvisor(endpoint,model,timeout=timeout,max_output_tokens=tokens)
+        return GeminiAdvisor(endpoint,model,timeout=timeout,max_output_tokens=tokens,min_interval=interval)
     if not model:raise ValueError('PEOPLE1000_API_MODEL ayarlanmalı.')
-    return OpenAICompatibleAdvisor(endpoint,model,timeout=timeout,max_output_tokens=tokens)
+    return OpenAICompatibleAdvisor(endpoint,model,timeout=timeout,max_output_tokens=tokens,min_interval=interval)

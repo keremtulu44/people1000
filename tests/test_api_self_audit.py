@@ -167,9 +167,10 @@ class APISelfAudit(unittest.TestCase):
     def test_groq_qwen_model_and_user_agent_header_sent(self):
         env={'PEOPLE1000_API_KEY':'private-key','PEOPLE1000_API_ENDPOINT':'https://api.groq.com/openai/v1/chat/completions',
              'PEOPLE1000_API_MODEL':'qwen/qwen3.8-27b'}
-        with patch.dict(os.environ,env):
+        with patch.dict(os.environ,env),patch('society.agenda_api.time.sleep') as sleep:
             a=advisor_from_environment()
             self.assertIsInstance(a,OpenAICompatibleAdvisor);self.assertEqual(a.model,'qwen/qwen3.8-27b')
+            self.assertEqual(a.min_interval,5.0)
             advice={'approach':'reserve','reason':'r','risks':[],'expected_effect':'uncertain'}
             body={'choices':[{'finish_reason':'stop','message':{'content':json.dumps(advice)}}],'usage':{'total_tokens':12}}
             with patch('society.agenda_api.urlopen',return_value=response(body)) as send:
@@ -177,6 +178,7 @@ class APISelfAudit(unittest.TestCase):
                 req=send.call_args.args[0]
                 self.assertEqual(req.get_header('User-agent'),'people1000/0.1')
                 self.assertEqual(req.get_header('Accept'),'application/json')
+            self.assertEqual(sleep.call_count,0)
             sim=create_pilot()
             chat={'choices':[{'finish_reason':'stop','message':{'content':'BAĞLANTI TAMAM'}}],'usage':{'total_tokens':9}}
             with patch('society.termux.urlopen',return_value=response(chat)) as send_op:
@@ -184,9 +186,14 @@ class APISelfAudit(unittest.TestCase):
                 op_req=send_op.call_args.args[0]
                 self.assertEqual(op_req.get_header('User-agent'),'people1000/0.1')
                 self.assertNotIn('operator_report',json.loads(op_req.data)['messages'][1]['content'])
+            self.assertEqual(sleep.call_count,1)
         cf403=HTTPError('https://api.groq.com/openai/v1/chat/completions',403,'forbidden',{},io.BytesIO(b'error code: 1010 private-key'))
         err=safe_api_error(cf403)
         self.assertIn('1010',str(err));self.assertNotIn('private-key',str(err))
+        err429=safe_api_error(HTTPError('https://api.groq.com/openai/v1/chat/completions',429,'rate',{'Retry-After':'7'},io.BytesIO(b'{"error":{"message":"private-key"}}')))
+        self.assertIn('7 saniye',str(err429));self.assertNotIn('private-key',str(err429))
+        err404=safe_api_error(HTTPError(ENDPOINT,404,'not found',{},io.BytesIO(b'{"error":{"message":"This model models/gemini-2.5-flash-lite is no longer available to new users. private-key"}}')))
+        self.assertIn('yeni kullanıcı',str(err404));self.assertNotIn('private-key',str(err404))
 
 
 if __name__=='__main__':unittest.main()

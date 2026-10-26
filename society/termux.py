@@ -86,7 +86,11 @@ def ask_operator(sim,question,advisor,connection_test=False):
                 'Yalnız BAĞLANTI TAMAM yaz.' if connection_test else json.dumps({'question':question,'operator_report':context},ensure_ascii=False))
             data={'usage':advisor.last_usage or {}}
         else:
-            with urlopen(request,timeout=advisor.timeout) as response:data=json.loads(response.read(2_000_000))
+            advisor.pace()
+            try:
+                with urlopen(request,timeout=advisor.timeout) as response:data=json.loads(response.read(2_000_000))
+            finally:
+                advisor.mark_request_done()
             advisor.last_usage=token_usage(data.get('usage'))
             if data['choices'][0].get('finish_reason')=='length':raise RuntimeError('API çıktı token sınırında kesildi; tamamlanmış yanıt değil.')
             answer=data['choices'][0]['message']['content']
@@ -109,7 +113,8 @@ def settings(advisor):
     key=os.environ.get(advisor.key_env,'')
     def clean(s):return s.replace(key,'[REDACTED]') if key else s
     return {'adapter':type(advisor).__name__,'endpoint':clean(advisor.endpoint),'model':clean(advisor.model),
-        'timeout_seconds':advisor.timeout,'max_output_tokens':advisor.max_output_tokens}
+        'timeout_seconds':advisor.timeout,'max_output_tokens':advisor.max_output_tokens,
+        'min_interval_seconds':getattr(advisor,'min_interval',0.0)}
 
 
 def metadata_check(sim,advisor,list_models=False):
@@ -140,6 +145,7 @@ Komutlar:
   baglanti         Gemini model kaydını denetle; metin üretmez, kota garantisi vermez.
   modeller         İlk sayfada listelenen generateContent modelleri; otomatik seçmez.
   uretim-test      Açık onayla 1 kısa metin üretimi (token/kota kullanır).
+  bekleme 5        İstekler arası en az bekleme süresini (0–60 sn) değiştir.
   limit 40 15      Toplam/günlük gündem isteği tavanını açıkça değiştir.
   kaydet           Kaydet.
   cik              Kaydet ve çık.
@@ -196,6 +202,14 @@ def main():
                     print('API üretim yanıtı bekleniyor… Otomatik tekrar yok.',flush=True)
                     try:print(ask_operator(sim,'Kısa bağlantı testi.',advisor,connection_test=True))
                     finally:sim.save(args.state)
+            elif cmd.startswith('bekleme '):
+                if not isinstance(advisor,OpenAICompatibleAdvisor):
+                    print('Çevrimdışı modda API bekleme süresi kullanılmaz.')
+                else:
+                    _,sec=cmd.split();sec=float(sec)
+                    if not 0<=sec<=60:raise ValueError('Bekleme süresi 0–60 saniye olmalı.')
+                    advisor.min_interval=sec
+                    print(f'İstekler arası en az bekleme süresi {sec} sn olarak ayarlandı.')
             elif cmd.startswith('limit '):
                 _,total,daily=cmd.split();total,daily=int(total),int(daily)
                 if not 1<=daily<=total<=200:raise ValueError('1 <= günlük <= toplam <= 200 olmalı.')
