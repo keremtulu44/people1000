@@ -19,7 +19,9 @@ class NoCredentialRedirect(HTTPRedirectHandler):
         return None
 
 
+USER_AGENT='people1000/0.1'
 _HTTP=build_opener(NoCredentialRedirect())
+_HTTP.addheaders=[('User-agent',USER_AGENT),('Accept','application/json')]
 
 
 def urlopen(request,timeout=60):
@@ -83,7 +85,8 @@ class OpenAICompatibleAdvisor:
             {'role':'user','content':json.dumps(packet,ensure_ascii=False)}],
             'response_format':{'type':'json_object'},'max_completion_tokens':self.max_output_tokens}
         request=Request(self.endpoint,data=json.dumps(payload).encode(),headers={
-            'Content-Type':'application/json','Authorization':'Bearer '+key,
+            'Content-Type':'application/json','Accept':'application/json','User-Agent':USER_AGENT,
+            'Authorization':'Bearer '+key,
             'Idempotency-Key':signature({'packet':packet,'model':self.model})})
         try:
             data=_json_response(request,self.timeout)
@@ -110,12 +113,20 @@ def safe_api_error(exc):
             500:'Sağlayıcı sunucu hatası.',503:'Sağlayıcı şu an kullanılamıyor; model adı yanlış demek değildir.'}
         detail=''
         try:
-            error=json.loads(exc.read(65536)).get('error',{})
-            message=str(error.get('message','')).lower()
-            if 'api_key_invalid' in str(error.get('details','')).lower() or 'api key not valid' in message:
-                detail=' Sağlayıcı anahtarı geçersiz olarak işaretledi.'
-            elif exc.code==404 and 'api version' in message:
-                detail=' Sağlayıcı bu API sürümü/model/yöntem birleşimini desteklemediğini bildiriyor.'
+            raw=exc.read(65536).decode('utf-8','replace');low=raw.lower()
+            if exc.code==403 and ('1010' in low or 'browser_signature_banned' in low):
+                detail=' İstek modele ulaşmadan Cloudflare/ağ geçidi imzasıyla (1010) engellendi.'
+            else:
+                error=json.loads(raw).get('error',{})
+                message=str(error.get('message','')).lower();code=str(error.get('code','')).lower()
+                if 'api_key_invalid' in str(error.get('details','')).lower() or 'api key not valid' in message or code=='invalid_api_key':
+                    detail=' Sağlayıcı anahtarı geçersiz olarak işaretledi.'
+                elif code in ('model_not_found','model_decommissioned') or 'decommissioned' in message:
+                    detail=' Sağlayıcı bu modelin bulunmadığını veya kullanımdan kaldırıldığını bildiriyor.'
+                elif exc.code==403 and ('model' in message or 'access' in message or 'permission' in message):
+                    detail=' Sağlayıcı bu hesap/plan için modele erişim izni olmadığını bildiriyor.'
+                elif exc.code==404 and 'api version' in message:
+                    detail=' Sağlayıcı bu API sürümü/model/yöntem birleşimini desteklemediğini bildiriyor.'
         except Exception:pass
         if 300<=exc.code<400:detail=' Kimlik bilgilerini korumak için yönlendirme izlenmedi.'
         return APIError(f'API HTTP {exc.code}: '+hints.get(exc.code,'Sağlayıcı isteği reddetti.')+detail+' Otomatik tekrar yapılmadı.',
@@ -144,7 +155,8 @@ class GeminiAdvisor(OpenAICompatibleAdvisor):
         if json_mode:config['responseMimeType']='application/json'
         payload={'systemInstruction':{'parts':[{'text':system}]},
             'contents':[{'role':'user','parts':[{'text':user}]}],'generationConfig':config}
-        request=Request(self.endpoint,data=json.dumps(payload).encode(),headers={'Content-Type':'application/json','X-goog-api-key':key})
+        request=Request(self.endpoint,data=json.dumps(payload).encode(),headers={
+            'Content-Type':'application/json','Accept':'application/json','User-Agent':USER_AGENT,'X-goog-api-key':key})
         data=_json_response(request,self.timeout)
         try:
             usage=data.get('usageMetadata',{})
@@ -167,7 +179,7 @@ class GeminiAdvisor(OpenAICompatibleAdvisor):
 
     def _metadata(self,url):
         key=api_key(self.key_env)
-        return _json_response(Request(url,headers={'X-goog-api-key':key}),self.timeout)
+        return _json_response(Request(url,headers={'Accept':'application/json','User-Agent':USER_AGENT,'X-goog-api-key':key}),self.timeout)
 
     def check_model(self):
         data=self._metadata(self.endpoint[:-len(':generateContent')])

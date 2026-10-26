@@ -164,5 +164,29 @@ class APISelfAudit(unittest.TestCase):
             with self.assertRaises(APIError) as caught:self.adapter().generate('s','u')
         self.assertEqual(caught.exception.kind,'response_size')
 
+    def test_groq_qwen_model_and_user_agent_header_sent(self):
+        env={'PEOPLE1000_API_KEY':'private-key','PEOPLE1000_API_ENDPOINT':'https://api.groq.com/openai/v1/chat/completions',
+             'PEOPLE1000_API_MODEL':'qwen/qwen3.8-27b'}
+        with patch.dict(os.environ,env):
+            a=advisor_from_environment()
+            self.assertIsInstance(a,OpenAICompatibleAdvisor);self.assertEqual(a.model,'qwen/qwen3.8-27b')
+            advice={'approach':'reserve','reason':'r','risks':[],'expected_effect':'uncertain'}
+            body={'choices':[{'finish_reason':'stop','message':{'content':json.dumps(advice)}}],'usage':{'total_tokens':12}}
+            with patch('society.agenda_api.urlopen',return_value=response(body)) as send:
+                self.assertEqual(a.review({'allowed_approaches':['reserve']}),advice)
+                req=send.call_args.args[0]
+                self.assertEqual(req.get_header('User-agent'),'people1000/0.1')
+                self.assertEqual(req.get_header('Accept'),'application/json')
+            sim=create_pilot()
+            chat={'choices':[{'finish_reason':'stop','message':{'content':'BAĞLANTI TAMAM'}}],'usage':{'total_tokens':9}}
+            with patch('society.termux.urlopen',return_value=response(chat)) as send_op:
+                self.assertEqual(ask_operator(sim,'test',a,connection_test=True),'BAĞLANTI TAMAM')
+                op_req=send_op.call_args.args[0]
+                self.assertEqual(op_req.get_header('User-agent'),'people1000/0.1')
+                self.assertNotIn('operator_report',json.loads(op_req.data)['messages'][1]['content'])
+        cf403=HTTPError('https://api.groq.com/openai/v1/chat/completions',403,'forbidden',{},io.BytesIO(b'error code: 1010 private-key'))
+        err=safe_api_error(cf403)
+        self.assertIn('1010',str(err));self.assertNotIn('private-key',str(err))
+
 
 if __name__=='__main__':unittest.main()
