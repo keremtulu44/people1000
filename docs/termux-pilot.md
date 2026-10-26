@@ -61,7 +61,7 @@ source "$HOME/.config/people1000/api.env"
 OpenAI Chat Completions için adres örneği:
 `https://api.openai.com/v1/chat/completions`. Model adını hesabınızın desteklediği
 model olarak girin. Farklı sağlayıcı için onun OpenAI-uyumlu **tam uç noktası**
-gerekir. Native Gemini/Anthropic API adresi doğrudan uyumlu değildir. Sağlayıcının
+gerekir. Native Gemini generateContent adresi artık otomatik tanınır; ayrıntılar aşağıdadır. Native Anthropic bu adaptörde desteklenmez. OpenAI-uyumlu sağlayıcının
 `response_format` ve `max_completion_tokens` alanlarını desteklemesi gerekir.
 Anahtarı doğrulamak için `cat api.env`, `env` veya `echo $PEOPLE1000_API_KEY`
 kullanmayın; ekran görüntüsü/paylaşımda anahtar sızabilir.
@@ -127,3 +127,35 @@ python -m society.termux --new --state runs/phone-pilot-2.json
 Ağ/model hatasında önce adres, model, API yetkisi ve hesabın API bakiyesini
 kontrol edin. Sohbet aboneliği otomatik API bakiyesi demek değildir. Yardım isterken
 anahtarı veya ayar dosyasını değil, gizli bilgi içermeyen hata mesajını paylaşın.
+
+## Gemini yerel API düzeltmesi
+
+Google'ın cURL örneğindeki `generateContent` artık doğrudan desteklenir.
+İstek `X-goog-api-key`, `contents/parts`, `generationConfig` kullanır;
+OpenAI `messages` biçimi gönderilmez. Eski Google uyumluluk adresi de otomatik
+yerel adaptöre yönlendirilir. Ücretsiz kullanım hesap/model/kotaya bağlıdır.
+
+```bash
+cd "$HOME/people1000"
+git pull --ff-only origin arena/22f16290-people1000
+source .venv/bin/activate
+nano "$HOME/.config/people1000/api.env"
+```
+
+Adres ve model satırları (anahtarı değiştirmeyin/paylaşmayın):
+
+```bash
+export PEOPLE1000_API_ENDPOINT='https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent'
+export PEOPLE1000_API_MODEL='gemini-flash-latest'
+```
+
+Kaydedip çıkınca `source "$HOME/.config/people1000/api.env"` ve
+`python -m society.termux --state runs/gemini-pilot.json` çalıştırın.
+`baglanti` artık küçük bir yerel Gemini isteği kullanır; bekleme mesajı gösterir.
+400/403/404/429 HTTP hatası, ağ hatası, zaman aşımı, boş metin ve token sınırında
+biten yanıt ayrılır. Anahtar veya sağlayıcının ham hata gövdesi yazdırılmaz.
+Gemini soket zaman aşımı varsayılanı 30 saniye; çıktı bütçesi 2048 token'dır.
+
+Bu değişiklik kontrollü yanıtlarla test edildi: bütün pakette 163 test,
+162 başarılı, 1 eski tarihsel dosyaya bağlı atlama. Bu çalışma ortamından
+Google'a erişim olmadığı için gerçek anahtarla canlı doğrulama yapılmadı.
