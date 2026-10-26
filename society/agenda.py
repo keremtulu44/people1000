@@ -212,10 +212,15 @@ def review(sim,issue,cause,provider):
             rt['requests'].append(record)
             if getattr(advisor,'network',False):rt['network_requests']+=1
             try:reply=advisor.review(deepcopy(packets[key]))
-            except Exception:
-                record['status']='transport_failed';raise
-            usage=getattr(advisor,'last_usage',None)
-            if usage is not None:record['usage']=deepcopy(usage)
+            except Exception as exc:
+                record['status']='transport_failed'
+                record['failure_kind']=getattr(exc,'kind','unclassified')
+                if getattr(exc,'http_status',None) is not None:record['http_status']=exc.http_status
+                raise
+            finally:
+                usage=getattr(advisor,'last_usage',None)
+                if isinstance(usage,dict):record['usage']={k:v for k,v in usage.items()
+                    if k in ('prompt_tokens','completion_tokens','total_tokens') and type(v) is int and v>=0}
             if not validate_advice(reply,packets[key]):
                 record['status']='rejected';sim.record('agenda_advice_rejected',{'issue':issue,'key':key},cause)
                 # Invalid output is a cached refusal, not a political fallback.

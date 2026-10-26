@@ -1,9 +1,9 @@
 # Termux: klondan canlı API pilotuna
 
 Bu terminal katmanı v3.3 araştırmasından sonra eklendi. Model davranış kuralları
-ve araştırma sonuçları değiştirilmedi. 5 yeni terminal testi ve bütün paket birlikte
-çalıştırıldı: 155 test, 154 başarılı, aynı tarihsel dosya nedeniyle 1 atlanan.
-Gerçek sağlayıcıya istek gönderilmedi; HTTP kontrollü yanıtla test edildi.
+ve araştırma sonuçları değiştirilmedi. API öz-denetiminin test kanıtı ve sınırları
+`reports/api-self-audit/report.md` içindedir. Gerçek sağlayıcıya istek gönderilmedi;
+HTTP kontrollü yanıtlarla test edildi.
 
 ## 1. Kurulum
 
@@ -86,9 +86,14 @@ python -m society.termux --state runs/phone-pilot.json
 ```
 
 Program açılması tek başına ağ isteği göndermez. `baglanti` komutu açık onayla
-bir ücretli istek yapar. Sonra `gun` ile tek tek ilerleyin.
+Gemini için bir model metadata GET isteği yapar; metin üretmez. Diğer OpenAI-uyumlu
+adaptörde metin üretimi yapar. Bunlar ücretsiz kota kanıtı değildir.
 
-- `rapor`: yerel kayıt, ücretsiz.
+- `ayar`: yüklenen gerçek adaptör/adres/model/zaman aşımı/token tavanı; ağ isteği yok, anahtar gösterilmez.
+- `baglanti`: Gemini model metadata kontrolü; metin üretiminin çalıştığını kanıtlamaz.
+- `modeller`: Gemini model listesinin yalnız ilk sayfası (en çok 100); otomatik model seçmez veya sayfa ilerletmez.
+- `uretim-test`: açık onayla 1 kısa üretim isteği; token/kota kullanabilir.
+- `rapor`: yerel kayıt, ağ isteği yok.
 - `gun`: 1 simülasyon günü; önemli noktalarda API kullanılabilir.
 - `ilerle 3`: 3 gün, her gün kayıt; ilk pilotta 30 gün birden başlatmayın.
 - `sor`: rapor hakkında Türkçe soru; canlı modda 1 ücretli istek.
@@ -96,7 +101,8 @@ bir ücretli istek yapar. Sonra `gun` ile tek tek ilerleyin.
 - `kaydet`, `cik`: checkpoint.
 
 Varsayılan toplam 30 / günlük 10 gündem değerlendirmesi ve ayrıca en çok 5
-operatör sorusu denemesi vardır. Bağlantı denemesi soru kotasına dahildir.
+operatör sorusu/üretim denemesi vardır (hatalar dahil). Gemini metadata kontrolleri
+ayrı, kayıt başına toplam 10 denemeyle sınırlıdır. `limit` bu iki sayacı değiştirmez.
 Bunlar parasal harcama garantisi değildir; sağlayıcı hesabından ayrıca düşük bir
 harcama tavanı koyun. Hatalı ağ denemeleri de ücretlenebilir; otomatik retry yok.
 
@@ -151,11 +157,22 @@ export PEOPLE1000_API_MODEL='gemini-flash-latest'
 
 Kaydedip çıkınca `source "$HOME/.config/people1000/api.env"` ve
 `python -m society.termux --state runs/gemini-pilot.json` çalıştırın.
-`baglanti` artık küçük bir yerel Gemini isteği kullanır; bekleme mesajı gösterir.
-400/403/404/429 HTTP hatası, ağ hatası, zaman aşımı, boş metin ve token sınırında
-biten yanıt ayrılır. Anahtar veya sağlayıcının ham hata gövdesi yazdırılmaz.
-Gemini soket zaman aşımı varsayılanı 30 saniye; çıktı bütçesi 2048 token'dır.
+`ayar` yerel etkin ayarları gösterir; önceki 404'ün kesin sebebi bu çalışma
+ortamında doğrulanamadı. Yukarıdaki model adı yalnız yapılandırma örneğidir;
+hesabınızda kullanılabildiği veya ücretsiz olduğu doğrulanmış değildir.
 
-Bu değişiklik kontrollü yanıtlarla test edildi: bütün pakette 163 test,
-162 başarılı, 1 eski tarihsel dosyaya bağlı atlama. Bu çalışma ortamından
-Google'a erişim olmadığı için gerçek anahtarla canlı doğrulama yapılmadı.
+`baglanti` tek model metadata GET isteğidir. Başarısı metin üretimi, ücret veya
+kota garantisi vermez. `uretim-test` ayrıca onay gerektiren tek üretim isteğidir.
+Otomatik tekrar/model değiştirme yapılmaz. Ham hata gövdesi/anahtar yazdırılmaz;
+kimlik bilgilerini korumak için HTTP yönlendirmeleri izlenmez.
+
+İsteğe bağlı ortam ayarları (Nano ile aynı ayar dosyasına eklenebilir):
+- `PEOPLE1000_API_TIMEOUT`: 1–120 saniye; Gemini varsayılanı 30, diğerleri 60.
+  Bu soket zaman aşımıdır, toplam işlem süresi garantisi değildir; 404/503 çözümü değildir.
+- `PEOPLE1000_MAX_OUTPUT_TOKENS`: 1–8192; Gemini varsayılanı 2048, diğerleri 500.
+  Bu üst sınırdır; gerçek kullanım veya maliyet garantisi değildir. Çok küçük tavan
+  özellikle düşünme kullanan modellerde boş/eksik yanıt verebilir.
+
+Gerçek anahtarla Google/Android doğrulaması yapılmadı. Metadata istekleri de HTTP
+isteğidir; ücretsiz/sınırsız olduğu varsayılmamalıdır. Hatalı üretimde sağlayıcının
+bildirdiği token sayıları korunur; sayı bildirilmemesi sıfır kullanım demek değildir.
