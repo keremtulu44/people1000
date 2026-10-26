@@ -187,6 +187,62 @@ Ağ/model hatasında önce adres, model, API yetkisi ve hesabın API bakiyesini
 kontrol edin. Sohbet aboneliği otomatik API bakiyesi demek değildir. Yardım isterken
 anahtarı veya ayar dosyasını değil, gizli bilgi içermeyen hata mesajını paylaşın.
 
+## 6. Web arayüzü — Termux arkada, tarayıcı önde
+
+Terminal hâlâ çalışır ama **okumak için** artık telefonunun tarayıcısını
+kullanabilirsin. `society/web_ui.py` tamamen standart kütüphaneyle yazılmış yerel
+bir web sunucusudur: **Streamlit, Flask, npm veya ek pip paketi gerekmez**. Motor
+Termux'ta arkada çalışmaya devam eder; API anahtarı yalnızca o süreçte kalır,
+tarayıcıya gönderilen HTML/JS'de anahtar yoktur.
+
+```bash
+cd "$HOME/people1000"
+source .venv/bin/activate
+source "$HOME/.config/people1000/api.env"
+python -m society.web_ui --state runs/gemini-pilot.json --open
+```
+
+`--open` Termux tarayıcısını açmayı dener; açılmazsa adresi elle yaz:
+**`http://127.0.0.1:8501`**. Ücretsiz denemek için `--offline` ekle (API
+kullanmaz), yeni bir kayıt için `--new --state runs/baska.json`, port değiştirmek
+için `--port 9000`. Sunucuyu arka planda bırakmak istersen:
+
+```bash
+nohup python -m society.web_ui --state runs/gemini-pilot.json > runs/web.log 2>&1 &
+# durdurmak için: pkill -f society.web_ui
+```
+
+Ekranda neler var:
+
+- Üstte gün, mod (CANLI / ÇEVRİMDIŞI), model, bekleme süresi, taraf/ideoloji
+  değişimi, API deneme/kabul ve soru/sınır sayaçları.
+- **6 kitle kartı** — her birinde tek cümlelik eylem, Yeterlilik/Usul yüzdesi
+  (görsel çubuk), **düne göre fark oku** (`▲ +7 puan`), Türkçe özet. Statik rol
+  tanımı ve model notu daraltılabilir "Detay" içinde; artık her seferinde ekranı
+  doldurmuyor.
+- Komut paneli: `Gün ilerlet`, `İlerle 3`, `Özet`, `Rapor`, `Ayar`, `Kaydet`,
+  senaryo başlatma (`Başlat`), `Devam 1/3`, `Olay ekle`. Tanılama ve sınırlar
+  açılır panelinde `Bağlantı`, `Modeller`, `Üretim testi` (onay ister), `Bekleme`,
+  `Limit`, `Soru limiti`, JSON indirme.
+- **Senaryo zinciri zaman çizelgesi**: başlangıç olayı + her günün gelişmesi,
+  nedensel sınırı ve özeti.
+- **Son çıktı** alanı: terminalde göreceğin metnin aynısı, kaydırılabilir.
+
+"Düne göre" farkları `runs/<kayıt>.history.json` dosyasında tutulur (kayıtla
+birlikte, repo dışında). Sayfa yenilenince son komutun çıktısı geri gelir.
+
+**Dikkat edilmesi gerekenler:**
+
+- `--host` varsayılan olarak `127.0.0.1`'dir; yani sunucu yalnızca telefonunun
+  içinden erişilebilir. `0.0.0.0` yaparsan aynı Wi-Fi'daki herkes arayüze (ve
+  senin kotana) erişebilir — bunu telefonunda yapma. Gerçek bir web adresine
+  taşırken kimlik doğrulama ekle ve anahtarı sunucu ortamında tut.
+- **Aynı `--state` dosyasını terminal pilotu ve web arayüzü ile aynı anda açma.**
+  İkisi de checkpoint yazar; biri diğerinin kaydını ezer. Farklı `--state` yolu
+  kullan veya önce birini kapat.
+- Tanılama/üretim testi butonları onay penceresi çıkarır; otomatik retry yoktur.
+  Hatalı istekler de kotadan düşebilir.
+
 ## Kalıcı Gemini ayarı — sabit model ve uç nokta (26 Ekim 2026)
 
 Groq'tan ücretsiz Gemini'ye geçiş için seçilen değerler **kodda sabitlendi**
