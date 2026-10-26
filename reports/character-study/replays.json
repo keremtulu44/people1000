@@ -1,0 +1,38 @@
+[
+  {
+    "case": "source-aligned",
+    "exact_uncompressed_daily_trace_and_state": true,
+    "sha256": {
+      "daily.jsonl.gz": "1ceba256a91cf1f3ad79522794145ca1e7a81ce5c75354f0241e262a45c87d74",
+      "trace.json.gz": "6f1b50ce67f637d957acada04384fec556d78f013c605cd7893a44931ad69434",
+      "state.json.gz": "49b7cba1ab9c2903e67d783773d72b1836f7c7ade0fbe203fbbde6c6a5930843"
+    }
+  },
+  {
+    "case": "i80-A-positive",
+    "exact_uncompressed_daily_trace_and_state": true,
+    "sha256": {
+      "daily.jsonl.gz": "48c6757dcd917cf648f6cea5789d3f8a85fe97731442d3389493d1b582f79bb3",
+      "trace.json.gz": "0ba575811288927e89b5496d8f0abf1e337cea166bcb63148f3a741f6cadfa11",
+      "state.json.gz": "be3690a5093e674a8d77807829f9b6d252cc7c00a4ba3692f50f6771d5bcfd67"
+    }
+  },
+  {
+    "case": "crowd-same-place-split",
+    "exact_uncompressed_daily_trace_and_state": true,
+    "sha256": {
+      "daily.jsonl.gz": "beee1c7f06c8912e54e70adc3d9b1a4f6bc8858a7cf67036f0e227aed71c1e9a",
+      "trace.json.gz": "572918ae9bdc80efb62e080dc7a9589ca49e5e9961e370d07255d2a0b26d7e62",
+      "state.json.gz": "a39d6827bff35111c9bd013d6ba79a22a834a93192c86bdf76624f4a6768f4f5"
+    }
+  },
+  {
+    "case": "contract-repeat",
+    "exact_uncompressed_daily_trace_and_state": true,
+    "sha256": {
+      "daily.jsonl.gz": "7b21ee7ce961551a3d9b20a36cc3dbd57c4b72f52dea7ce3c953519feb27aed3",
+      "trace.json.gz": "d23d52ea116f23f367613cf5d70adb7ff8d43ec9094b72a8b713c94554231ddb",
+      "state.json.gz": "012a062b24c8d14f754be5edec63b89b92758d20442226bb2ad82348967686df"
+    }
+  }
+]

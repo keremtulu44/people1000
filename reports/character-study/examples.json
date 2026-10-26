@@ -1,0 +1,782 @@
+[
+  {
+    "run": "i40-A-positive-n100-s0-v3.1-d30",
+    "event_id": "L00014455",
+    "agent": "A0007",
+    "group": "power_aligned",
+    "day": 20.0,
+    "old": "A",
+    "new": "B",
+    "score": 1.4520722581989223,
+    "threshold": 1.4276597968783955,
+    "attraction": 0.8624050942076257,
+    "responsibility": {
+      "A": 0.8624050942076257,
+      "unknown": 0.13759490579237432
+    },
+    "expected_utility": {
+      "A": 0.0,
+      "B": 0.8624050942076257
+    },
+    "evidence_ids": [
+      "M00011716",
+      "M00012546",
+      "M00013376",
+      "M00010917"
+    ]
+  },
+  {
+    "run": "i40-A-positive-n100-s0-v3.1-d30",
+    "event_id": "L00019290",
+    "agent": "A0009",
+    "group": "power_aligned",
+    "day": 27.0,
+    "old": "A",
+    "new": "B",
+    "score": 1.4258605938616788,
+    "threshold": 1.412276179175961,
+    "attraction": 0.7296103613864422,
+    "responsibility": {
+      "A": 0.729610361386442,
+      "unknown": 0.270389638613558
+    },
+    "expected_utility": {
+      "A": 0.0,
+      "B": 0.7296103613864422
+    },
+    "evidence_ids": [
+      "M00016548",
+      "M00017377",
+      "M00018206",
+      "M00015750"
+    ]
+  },
+  {
+    "run": "i40-A-positive-n100-s0-v3.1-d30",
+    "event_id": "L00019978",
+    "agent": "A0070",
+    "group": "authority",
+    "day": 28.0,
+    "old": "A",
+    "new": "B",
+    "score": 1.680419760745536,
+    "threshold": 1.656334072819225,
+    "attraction": 0.8830821507800886,
+    "responsibility": {
+      "A": 0.8830821507800887,
+      "unknown": 0.11691784921991133
+    },
+    "expected_utility": {
+      "A": 0.0,
+      "B": 0.8830821507800886
+    },
+    "evidence_ids": [
+      "M00016548",
+      "M00017377",
+      "M00018206",
+      "M00015750"
+    ]
+  },
+  {
+    "run": "i40-A-positive-n100-s0-v3.1-d30",
+    "event_id": "L00020006",
+    "agent": "A0079",
+    "group": "wealthy",
+    "day": 28.0,
+    "old": "A",
+    "new": "B",
+    "score": 1.5103536212109598,
+    "threshold": 1.4812696061597457,
+    "attraction": 0.7909641184080409,
+    "responsibility": {
+      "A": 0.7909641184080406,
+      "unknown": 0.2090358815919594
+    },
+    "expected_utility": {
+      "A": 0.0,
+      "B": 0.7909641184080409
+    },
+    "evidence_ids": [
+      "M00016548",
+      "M00017377",
+      "M00018206",
+      "M00015750"
+    ]
+  },
+  {
+    "run": "i40-A-positive-n100-s3-v3.1-d30",
+    "event_id": "L00015453",
+    "agent": "A0006",
+    "group": "power_aligned",
+    "day": 24.0,
+    "old": "A",
+    "new": "B",
+    "score": 1.4301371603735715,
+    "threshold": 1.4067526805927748,
+    "attraction": 0.8021127281749688,
+    "responsibility": {
+      "A": 0.8021127281749688,
+      "unknown": 0.19788727182503119
+    },
+    "expected_utility": {
+      "A": 0.0,
+      "B": 0.8021127281749688
+    },
+    "evidence_ids": [
+      "M00015031",
+      "M00011368",
+      "M00012085",
+      "M00014324"
+    ]
+  },
+  {
+    "run": "i40-A-positive-n100-s4-v3.1-d30",
+    "event_id": "L00014606",
+    "agent": "A0063",
+    "group": "authority",
+    "day": 22.0,
+    "old": "A",
+    "new": "B",
+    "score": 1.6791060177360175,
+    "threshold": 1.6215848034780227,
+    "attraction": 0.9126377351836568,
+    "responsibility": {
+      "A": 0.9126377351836569,
+      "unknown": 0.08736226481634313
+    },
+    "expected_utility": {
+      "A": 0.0,
+      "B": 0.9126377351836568
+    },
+    "evidence_ids": [
+      "M00010954",
+      "M00011703",
+      "M00012452",
+      "M00010216"
+    ]
+  },
+  {
+    "run": "i40-A-positive-n100-s5-v3.1-d30",
+    "event_id": "L00013402",
+    "agent": "A0004",
+    "group": "power_aligned",
+    "day": 21.0,
+    "old": "A",
+    "new": "B",
+    "score": 1.444979695537565,
+    "threshold": 1.3756721067873445,
+    "attraction": 0.819119684207295,
+    "responsibility": {
+      "A": 0.819119684207295,
+      "unknown": 0.18088031579270503
+    },
+    "expected_utility": {
+      "A": 0.0,
+      "B": 0.819119684207295
+    },
+    "evidence_ids": [
+      "M00010567",
+      "M00011274",
+      "M00011981",
+      "M00009861"
+    ]
+  },
+  {
+    "run": "i40-A-positive-n100-s6-v3.1-d30",
+    "event_id": "L00015848",
+    "agent": "A0007",
+    "group": "power_aligned",
+    "day": 23.0,
+    "old": "A",
+    "new": "B",
+    "score": 1.4023026670723926,
+    "threshold": 1.3990238527127334,
+    "attraction": 0.815013686036516,
+    "responsibility": {
+      "A": 0.8150136860365161,
+      "unknown": 0.18498631396348386
+    },
+    "expected_utility": {
+      "A": 0.0,
+      "B": 0.815013686036516
+    },
+    "evidence_ids": [
+      "M00011439",
+      "M00012236",
+      "M00013033",
+      "M00015343"
+    ]
+  },
+  {
+    "run": "i40-leader-positive-n100-s0-v3.1-d30",
+    "event_id": "L00014455",
+    "agent": "A0007",
+    "group": "power_aligned",
+    "day": 20.0,
+    "old": "A",
+    "new": "B",
+    "score": 1.4520722581989223,
+    "threshold": 1.4276597968783955,
+    "attraction": 0.8624050942076257,
+    "responsibility": {
+      "leader:A0074": 0.8624050942076257,
+      "unknown": 0.13759490579237432
+    },
+    "expected_utility": {
+      "A": 0.0,
+      "B": 0.8624050942076257
+    },
+    "evidence_ids": [
+      "M00011716",
+      "M00012546",
+      "M00013376",
+      "M00010917"
+    ]
+  },
+  {
+    "run": "i40-leader-positive-n100-s0-v3.1-d30",
+    "event_id": "L00019290",
+    "agent": "A0009",
+    "group": "power_aligned",
+    "day": 27.0,
+    "old": "A",
+    "new": "B",
+    "score": 1.4258605938616788,
+    "threshold": 1.412276179175961,
+    "attraction": 0.7296103613864422,
+    "responsibility": {
+      "leader:A0074": 0.729610361386442,
+      "unknown": 0.270389638613558
+    },
+    "expected_utility": {
+      "A": 0.0,
+      "B": 0.7296103613864422
+    },
+    "evidence_ids": [
+      "M00016548",
+      "M00017377",
+      "M00018206",
+      "M00015750"
+    ]
+  },
+  {
+    "run": "i40-leader-positive-n100-s0-v3.1-d30",
+    "event_id": "L00019978",
+    "agent": "A0070",
+    "group": "authority",
+    "day": 28.0,
+    "old": "A",
+    "new": "B",
+    "score": 1.680419760745536,
+    "threshold": 1.656334072819225,
+    "attraction": 0.8830821507800886,
+    "responsibility": {
+      "leader:A0074": 0.8830821507800887,
+      "unknown": 0.11691784921991133
+    },
+    "expected_utility": {
+      "A": 0.0,
+      "B": 0.8830821507800886
+    },
+    "evidence_ids": [
+      "M00016548",
+      "M00017377",
+      "M00018206",
+      "M00015750"
+    ]
+  },
+  {
+    "run": "i40-leader-positive-n100-s0-v3.1-d30",
+    "event_id": "L00020006",
+    "agent": "A0079",
+    "group": "wealthy",
+    "day": 28.0,
+    "old": "A",
+    "new": "B",
+    "score": 1.5103536212109598,
+    "threshold": 1.4812696061597457,
+    "attraction": 0.7909641184080409,
+    "responsibility": {
+      "leader:A0074": 0.7909641184080406,
+      "unknown": 0.2090358815919594
+    },
+    "expected_utility": {
+      "A": 0.0,
+      "B": 0.7909641184080409
+    },
+    "evidence_ids": [
+      "M00016548",
+      "M00017377",
+      "M00018206",
+      "M00015750"
+    ]
+  },
+  {
+    "run": "i40-leader-positive-n100-s3-v3.1-d30",
+    "event_id": "L00015453",
+    "agent": "A0006",
+    "group": "power_aligned",
+    "day": 24.0,
+    "old": "A",
+    "new": "B",
+    "score": 1.4301371603735715,
+    "threshold": 1.4067526805927748,
+    "attraction": 0.8021127281749688,
+    "responsibility": {
+      "leader:A0074": 0.8021127281749688,
+      "unknown": 0.19788727182503119
+    },
+    "expected_utility": {
+      "A": 0.0,
+      "B": 0.8021127281749688
+    },
+    "evidence_ids": [
+      "M00015031",
+      "M00011368",
+      "M00012085",
+      "M00014324"
+    ]
+  },
+  {
+    "run": "i40-leader-positive-n100-s4-v3.1-d30",
+    "event_id": "L00014606",
+    "agent": "A0063",
+    "group": "authority",
+    "day": 22.0,
+    "old": "A",
+    "new": "B",
+    "score": 1.6791060177360175,
+    "threshold": 1.6215848034780227,
+    "attraction": 0.9126377351836568,
+    "responsibility": {
+      "leader:A0064": 0.9126377351836569,
+      "unknown": 0.08736226481634313
+    },
+    "expected_utility": {
+      "A": 0.0,
+      "B": 0.9126377351836568
+    },
+    "evidence_ids": [
+      "M00010954",
+      "M00011703",
+      "M00012452",
+      "M00010216"
+    ]
+  },
+  {
+    "run": "i40-leader-positive-n100-s5-v3.1-d30",
+    "event_id": "L00013402",
+    "agent": "A0004",
+    "group": "power_aligned",
+    "day": 21.0,
+    "old": "A",
+    "new": "B",
+    "score": 1.444979695537565,
+    "threshold": 1.3756721067873445,
+    "attraction": 0.819119684207295,
+    "responsibility": {
+      "leader:A0063": 0.819119684207295,
+      "unknown": 0.18088031579270503
+    },
+    "expected_utility": {
+      "A": 0.0,
+      "B": 0.819119684207295
+    },
+    "evidence_ids": [
+      "M00010567",
+      "M00011274",
+      "M00011981",
+      "M00009861"
+    ]
+  },
+  {
+    "run": "i40-leader-positive-n100-s6-v3.1-d30",
+    "event_id": "L00015848",
+    "agent": "A0007",
+    "group": "power_aligned",
+    "day": 23.0,
+    "old": "A",
+    "new": "B",
+    "score": 1.4023026670723926,
+    "threshold": 1.3990238527127334,
+    "attraction": 0.815013686036516,
+    "responsibility": {
+      "leader:A0067": 0.8150136860365161,
+      "unknown": 0.18498631396348386
+    },
+    "expected_utility": {
+      "A": 0.0,
+      "B": 0.815013686036516
+    },
+    "evidence_ids": [
+      "M00011439",
+      "M00012236",
+      "M00013033",
+      "M00015343"
+    ]
+  },
+  {
+    "run": "i80-A-positive-n100-s0-v3.1-d30",
+    "event_id": "L00009623",
+    "agent": "A0007",
+    "group": "power_aligned",
+    "day": 13.0,
+    "old": "A",
+    "new": "B",
+    "score": 1.5637572377447042,
+    "threshold": 1.4276597968783955,
+    "attraction": 0.8624050942076258,
+    "responsibility": {
+      "A": 0.8624050942076257,
+      "unknown": 0.13759490579237432
+    },
+    "expected_utility": {
+      "A": 0.0,
+      "B": 0.8624050942076258
+    },
+    "evidence_ids": [
+      "M00006884",
+      "M00007714",
+      "M00008544",
+      "M00006085"
+    ]
+  },
+  {
+    "run": "i80-A-positive-n100-s0-v3.1-d30",
+    "event_id": "L00011436",
+    "agent": "A0009",
+    "group": "power_aligned",
+    "day": 16.0,
+    "old": "A",
+    "new": "B",
+    "score": 1.4834037890490743,
+    "threshold": 1.412276179175961,
+    "attraction": 0.729610361386442,
+    "responsibility": {
+      "A": 0.729610361386442,
+      "unknown": 0.270389638613558
+    },
+    "expected_utility": {
+      "A": 0.0,
+      "B": 0.729610361386442
+    },
+    "evidence_ids": [
+      "M00006884",
+      "M00007714",
+      "M00008544",
+      "M00010918"
+    ]
+  },
+  {
+    "run": "i80-A-positive-n100-s0-v3.1-d30",
+    "event_id": "L00011620",
+    "agent": "A0070",
+    "group": "authority",
+    "day": 16.0,
+    "old": "A",
+    "new": "B",
+    "score": 1.773357313741888,
+    "threshold": 1.656334072819225,
+    "attraction": 0.8830821507800887,
+    "responsibility": {
+      "A": 0.8830821507800887,
+      "unknown": 0.11691784921991133
+    },
+    "expected_utility": {
+      "A": 0.0,
+      "B": 0.8830821507800887
+    },
+    "evidence_ids": [
+      "M00006884",
+      "M00007714",
+      "M00008544",
+      "M00010918"
+    ]
+  },
+  {
+    "run": "i80-A-positive-n100-s0-v3.1-d30",
+    "event_id": "L00011648",
+    "agent": "A0079",
+    "group": "wealthy",
+    "day": 16.0,
+    "old": "A",
+    "new": "B",
+    "score": 1.5486141164216767,
+    "threshold": 1.4812696061597457,
+    "attraction": 0.7909641184080409,
+    "responsibility": {
+      "A": 0.7909641184080406,
+      "unknown": 0.2090358815919594
+    },
+    "expected_utility": {
+      "A": 0.0,
+      "B": 0.7909641184080409
+    },
+    "evidence_ids": [
+      "M00006884",
+      "M00007714",
+      "M00008544",
+      "M00010914"
+    ]
+  },
+  {
+    "run": "i80-A-positive-n100-s0-v3.1-d30",
+    "event_id": "L00012452",
+    "agent": "A0071",
+    "group": "authority",
+    "day": 17.0,
+    "old": "A",
+    "new": "B",
+    "score": 1.7739260314294707,
+    "threshold": 1.7046153667113417,
+    "attraction": 0.8259729179713418,
+    "responsibility": {
+      "A": 0.8259729179713419,
+      "unknown": 0.17402708202865813
+    },
+    "expected_utility": {
+      "A": 0.0,
+      "B": 0.8259729179713418
+    },
+    "evidence_ids": [
+      "M00011719",
+      "M00007714",
+      "M00008544",
+      "M00010918"
+    ]
+  },
+  {
+    "run": "i80-A-positive-n100-s0-v3.1-d30",
+    "event_id": "L00013969",
+    "agent": "A0025",
+    "group": "power_aligned",
+    "day": 19.0,
+    "old": "A",
+    "new": "B",
+    "score": 1.5302233590470296,
+    "threshold": 1.470042158309517,
+    "attraction": 0.6990307974692436,
+    "responsibility": {
+      "A": 0.6990307974692436,
+      "unknown": 0.30096920253075643
+    },
+    "expected_utility": {
+      "A": 0.0,
+      "B": 0.6990307974692436
+    },
+    "evidence_ids": [
+      "M00011719",
+      "M00012547",
+      "M00013374",
+      "M00010918"
+    ]
+  },
+  {
+    "run": "i80-A-positive-n100-s0-v3.1-d30",
+    "event_id": "L00013979",
+    "agent": "A0028",
+    "group": "power_aligned",
+    "day": 19.0,
+    "old": "A",
+    "new": "B",
+    "score": 1.4062157944867133,
+    "threshold": 1.3688050945324153,
+    "attraction": 0.7536802102629239,
+    "responsibility": {
+      "A": 0.7536802102629239,
+      "unknown": 0.24631978973707613
+    },
+    "expected_utility": {
+      "A": 0.0,
+      "B": 0.7536802102629239
+    },
+    "evidence_ids": [
+      "M00011719",
+      "M00012547",
+      "M00013374",
+      "M00010918"
+    ]
+  },
+  {
+    "run": "i80-A-positive-n100-s0-v3.1-d30",
+    "event_id": "L00014992",
+    "agent": "A0019",
+    "group": "power_aligned",
+    "day": 21.0,
+    "old": "A",
+    "new": "B",
+    "score": 1.4164101812734042,
+    "threshold": 1.4124922288694373,
+    "attraction": 0.6281346918770612,
+    "responsibility": {
+      "A": 0.6281346918770612,
+      "unknown": 0.37186530812293883
+    },
+    "expected_utility": {
+      "A": 0.0,
+      "B": 0.6281346918770612
+    },
+    "evidence_ids": [
+      "M00011719",
+      "M00012547",
+      "M00013374",
+      "M00010918"
+    ]
+  },
+  {
+    "run": "i80-A-positive-n100-s0-v3.1-d30",
+    "event_id": "L00016238",
+    "agent": "A0002",
+    "group": "power_aligned",
+    "day": 23.0,
+    "old": "A",
+    "new": "B",
+    "score": 1.4643609914156799,
+    "threshold": 1.4176638105089476,
+    "attraction": 0.578233182882984,
+    "responsibility": {
+      "A": 0.578233182882984,
+      "unknown": 0.421766817117016
+    },
+    "expected_utility": {
+      "A": 0.0,
+      "B": 0.578233182882984
+    },
+    "evidence_ids": [
+      "M00011715",
+      "M00012543",
+      "M00013370",
+      "M00015743"
+    ]
+  },
+  {
+    "run": "i80-A-positive-n100-s0-v3.1-d30",
+    "event_id": "L00016245",
+    "agent": "A0004",
+    "group": "power_aligned",
+    "day": 23.0,
+    "old": "A",
+    "new": "B",
+    "score": 1.398354581674566,
+    "threshold": 1.3432230452330778,
+    "attraction": 0.6860560222154354,
+    "responsibility": {
+      "A": 0.6860560222154354,
+      "unknown": 0.3139439777845646
+    },
+    "expected_utility": {
+      "A": 0.0,
+      "B": 0.6860560222154354
+    },
+    "evidence_ids": [
+      "M00011719",
+      "M00012547",
+      "M00013374",
+      "M00015747"
+    ]
+  },
+  {
+    "run": "i80-A-positive-n100-s0-v3.1-d30",
+    "event_id": "L00017078",
+    "agent": "A0008",
+    "group": "power_aligned",
+    "day": 24.0,
+    "old": "A",
+    "new": "B",
+    "score": 1.389299758206101,
+    "threshold": 1.3871601723121705,
+    "attraction": 0.6545908506857736,
+    "responsibility": {
+      "A": 0.6545908506857736,
+      "unknown": 0.3454091493142264
+    },
+    "expected_utility": {
+      "A": 0.0,
+      "B": 0.6545908506857736
+    },
+    "evidence_ids": [
+      "M00016541",
+      "M00012547",
+      "M00013374",
+      "M00015747"
+    ]
+  },
+  {
+    "run": "i80-A-positive-n100-s0-v3.1-d30",
+    "event_id": "L00018888",
+    "agent": "A0065",
+    "group": "authority",
+    "day": 26.0,
+    "old": "A",
+    "new": "B",
+    "score": 1.6443280235942173,
+    "threshold": 1.642277244873231,
+    "attraction": 0.5519567686167355,
+    "responsibility": {
+      "A": 0.5519567686167354,
+      "unknown": 0.44804323138326463
+    },
+    "expected_utility": {
+      "A": 0.0,
+      "B": 0.5519567686167355
+    },
+    "evidence_ids": [
+      "M00016541",
+      "M00017362",
+      "M00018181",
+      "M00015747"
+    ]
+  },
+  {
+    "run": "i80-A-positive-n100-s1-v3.1-d30",
+    "event_id": "L00013997",
+    "agent": "A0074",
+    "group": "authority",
+    "day": 23.0,
+    "old": "A",
+    "new": "B",
+    "score": 1.785488870152147,
+    "threshold": 1.735282570510434,
+    "attraction": 0.6802874812698669,
+    "responsibility": {
+      "A": 0.6802874812698669,
+      "unknown": 0.31971251873013307
+    },
+    "expected_utility": {
+      "A": 0.0,
+      "B": 0.6802874812698669
+    },
+    "evidence_ids": [
+      "M00009998",
+      "M00010641",
+      "M00011284",
+      "M00013439"
+    ]
+  },
+  {
+    "run": "i80-A-positive-n100-s2-v3.1-d30",
+    "event_id": "L00011457",
+    "agent": "A0022",
+    "group": "power_aligned",
+    "day": 17.0,
+    "old": "A",
+    "new": "B",
+    "score": 1.5239057702135537,
+    "threshold": 1.4804841835826843,
+    "attraction": 0.7654258957061694,
+    "responsibility": {
+      "A": 0.7654258957061695,
+      "unknown": 0.23457410429383052
+    },
+    "expected_utility": {
+      "A": 0.0,
+      "B": 0.7654258957061694
+    },
+    "evidence_ids": [
+      "M00010946",
+      "M00007190",
+      "M00007938",
+      "M00010198"
+    ]
+  }
+]

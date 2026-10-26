@@ -1,0 +1,18 @@
+{
+  "society/engine.py": "1c9b7e65017072fbbdad0abd023ac1e22e687d7e255e39f7e4f3ea9fe25759cb",
+  "society/dynamics.py": "ffd9f77eeee3fab4904d48c29e395747e0a887e0ee7fcd2438a9f37a629e8bc7",
+  "society/appraisal.py": "6053f8f9e85c09fd87f94f28d4a41d3db20cc52f974049f8207f63965de7d3af",
+  "society/collective.py": "2000525f4f58c83993703de5b7d2742639a392b9ffe8f7b9d0cb1e398862ebe5",
+  "society/behavior.py": "ed5dc2c6baa83da9ddcf804b0fe1ef06b058b5fd127f557a057bcd51ba5e32f4",
+  "society/behavior.json": "898103740ec353c41b29cf23e0e2f3ad3c7e7017e1afbe007725b0940c06d56c",
+  "society/behavior-v3.json": "b5e3a6473f32551db7e40c495d31d10730af33549ef4fe764cdb4be38f4b4c19",
+  "society/behavior-v2.json": "f7eb05d9bef5c69524d9262838cfb5a42c9f6d91e2486fb0887348afd362b376",
+  "society/__init__.py": "aef3efaef9af7ea2f117ffc08da540cbb7df5a6a222ac0cb825409e847a7da39",
+  "society/character_study.py": "f14c03c82ac3a01c66b8ef4286165a715630f698dea1e734591601dd8c5510d7",
+  "society/character_study_report.py": "838a0065edf1998c35263e206df22715acd7022bb4e9214667cf824e415a1953",
+  "society/character_study_followup.py": "4e5bc9b05640053a7e2eb72e5ba81686bd470d488751948b391dfcdcbe63b466",
+  "society/character_study_addenda.py": "1366cca49b2e98103154f9f34654b30b400203d06e8302dec33a0eea29a48a33",
+  "pyproject.toml": "52f25283e39a3db5d7cda942e2e2d3a0becb130363c28e1ce8a66ecc30266038",
+  "docs/six-character-contract.md": "e7a439405b8b79d5ab5d0b6fdeedf7b64efc7954ba9c483dd04cae4e62a29e24",
+  "docs/character-study-method.md": "9a12b1abb306ada9ea425faeb084a9c322c80c29edbe82d079200abe430a66e5"
+}

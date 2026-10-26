@@ -1,0 +1,7 @@
+65 tests passed (no skips in this workspace).
+840 completed new runs, 33,669 transition records validated.
+260 old runs / 56,204 old transitions examined.
+50 old baseline transition-count comparisons equal.
+All paired initial-world hashes equal.
+Behavior profile equals archived profile, no calibration applied.
+Attribution sums within 1e-8; transition export line counts equal recorded counts.

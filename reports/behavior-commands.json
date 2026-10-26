@@ -1,0 +1,40 @@
+[
+  {
+    "command": "python -m unittest discover -s tests -v > reports/behavior-test-results.txt 2>&1",
+    "exit_code": 0,
+    "tests": 54
+  },
+  {
+    "command": "python -m society.experiments --seeds 2 --populations 100 1000 --days 5 --output runs/pilot-report --artifacts runs/pilot",
+    "exit_code": 0,
+    "completed_runs": 16,
+    "output": "reports/behavior-pilot.txt"
+  },
+  {
+    "command": "python -m society.experiments --seeds 20 --populations 100 1000 --days 30 --sensitivity",
+    "exit_code": 0,
+    "completed_runs": 260,
+    "output": "reports/behavior-run-log.txt"
+  },
+  {
+    "command": "python -m society.verify_runs",
+    "exit_code": 0,
+    "completed_trajectories": 6,
+    "output": "reports/behavior-verification-log.txt",
+    "note": "Earlier 1000-agent attempt hit event cap; preserved separately."
+  },
+  {
+    "command": "python -m society.analyze_experiments",
+    "exit_code": 0,
+    "artifacts_analyzed": 260,
+    "output": "reports/behavior-analysis-log.txt"
+  },
+  {
+    "command": "python -m compileall -q society tests",
+    "exit_code": 0
+  },
+  {
+    "command": "git diff --check",
+    "exit_code": 0
+  }
+]

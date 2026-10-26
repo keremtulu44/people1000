@@ -1,0 +1,4 @@
+Frozen v3.0 pilot replay: all agent states and full event log equal archived snapshot.
+Behavior version: 3.0.0
+Analyzed 840 new runs; 30686 non-probe transitions; 50 prior-baseline comparisons.
+Historical v2 diagnosis analyzer passed.

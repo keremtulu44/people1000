@@ -1,0 +1,50 @@
+{
+  "profile_hash": "f1a65308f75ab9cdfb9cd522ee8698294dc77955db35a7bc02eea360547a995e",
+  "commands": [
+    {
+      "command": "python -m society.diagnosis --legacy",
+      "exit_code": 0,
+      "runs": 260,
+      "transitions": 56204,
+      "log": "reports/diagnosis-legacy-log.txt"
+    },
+    {
+      "command": "python -m society.diagnosis --seeds 20 --population 100",
+      "exit_code": 0,
+      "runs": 640,
+      "log": "reports/diagnosis-100-log.txt"
+    },
+    {
+      "command": "python -m society.diagnosis --seeds 5 --population 1000",
+      "exit_code": 0,
+      "runs": 160,
+      "log": "reports/diagnosis-1000-log.txt"
+    },
+    {
+      "command": "python -m society.diagnosis --seeds 20 --population 100 --peer-probe",
+      "exit_code": 0,
+      "runs": 40,
+      "log": "reports/diagnosis-peer-log.txt"
+    },
+    {
+      "command": "python -m society.diagnosis --report",
+      "exit_code": 0,
+      "runs": 840,
+      "log": "reports/diagnosis-analysis-log.txt"
+    },
+    {
+      "command": "python -m unittest discover -s tests -v",
+      "exit_code": 0,
+      "tests": 65,
+      "log": "reports/diagnosis-tests.txt"
+    },
+    {
+      "command": "python -m compileall -q society tests",
+      "exit_code": 0
+    },
+    {
+      "command": "git diff --check",
+      "exit_code": 0
+    }
+  ]
+}

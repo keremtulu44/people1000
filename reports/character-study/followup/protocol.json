@@ -1,0 +1,645 @@
+{
+  "sources": {
+    "engine.py": "1c9b7e65017072fbbdad0abd023ac1e22e687d7e255e39f7e4f3ea9fe25759cb",
+    "dynamics.py": "ffd9f77eeee3fab4904d48c29e395747e0a887e0ee7fcd2438a9f37a629e8bc7",
+    "appraisal.py": "6053f8f9e85c09fd87f94f28d4a41d3db20cc52f974049f8207f63965de7d3af",
+    "collective.py": "2000525f4f58c83993703de5b7d2742639a392b9ffe8f7b9d0cb1e398862ebe5",
+    "behavior.py": "ed5dc2c6baa83da9ddcf804b0fe1ef06b058b5fd127f557a057bcd51ba5e32f4",
+    "behavior.json": "898103740ec353c41b29cf23e0e2f3ad3c7e7017e1afbe007725b0940c06d56c",
+    "behavior-v3.json": "b5e3a6473f32551db7e40c495d31d10730af33549ef4fe764cdb4be38f4b4c19",
+    "behavior-v2.json": "f7eb05d9bef5c69524d9262838cfb5a42c9f6d91e2486fb0887348afd362b376"
+  },
+  "followup_sha256": "4e5bc9b05640053a7e2eb72e5ba81686bd470d488751948b391dfcdcbe63b466",
+  "reason": "Main political exposure was A-directed. Add B-mirrors and simultaneous campaigns; complete legacy equal-cost comparison.",
+  "notes": [
+    "Exploratory, specified after main results, not a blind preregistration.",
+    "Original graph retained. A/B roots have different reach, so mirror differences are not pure group-parameter effects.",
+    "Dual treatment doubles campaign inputs (two distinct authorities), not fixed per-population messaging dose."
+  ],
+  "jobs": [
+    {
+      "base": "i40-A-known",
+      "seed": 0,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-A-known",
+      "seed": 1,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-A-known",
+      "seed": 2,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-A-known",
+      "seed": 3,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-A-known",
+      "seed": 4,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-A-known",
+      "seed": 5,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-A-known",
+      "seed": 6,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-A-known",
+      "seed": 7,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-A-positive",
+      "seed": 0,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-A-positive",
+      "seed": 1,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-A-positive",
+      "seed": 2,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-A-positive",
+      "seed": 3,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-A-positive",
+      "seed": 4,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-A-positive",
+      "seed": 5,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-A-positive",
+      "seed": 6,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-A-positive",
+      "seed": 7,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-unknown-known",
+      "seed": 0,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-unknown-known",
+      "seed": 1,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-unknown-known",
+      "seed": 2,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-unknown-known",
+      "seed": 3,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-unknown-known",
+      "seed": 4,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-unknown-known",
+      "seed": 5,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-unknown-known",
+      "seed": 6,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-unknown-known",
+      "seed": 7,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-unknown-positive",
+      "seed": 0,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-unknown-positive",
+      "seed": 1,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-unknown-positive",
+      "seed": 2,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-unknown-positive",
+      "seed": 3,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-unknown-positive",
+      "seed": 4,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-unknown-positive",
+      "seed": 5,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-unknown-positive",
+      "seed": 6,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-unknown-positive",
+      "seed": 7,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-A-positive",
+      "seed": 0,
+      "mode": "dual",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-A-positive",
+      "seed": 1,
+      "mode": "dual",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-A-positive",
+      "seed": 2,
+      "mode": "dual",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-A-positive",
+      "seed": 3,
+      "mode": "dual",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-A-positive",
+      "seed": 4,
+      "mode": "dual",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-A-positive",
+      "seed": 5,
+      "mode": "dual",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-A-positive",
+      "seed": 6,
+      "mode": "dual",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-A-positive",
+      "seed": 7,
+      "mode": "dual",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-unknown-positive",
+      "seed": 0,
+      "mode": "dual",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-unknown-positive",
+      "seed": 1,
+      "mode": "dual",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-unknown-positive",
+      "seed": 2,
+      "mode": "dual",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-unknown-positive",
+      "seed": 3,
+      "mode": "dual",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-unknown-positive",
+      "seed": 4,
+      "mode": "dual",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-unknown-positive",
+      "seed": 5,
+      "mode": "dual",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-unknown-positive",
+      "seed": 6,
+      "mode": "dual",
+      "model": "v3.1"
+    },
+    {
+      "base": "i40-unknown-positive",
+      "seed": 7,
+      "mode": "dual",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-A-known",
+      "seed": 0,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-A-known",
+      "seed": 1,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-A-known",
+      "seed": 2,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-A-known",
+      "seed": 3,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-A-known",
+      "seed": 4,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-A-known",
+      "seed": 5,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-A-known",
+      "seed": 6,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-A-known",
+      "seed": 7,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-A-positive",
+      "seed": 0,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-A-positive",
+      "seed": 1,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-A-positive",
+      "seed": 2,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-A-positive",
+      "seed": 3,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-A-positive",
+      "seed": 4,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-A-positive",
+      "seed": 5,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-A-positive",
+      "seed": 6,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-A-positive",
+      "seed": 7,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-unknown-known",
+      "seed": 0,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-unknown-known",
+      "seed": 1,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-unknown-known",
+      "seed": 2,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-unknown-known",
+      "seed": 3,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-unknown-known",
+      "seed": 4,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-unknown-known",
+      "seed": 5,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-unknown-known",
+      "seed": 6,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-unknown-known",
+      "seed": 7,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-unknown-positive",
+      "seed": 0,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-unknown-positive",
+      "seed": 1,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-unknown-positive",
+      "seed": 2,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-unknown-positive",
+      "seed": 3,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-unknown-positive",
+      "seed": 4,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-unknown-positive",
+      "seed": 5,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-unknown-positive",
+      "seed": 6,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-unknown-positive",
+      "seed": 7,
+      "mode": "mirror",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-A-positive",
+      "seed": 0,
+      "mode": "dual",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-A-positive",
+      "seed": 1,
+      "mode": "dual",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-A-positive",
+      "seed": 2,
+      "mode": "dual",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-A-positive",
+      "seed": 3,
+      "mode": "dual",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-A-positive",
+      "seed": 4,
+      "mode": "dual",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-A-positive",
+      "seed": 5,
+      "mode": "dual",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-A-positive",
+      "seed": 6,
+      "mode": "dual",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-A-positive",
+      "seed": 7,
+      "mode": "dual",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-unknown-positive",
+      "seed": 0,
+      "mode": "dual",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-unknown-positive",
+      "seed": 1,
+      "mode": "dual",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-unknown-positive",
+      "seed": 2,
+      "mode": "dual",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-unknown-positive",
+      "seed": 3,
+      "mode": "dual",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-unknown-positive",
+      "seed": 4,
+      "mode": "dual",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-unknown-positive",
+      "seed": 5,
+      "mode": "dual",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-unknown-positive",
+      "seed": 6,
+      "mode": "dual",
+      "model": "v3.1"
+    },
+    {
+      "base": "i80-unknown-positive",
+      "seed": 7,
+      "mode": "dual",
+      "model": "v3.1"
+    },
+    {
+      "base": "late_equal_cost60",
+      "seed": 0,
+      "mode": "dose",
+      "model": "v2"
+    },
+    {
+      "base": "late_equal_cost60",
+      "seed": 1,
+      "mode": "dose",
+      "model": "v2"
+    },
+    {
+      "base": "late_equal_cost60",
+      "seed": 2,
+      "mode": "dose",
+      "model": "v2"
+    },
+    {
+      "base": "late_equal_cost60",
+      "seed": 3,
+      "mode": "dose",
+      "model": "v2"
+    },
+    {
+      "base": "late_equal_cost60",
+      "seed": 0,
+      "mode": "dose",
+      "model": "v3.0"
+    },
+    {
+      "base": "late_equal_cost60",
+      "seed": 1,
+      "mode": "dose",
+      "model": "v3.0"
+    },
+    {
+      "base": "late_equal_cost60",
+      "seed": 2,
+      "mode": "dose",
+      "model": "v3.0"
+    },
+    {
+      "base": "late_equal_cost60",
+      "seed": 3,
+      "mode": "dose",
+      "model": "v3.0"
+    }
+  ]
+}

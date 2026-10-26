@@ -1,0 +1,17 @@
+completed 1: 100 seed=0 arm=A 0.034s
+completed 2: 100 seed=0 arm=B 0.038s
+completed 3: 100 seed=0 arm=C 0.034s
+completed 4: 100 seed=0 arm=D 0.031s
+completed 5: 100 seed=1 arm=A 0.032s
+completed 6: 100 seed=1 arm=B 0.036s
+completed 7: 100 seed=1 arm=C 0.031s
+completed 8: 100 seed=1 arm=D 0.024s
+completed 9: 1000 seed=0 arm=A 0.570s
+completed 10: 1000 seed=0 arm=B 0.581s
+completed 11: 1000 seed=0 arm=C 0.571s
+completed 12: 1000 seed=0 arm=D 0.490s
+completed 13: 1000 seed=1 arm=A 0.596s
+completed 14: 1000 seed=1 arm=B 0.603s
+completed 15: 1000 seed=1 arm=C 0.569s
+completed 16: 1000 seed=1 arm=D 0.498s
+{"completed_runs": 16, "wall_seconds": 9.447993822000058}

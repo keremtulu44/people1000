@@ -1,0 +1,152 @@
+{
+  "runs": 10,
+  "rows": [
+    {
+      "seed": 0,
+      "autonomous_attendance_allowed": false,
+      "read_invitation_agents": 24,
+      "actual_attendees": 0,
+      "attendee_groups": {},
+      "peak_strength": 0.0,
+      "active_after_end": 0,
+      "remaining_distress_agents": 100,
+      "core_changes": 0,
+      "party_switches": 0,
+      "material_losses": 639.9999999999987
+    },
+    {
+      "seed": 0,
+      "autonomous_attendance_allowed": true,
+      "read_invitation_agents": 24,
+      "actual_attendees": 9,
+      "attendee_groups": {
+        "authority": 1,
+        "power_aligned": 8
+      },
+      "peak_strength": 0.8888888888888888,
+      "active_after_end": 0,
+      "remaining_distress_agents": 100,
+      "core_changes": 0,
+      "party_switches": 0,
+      "material_losses": 639.9999999999987
+    },
+    {
+      "seed": 1,
+      "autonomous_attendance_allowed": false,
+      "read_invitation_agents": 14,
+      "actual_attendees": 0,
+      "attendee_groups": {},
+      "peak_strength": 0.0,
+      "active_after_end": 0,
+      "remaining_distress_agents": 100,
+      "core_changes": 0,
+      "party_switches": 0,
+      "material_losses": 639.9999999999987
+    },
+    {
+      "seed": 1,
+      "autonomous_attendance_allowed": true,
+      "read_invitation_agents": 14,
+      "actual_attendees": 7,
+      "attendee_groups": {
+        "authority": 1,
+        "power_aligned": 6
+      },
+      "peak_strength": 0.8571428571428571,
+      "active_after_end": 0,
+      "remaining_distress_agents": 100,
+      "core_changes": 0,
+      "party_switches": 0,
+      "material_losses": 639.9999999999987
+    },
+    {
+      "seed": 2,
+      "autonomous_attendance_allowed": false,
+      "read_invitation_agents": 15,
+      "actual_attendees": 0,
+      "attendee_groups": {},
+      "peak_strength": 0.0,
+      "active_after_end": 0,
+      "remaining_distress_agents": 100,
+      "core_changes": 0,
+      "party_switches": 0,
+      "material_losses": 639.9999999999987
+    },
+    {
+      "seed": 2,
+      "autonomous_attendance_allowed": true,
+      "read_invitation_agents": 15,
+      "actual_attendees": 5,
+      "attendee_groups": {
+        "authority": 1,
+        "power_aligned": 4
+      },
+      "peak_strength": 0.8,
+      "active_after_end": 0,
+      "remaining_distress_agents": 100,
+      "core_changes": 0,
+      "party_switches": 0,
+      "material_losses": 639.9999999999987
+    },
+    {
+      "seed": 3,
+      "autonomous_attendance_allowed": false,
+      "read_invitation_agents": 22,
+      "actual_attendees": 0,
+      "attendee_groups": {},
+      "peak_strength": 0.0,
+      "active_after_end": 0,
+      "remaining_distress_agents": 100,
+      "core_changes": 0,
+      "party_switches": 0,
+      "material_losses": 639.9999999999987
+    },
+    {
+      "seed": 3,
+      "autonomous_attendance_allowed": true,
+      "read_invitation_agents": 22,
+      "actual_attendees": 6,
+      "attendee_groups": {
+        "authority": 1,
+        "discontented": 2,
+        "power_aligned": 3
+      },
+      "peak_strength": 0.8333333333333334,
+      "active_after_end": 0,
+      "remaining_distress_agents": 100,
+      "core_changes": 0,
+      "party_switches": 0,
+      "material_losses": 639.9999999999987
+    },
+    {
+      "seed": 4,
+      "autonomous_attendance_allowed": false,
+      "read_invitation_agents": 17,
+      "actual_attendees": 0,
+      "attendee_groups": {},
+      "peak_strength": 0.0,
+      "active_after_end": 0,
+      "remaining_distress_agents": 100,
+      "core_changes": 0,
+      "party_switches": 0,
+      "material_losses": 639.9999999999987
+    },
+    {
+      "seed": 4,
+      "autonomous_attendance_allowed": true,
+      "read_invitation_agents": 17,
+      "actual_attendees": 4,
+      "attendee_groups": {
+        "authority": 1,
+        "discontented": 1,
+        "power_aligned": 2
+      },
+      "peak_strength": 0.75,
+      "active_after_end": 0,
+      "remaining_distress_agents": 100,
+      "core_changes": 0,
+      "party_switches": 0,
+      "material_losses": 639.9999999999987
+    }
+  ]
+}

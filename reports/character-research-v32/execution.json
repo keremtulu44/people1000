@@ -1,0 +1,6 @@
+{
+  "status": "paused_by_user",
+  "expected": 692,
+  "completed": 98,
+  "note": "Completed runs preserved; resume unchanged protocol to run remaining jobs."
+}

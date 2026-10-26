@@ -1,0 +1,66 @@
+{
+  "time": 4320,
+  "population": 100,
+  "reach": {
+    "M00000507": [
+      "A0014",
+      "A0035",
+      "A0056"
+    ]
+  },
+  "delivery_latency_minutes": {
+    "M00000507": [
+      220,
+      61,
+      320
+    ]
+  },
+  "mean_support_gap": 0.008485690040538126,
+  "alignment_changes": 0,
+  "losses_by_group": {
+    "power_aligned": 143.99999999999997,
+    "opposition": 143.99999999999997,
+    "authority": 71.99999999999997,
+    "wealthy": 57.59999999999997,
+    "discontented": 47.99999999999998,
+    "observer": 14.399999999999997
+  },
+  "perception_error": 26.08501816336198,
+  "perception_sample_count": 2,
+  "rejected_actions": 0,
+  "provider_calls": 3
+}
+Kayıt: runs/collective-cli.json
+{
+  "time": 7200,
+  "population": 100,
+  "reach": {
+    "M00000507": [
+      "A0014",
+      "A0035",
+      "A0056"
+    ]
+  },
+  "delivery_latency_minutes": {
+    "M00000507": [
+      220,
+      61,
+      320
+    ]
+  },
+  "mean_support_gap": 0.012734043578865295,
+  "alignment_changes": 0,
+  "losses_by_group": {
+    "power_aligned": 239.99999999999997,
+    "opposition": 239.99999999999997,
+    "authority": 119.99999999999999,
+    "wealthy": 95.99999999999999,
+    "discontented": 79.99999999999999,
+    "observer": 23.999999999999993
+  },
+  "perception_error": 26.08501816336198,
+  "perception_sample_count": 2,
+  "rejected_actions": 0,
+  "provider_calls": 3
+}
+Kayıt: runs/collective-cli-continued.json

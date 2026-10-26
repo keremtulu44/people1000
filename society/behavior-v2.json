@@ -1,0 +1,255 @@
+{
+  "schema_version": 1,
+  "behavior_version": "2.0.0",
+  "description": "Uncalibrated experimental assumptions; not social facts.",
+  "belief_step": 0.3,
+  "groups": {
+    "power_aligned": {
+      "population_percent": 30,
+      "requires_aligned_authority": true,
+      "parameters": {
+        "authority_sensitivity": [
+          0.7,
+          1.0
+        ],
+        "peer_opinion_resistance": [
+          1,
+          1
+        ],
+        "economic_harm_response": [
+          0.4,
+          0.6
+        ],
+        "pressure_response": [
+          0.08,
+          0.12
+        ],
+        "topic_change_threshold": [
+          0,
+          0
+        ],
+        "alignment_change_threshold": [
+          0.85,
+          0.95
+        ],
+        "core_orientation_resistance": [
+          0.7,
+          0.95
+        ]
+      },
+      "risk_tolerance": [
+        0.1,
+        0.6
+      ]
+    },
+    "opposition": {
+      "population_percent": 30,
+      "requires_aligned_authority": true,
+      "parameters": {
+        "authority_sensitivity": [
+          0.7,
+          1.0
+        ],
+        "peer_opinion_resistance": [
+          1,
+          1
+        ],
+        "economic_harm_response": [
+          0.4,
+          0.6
+        ],
+        "pressure_response": [
+          0.08,
+          0.12
+        ],
+        "topic_change_threshold": [
+          0,
+          0
+        ],
+        "alignment_change_threshold": [
+          0.85,
+          0.95
+        ],
+        "core_orientation_resistance": [
+          0.7,
+          0.95
+        ]
+      },
+      "risk_tolerance": [
+        0.1,
+        0.6
+      ]
+    },
+    "authority": {
+      "population_percent": 15,
+      "requires_aligned_authority": false,
+      "parameters": {
+        "authority_sensitivity": [
+          0.7,
+          1.0
+        ],
+        "peer_opinion_resistance": [
+          0.7,
+          0.95
+        ],
+        "economic_harm_response": [
+          0.4,
+          0.6
+        ],
+        "pressure_response": [
+          0.08,
+          0.12
+        ],
+        "topic_change_threshold": [
+          0,
+          0
+        ],
+        "alignment_change_threshold": [
+          0.85,
+          0.95
+        ],
+        "core_orientation_resistance": [
+          0.7,
+          0.95
+        ]
+      },
+      "risk_tolerance": [
+        0.1,
+        0.6
+      ]
+    },
+    "wealthy": {
+      "population_percent": 12,
+      "requires_aligned_authority": false,
+      "parameters": {
+        "authority_sensitivity": [
+          0.7,
+          1.0
+        ],
+        "peer_opinion_resistance": [
+          0.7,
+          0.95
+        ],
+        "economic_harm_response": [
+          0.4,
+          0.6
+        ],
+        "pressure_response": [
+          0.08,
+          0.12
+        ],
+        "topic_change_threshold": [
+          0,
+          0
+        ],
+        "alignment_change_threshold": [
+          0.85,
+          0.95
+        ],
+        "core_orientation_resistance": [
+          0.7,
+          0.95
+        ]
+      },
+      "risk_tolerance": [
+        0.1,
+        0.6
+      ]
+    },
+    "discontented": {
+      "population_percent": 10,
+      "requires_aligned_authority": false,
+      "parameters": {
+        "authority_sensitivity": [
+          0.7,
+          1.0
+        ],
+        "peer_opinion_resistance": [
+          0.7,
+          0.95
+        ],
+        "economic_harm_response": [
+          0.4,
+          0.6
+        ],
+        "pressure_response": [
+          0.08,
+          0.12
+        ],
+        "topic_change_threshold": [
+          0,
+          0
+        ],
+        "alignment_change_threshold": [
+          0.85,
+          0.95
+        ],
+        "core_orientation_resistance": [
+          0.7,
+          0.95
+        ]
+      },
+      "risk_tolerance": [
+        0.1,
+        0.6
+      ]
+    },
+    "observer": {
+      "population_percent": 3,
+      "requires_aligned_authority": false,
+      "parameters": {
+        "authority_sensitivity": [
+          0.7,
+          1.0
+        ],
+        "peer_opinion_resistance": [
+          0.7,
+          0.95
+        ],
+        "economic_harm_response": [
+          0.4,
+          0.6
+        ],
+        "pressure_response": [
+          0.08,
+          0.12
+        ],
+        "topic_change_threshold": [
+          0,
+          0
+        ],
+        "alignment_change_threshold": [
+          0.999,
+          1
+        ],
+        "core_orientation_resistance": [
+          0.999,
+          0.999
+        ]
+      },
+      "risk_tolerance": [
+        0.1,
+        0.6
+      ]
+    }
+  },
+  "dynamics": {
+    "enabled": true,
+    "burden_retention": 0.9,
+    "evidence_retention": 0.96,
+    "trust_erosion": 0.12,
+    "trust_recovery": 0.04,
+    "forecast_days": 7,
+    "evidence_economic": 0.08,
+    "evidence_distrust": 0.12,
+    "evidence_peer": 0.05,
+    "loyalty_step": 0.08,
+    "return_margin": 0.3,
+    "cooldown_days": 5,
+    "core_retention": 1.0,
+    "core_step": 0.015,
+    "core_threshold_scale": 12.0,
+    "core_min_days": 14,
+    "pressure_retention": 0.85
+  }
+}

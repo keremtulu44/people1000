@@ -1,0 +1,9 @@
+{
+  "status": "complete",
+  "completed": 808,
+  "expected": 808,
+  "sources_unchanged": true,
+  "agent_days": 2928000,
+  "persisted_files": 1616,
+  "last_invocation_seconds": 96.57094700100015
+}
