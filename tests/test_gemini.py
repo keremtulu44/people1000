@@ -7,7 +7,7 @@ from urllib.error import HTTPError
 from society.agenda_api import GeminiAdvisor,advisor_from_environment
 from society.termux import create_pilot,ask_operator
 
-ENDPOINT='https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent'
+ENDPOINT='https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent'
 
 
 def response(data):
@@ -20,7 +20,7 @@ def candidate(text='TAMAM',finish='STOP'):
 
 
 class GeminiTests(unittest.TestCase):
-    def adapter(self):return GeminiAdvisor(ENDPOINT,'gemini-flash-latest')
+    def adapter(self):return GeminiAdvisor(ENDPOINT,'gemini-3.5-flash-lite')
 
     def test_native_header_body_and_no_url_secret(self):
         with patch.dict(os.environ,{'PEOPLE1000_API_KEY':'dummy-key'}),patch('society.agenda_api.urlopen',return_value=response(candidate())) as send:
@@ -34,13 +34,13 @@ class GeminiTests(unittest.TestCase):
 
     def test_factory_native_infers_model_and_compatibility_converts(self):
         for endpoint in (ENDPOINT,'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions'):
-            with patch.dict(os.environ,{'PEOPLE1000_API_KEY':'dummy','PEOPLE1000_API_ENDPOINT':endpoint,'PEOPLE1000_API_MODEL':'gemini-flash-latest'}):
+            with patch.dict(os.environ,{'PEOPLE1000_API_KEY':'dummy','PEOPLE1000_API_ENDPOINT':endpoint,'PEOPLE1000_API_MODEL':'gemini-3.5-flash-lite'}):
                 a=advisor_from_environment();self.assertIsInstance(a,GeminiAdvisor);self.assertEqual(a.endpoint,ENDPOINT)
         with patch.dict(os.environ,{'PEOPLE1000_API_KEY':'dummy','PEOPLE1000_API_ENDPOINT':ENDPOINT,'PEOPLE1000_API_MODEL':''}):
-            self.assertEqual(advisor_from_environment().model,'gemini-flash-latest')
+            self.assertEqual(advisor_from_environment().model,'gemini-3.5-flash-lite')
 
     def test_mismatched_model_and_url_key_rejected(self):
-        for endpoint,model in ((ENDPOINT,'different-model'),(ENDPOINT+'?key=secret','gemini-flash-latest')):
+        for endpoint,model in ((ENDPOINT,'different-model'),(ENDPOINT+'?key=secret','gemini-3.5-flash-lite')):
             with patch.dict(os.environ,{'PEOPLE1000_API_KEY':'dummy','PEOPLE1000_API_ENDPOINT':endpoint,'PEOPLE1000_API_MODEL':model}):
                 with self.assertRaises(ValueError):advisor_from_environment()
 

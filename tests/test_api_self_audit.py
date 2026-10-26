@@ -18,10 +18,10 @@ from test_gemini import response,candidate,ENDPOINT
 
 
 class APISelfAudit(unittest.TestCase):
-    def adapter(self):return GeminiAdvisor(ENDPOINT,'gemini-flash-latest')
+    def adapter(self):return GeminiAdvisor(ENDPOINT,'gemini-3.5-flash-lite')
 
     def test_metadata_check_uses_get_not_generation(self):
-        body={'name':'models/gemini-flash-latest','supportedGenerationMethods':['generateContent']}
+        body={'name':'models/gemini-3.5-flash-lite','supportedGenerationMethods':['generateContent']}
         sim=create_pilot();deep=deepcopy(sim.agents)
         with patch.dict(os.environ,{'PEOPLE1000_API_KEY':'private-key'}),patch('society.agenda_api.urlopen',return_value=response(body)) as send:
             result=metadata_check(sim,self.adapter())
@@ -35,12 +35,12 @@ class APISelfAudit(unittest.TestCase):
         self.assertEqual(sim.agents,deep)
 
     def test_model_list_no_automatic_selection_or_extra_pages(self):
-        body={'models':[{'name':'models/gemini-flash-latest','supportedGenerationMethods':['generateContent']},
+        body={'models':[{'name':'models/gemini-3.5-flash-lite','supportedGenerationMethods':['generateContent']},
             {'name':'models/no-generation','supportedGenerationMethods':['embedContent']}],'nextPageToken':'sensitive-page-token'}
         with patch.dict(os.environ,{'PEOPLE1000_API_KEY':'key'}),patch('society.agenda_api.urlopen',return_value=response(body)) as send:
             a=self.adapter();result=a.list_models()
-            self.assertEqual(result['models'],['gemini-flash-latest']);self.assertTrue(result['more_pages'])
-            self.assertEqual(send.call_count,1);self.assertEqual(a.model,'gemini-flash-latest')
+            self.assertEqual(result['models'],['gemini-3.5-flash-lite']);self.assertTrue(result['more_pages'])
+            self.assertEqual(send.call_count,1);self.assertEqual(a.model,'gemini-3.5-flash-lite')
             self.assertNotIn('sensitive-page-token',json.dumps(result))
 
     def test_metadata_404_counts_and_does_not_retry_or_change_model(self):
@@ -51,7 +51,7 @@ class APISelfAudit(unittest.TestCase):
             self.assertIn('API sürümü',str(caught.exception));self.assertNotIn('key-private',str(caught.exception))
             self.assertEqual(send.call_count,1)
         entry=sim.protocol['termux_pilot']['diagnostic_log'][0]
-        self.assertEqual(entry['http_status'],404);self.assertEqual(a.model,'gemini-flash-latest')
+        self.assertEqual(entry['http_status'],404);self.assertEqual(a.model,'gemini-3.5-flash-lite')
 
     def test_metadata_budget_stops_before_network(self):
         sim=create_pilot();sim.protocol['termux_pilot']['diagnostic_attempts']=10
@@ -60,11 +60,11 @@ class APISelfAudit(unittest.TestCase):
             send.assert_not_called()
 
     def test_tunable_bounded_limits(self):
-        env={'PEOPLE1000_API_KEY':'key','PEOPLE1000_API_ENDPOINT':ENDPOINT,'PEOPLE1000_API_MODEL':'models/gemini-flash-latest',
+        env={'PEOPLE1000_API_KEY':'key','PEOPLE1000_API_ENDPOINT':ENDPOINT,'PEOPLE1000_API_MODEL':'models/gemini-3.5-flash-lite',
              'PEOPLE1000_API_TIMEOUT':'75','PEOPLE1000_MAX_OUTPUT_TOKENS':'512'}
         with patch.dict(os.environ,env):
             a=advisor_from_environment();self.assertEqual(a.timeout,75);self.assertEqual(a.max_output_tokens,512)
-            self.assertEqual(a.model,'gemini-flash-latest')
+            self.assertEqual(a.model,'gemini-3.5-flash-lite')
         for key,value in (('PEOPLE1000_API_TIMEOUT','0'),('PEOPLE1000_API_TIMEOUT','999'),('PEOPLE1000_MAX_OUTPUT_TOKENS','-1'),('PEOPLE1000_MAX_OUTPUT_TOKENS','text')):
             with patch.dict(os.environ,{**env,key:value}):
                 with self.assertRaises(ValueError):advisor_from_environment()
@@ -123,7 +123,7 @@ class APISelfAudit(unittest.TestCase):
     def test_settings_local_only_and_no_key(self):
         with patch.dict(os.environ,{'PEOPLE1000_API_KEY':'private-key'}),patch('society.agenda_api.urlopen') as send:
             data=settings(self.adapter());send.assert_not_called()
-            self.assertEqual(data['model'],'gemini-flash-latest');self.assertNotIn('private-key',json.dumps(data))
+            self.assertEqual(data['model'],'gemini-3.5-flash-lite');self.assertNotIn('private-key',json.dumps(data))
 
     def test_openai_truncation_rejected_and_usage_retained(self):
         data={'choices':[{'finish_reason':'length','message':{'content':'{"partial":'}}],'usage':{'total_tokens':30}}
@@ -134,8 +134,8 @@ class APISelfAudit(unittest.TestCase):
 
     def test_cli_connection_does_not_generate_or_spend_question_quota(self):
         from society.termux import main
-        body={'name':'models/gemini-flash-latest','supportedGenerationMethods':['generateContent']}
-        env={'PEOPLE1000_API_KEY':'private-key','PEOPLE1000_API_ENDPOINT':ENDPOINT,'PEOPLE1000_API_MODEL':'gemini-flash-latest'}
+        body={'name':'models/gemini-3.5-flash-lite','supportedGenerationMethods':['generateContent']}
+        env={'PEOPLE1000_API_KEY':'private-key','PEOPLE1000_API_ENDPOINT':ENDPOINT,'PEOPLE1000_API_MODEL':'gemini-3.5-flash-lite'}
         with tempfile.TemporaryDirectory() as td:
             path=Path(td)/'pilot.json'
             with patch.dict(os.environ,env),patch('sys.argv',['termux','--state',str(path)]),patch('builtins.input',side_effect=['ayar','baglanti','e','cik']),patch('builtins.print'),patch('society.agenda_api.urlopen',return_value=response(body)) as send:
@@ -147,7 +147,7 @@ class APISelfAudit(unittest.TestCase):
 
     def test_cli_503_does_not_retry_or_report_success(self):
         from society.termux import main
-        env={'PEOPLE1000_API_KEY':'private-key','PEOPLE1000_API_ENDPOINT':ENDPOINT,'PEOPLE1000_API_MODEL':'gemini-flash-latest'}
+        env={'PEOPLE1000_API_KEY':'private-key','PEOPLE1000_API_ENDPOINT':ENDPOINT,'PEOPLE1000_API_MODEL':'gemini-3.5-flash-lite'}
         error=HTTPError(ENDPOINT,503,'busy',{},io.BytesIO(b'{"error":{"message":"private-key"}}'))
         with tempfile.TemporaryDirectory() as td:
             path=Path(td)/'pilot.json'

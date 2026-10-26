@@ -292,12 +292,6 @@ def ask_operator(sim,question,advisor,connection_test=False,causal_directive=Non
         causal_directive=causal_day_directive(chain,1)
     user_payload={'question_or_scenario':question,'causal_directive':causal_directive,'operator_report':context}
     user_text='Yalnız BAĞLANTI TAMAM yaz.' if connection_test else json.dumps(user_payload,ensure_ascii=False)
-    payload={'model':advisor.model,'messages':[
-        {'role':'system','content':PHILOSOPHY_SYSTEM_PROMPT},
-        {'role':'user','content':user_text}],
-        'max_completion_tokens':64 if connection_test else max(advisor.max_output_tokens,1400)}
-    request=Request(advisor.endpoint,data=json.dumps(payload).encode(),headers={
-        'Content-Type':'application/json','Accept':'application/json','User-Agent':USER_AGENT,'Authorization':'Bearer '+key})
     advisor.last_usage=None
     meta['question_attempts']+=1
     entry={'time':sim.time,'status':'started'};meta['question_log'].append(entry)
@@ -308,6 +302,15 @@ def ask_operator(sim,question,advisor,connection_test=False,causal_directive=Non
                 'Yalnız BAĞLANTI TAMAM yaz.' if connection_test else json.dumps(user_payload,ensure_ascii=False))
             data={'usage':advisor.last_usage or {}}
         else:
+            # Yerel Gemini adaptörü native generateContent kullanır; OpenAI
+            # `messages`/Bearer isteği yalnızca OpenAI-uyumlu sağlayıcıda kurulur.
+            payload={'model':advisor.model,'messages':[
+                {'role':'system','content':PHILOSOPHY_SYSTEM_PROMPT},
+                {'role':'user','content':user_text}],
+                'max_completion_tokens':64 if connection_test else max(advisor.max_output_tokens,1400)}
+            request=Request(advisor.endpoint,data=json.dumps(payload).encode(),headers={
+                'Content-Type':'application/json','Accept':'application/json','User-Agent':USER_AGENT,
+                'Authorization':'Bearer '+key})
             advisor.pace()
             try:
                 with urlopen(request,timeout=advisor.timeout) as response:data=json.loads(response.read(2_000_000))
@@ -435,7 +438,8 @@ def main():
     if 'termux_pilot' not in sim.protocol:parser.error('Bu kayıt terminal pilotuna ait değil; farklı --state seç.')
     sim.save(args.state)
     provider=AgendaProvider(advisor);session=Session(sim,provider)
-    print('ÇEVRİMDIŞI — API ücreti yok.' if args.offline else 'CANLI API — gun/ilerle/sor/devam/baglanti ücretli istek oluşturabilir.')
+    print('ÇEVRİMDIŞI — API isteği yok.' if args.offline else
+          'CANLI API — gun/ilerle/sor/devam/baglanti istek oluşturabilir; ücretsiz katmanda kota, ücretli planda bütçe kullanılır.')
     print(json.dumps(settings(advisor),ensure_ascii=False,indent=2))
     print(f'Kayıt: {args.state}\nAtama → açıklama → 4. simülasyon gününde yeterlilik belgesi.\n'+HELP)
     print(json.dumps(report(sim),ensure_ascii=False,indent=2))
@@ -504,6 +508,8 @@ def main():
                     print('API üretim yanıtı bekleniyor… Otomatik tekrar yok.',flush=True)
                     try:print(ask_operator(sim,'Kısa bağlantı testi.',advisor,connection_test=True))
                     finally:sim.save(args.state)
+            elif cmd=='modeller':
+                print('modeller yalnızca yerel Gemini adaptöründe çalışır; ayar komutuyla sağlayıcıyı kontrol et.')
             elif cmd.startswith('bekleme '):
                 if not isinstance(advisor,OpenAICompatibleAdvisor):
                     print('Çevrimdışı modda API bekleme süresi kullanılmaz.')

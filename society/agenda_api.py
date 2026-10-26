@@ -21,6 +21,20 @@ class NoCredentialRedirect(HTTPRedirectHandler):
 
 
 USER_AGENT='people1000/0.1'
+
+# Kalıcı Gemini ayarı (26 Ekim 2026). Sabit (pinned) kararlı model kimliği:
+# `gemini-flash-latest` gibi kayan takma adlar her yeni sürümde değişir; ücretsiz
+# kotada 404/503 ve davranış kayması üretir. 3.5 Flash-Lite'ın ücretsiz katmanı
+# yüksek günlük istek kapasitesi içindir; 3.6/3.8 Flash yeni projelerde çok
+# düşük günlük kotaya sahiptir, 2.5 ailesi yeni projelere kapalıdır.
+GEMINI_MODEL='gemini-3.5-flash-lite'
+GEMINI_ENDPOINT=('https://generativelanguage.googleapis.com/v1beta/models/'
+                 +GEMINI_MODEL+':generateContent')
+# Ücretsiz katmanda dakikalık istek sınırı (RPM) projeye göre ~10-15'tir.
+# 6 saniyelik aralık her iki sınırın da altında kalır; ortam değişkeniyle ezilir.
+GEMINI_MIN_INTERVAL=6.0
+GROQ_MIN_INTERVAL=5.0
+
 _HTTP=build_opener(NoCredentialRedirect())
 _HTTP.addheaders=[('User-agent',USER_AGENT),('Accept','application/json')]
 
@@ -165,7 +179,7 @@ def safe_api_error(exc):
 
 class GeminiAdvisor(OpenAICompatibleAdvisor):
     """Native Google generateContent, X-goog-api-key header; no URL key."""
-    def __init__(self,endpoint,model,key_env='PEOPLE1000_API_KEY',timeout=30,max_output_tokens=2048,min_interval=0):
+    def __init__(self,endpoint,model,key_env='PEOPLE1000_API_KEY',timeout=30,max_output_tokens=4096,min_interval=0):
         super().__init__(endpoint,model,key_env,timeout,max_output_tokens,min_interval=min_interval)
         u=urlsplit(endpoint)
         if u.hostname!='generativelanguage.googleapis.com' or not re.fullmatch(r'/v1(?:beta)?/models/[A-Za-z0-9][A-Za-z0-9._-]*:generateContent',u.path) or not u.path.endswith('/models/'+model+':generateContent'):
@@ -234,14 +248,22 @@ class GeminiAdvisor(OpenAICompatibleAdvisor):
 def advisor_from_environment():
     """Recognize official native and compatibility Gemini addresses safely."""
     endpoint=os.environ.get('PEOPLE1000_API_ENDPOINT','').strip();model=os.environ.get('PEOPLE1000_API_MODEL','').strip()
-    if not endpoint or not os.environ.get('PEOPLE1000_API_KEY'):raise ValueError('API adresi ve anahtarı ortamda ayarlanmalı.')
+    if not os.environ.get('PEOPLE1000_API_KEY'):raise ValueError('API anahtarı ortamda ayarlanmalı.')
+    if not endpoint and not model:
+        # Tek kaynak: yalnızca anahtar verilirse sabit (pinned) Gemini ayarı.
+        # Model/adres değişirse tek yer `GEMINI_MODEL`/`GEMINI_ENDPOINT` olur.
+        endpoint=GEMINI_ENDPOINT
+    elif not endpoint:
+        raise ValueError('API adresi eksik. Tam uç nokta verin veya modelle birlikte ikisini de boş bırakıp sabit Gemini ayarını kullanın.')
     u=urlsplit(endpoint)
     if (u.hostname or '').startswith('generativelanguage') and u.hostname!='generativelanguage.googleapis.com':
         raise ValueError('Gemini alan adı eksik veya hatalı; generativelanguage.googleapis.com olmalı.')
     try:
         timeout=int(os.environ.get('PEOPLE1000_API_TIMEOUT','30' if u.hostname=='generativelanguage.googleapis.com' else '60'))
-        tokens=int(os.environ.get('PEOPLE1000_MAX_OUTPUT_TOKENS','2048' if u.hostname=='generativelanguage.googleapis.com' else '500'))
-        interval=float(os.environ.get('PEOPLE1000_API_MIN_INTERVAL','5' if u.hostname=='api.groq.com' else '0'))
+        tokens=int(os.environ.get('PEOPLE1000_MAX_OUTPUT_TOKENS','4096' if u.hostname=='generativelanguage.googleapis.com' else '500'))
+        interval=float(os.environ.get('PEOPLE1000_API_MIN_INTERVAL',
+            GEMINI_MIN_INTERVAL if u.hostname=='generativelanguage.googleapis.com'
+            else GROQ_MIN_INTERVAL if u.hostname=='api.groq.com' else 0))
     except ValueError:raise ValueError('API_TIMEOUT, MAX_OUTPUT_TOKENS ve API_MIN_INTERVAL sayısal olmalı.') from None
     if u.hostname=='generativelanguage.googleapis.com':
         model=model.removeprefix('models/')

@@ -2,7 +2,9 @@
 
 Sınırlı bilgi ve iletişim altında 100–1000 kişinin zaman içinde değişimini
 inceleyen **kapalı toplum simülasyonu**. Gerçek toplumları tahmin ettiği iddiası
-yoktur. Gerçek AI API bağlantısı ve web paneli bu sürümde yoktur.
+yoktur. Gerçek AI API bağlantısı isteğe bağlı ortam değişkenleriyle açılır
+(Gemini `gemini-3.5-flash-lite` sabit modeli: [.env.example](.env.example) ve
+[Termux/Gemini kılavuzu](docs/termux-pilot.md)); web paneli bu sürümde yoktur.
 
 ## Güncel davranış: v3.3 — normal gündem ve API karar katmanı
 
@@ -13,7 +15,7 @@ kontrol noktaları eklendi. **Gerçek ücretli API koşulmadı**; çevrimdışı
 ve kontrollü HTTP yanıtlarıyla doğrulandı.
 
 **808 ana koşu + 24 uygulama kontrolü + 4 müdahalesiz kontrol** tamamlandı.
-150 test: 149 başarılı, 1 eski ham dosya eksikliği nedeniyle atlanan.
+188 test: 187 başarılı, 1 eski ham dosya eksikliği nedeniyle atlanan.
 
 [Genel sonuç raporu](reports/character-v33-report.md) ·
 [Uygulama ve kullanım](docs/agenda-api-implementation.md) ·
@@ -108,6 +110,7 @@ konusunda claim gerekmiyor. Mesajlar sıradan okuma, yetki ve bütçe kuralları
 ## Başlangıç
 
 Python 3.11+; çekirdek ve deneyler yalnızca standart kütüphaneyi kullanır.
+Canlı API anahtarı olmadan aşağıdaki komutların hiçbiri ağ isteği göndermez.
 
 ```bash
 python -m unittest discover -s tests -v
