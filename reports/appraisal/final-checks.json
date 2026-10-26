@@ -1,0 +1,11 @@
+{
+  "tests": 84,
+  "status": "OK",
+  "test_output": "reports/appraisal-tests.txt",
+  "initial_trial_test_failure_retained": "reports/appraisal-tests-initial-trial-failure.txt",
+  "runs": 120,
+  "raw_audit": "reports/appraisal/validation.json",
+  "historical_analyzer": "reports/appraisal-legacy-analyzer.txt",
+  "compileall": "passed",
+  "diff_check": "passed"
+}

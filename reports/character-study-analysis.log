@@ -1,0 +1,8 @@
+Exploratory follow-up verified: 104 runs; combined 612
+{
+  "completed_runs": 508,
+  "raw_files_verified": 1091,
+  "actual_agent_day_rows": 1920000,
+  "total_transitions": 1052,
+  "v31_core_changes": 0
+}

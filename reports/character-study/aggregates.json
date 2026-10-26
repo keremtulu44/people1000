@@ -1,0 +1,2552 @@
+[
+  {
+    "case": "benefit-aligned",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 48.375,
+      "min_percent": 40.0,
+      "max_percent": 53.0
+    },
+    "mean_losses": 8960.000000000004,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "benefit-peer",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 48.375,
+      "min_percent": 40.0,
+      "max_percent": 53.0
+    },
+    "mean_losses": 8960.000000000004,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "contract-and-crowd",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.25,
+      "min_percent": 0.0,
+      "max_percent": 1.0
+    },
+    "attended": {
+      "mean_percent": 4.0,
+      "min_percent": 1.0,
+      "max_percent": 5.0
+    },
+    "expressed": {
+      "mean_percent": 3.875,
+      "min_percent": 0.0,
+      "max_percent": 5.0
+    },
+    "negative_savings": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "mean_losses": 4.5,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "contract-repeat",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.25,
+      "min_percent": 0.0,
+      "max_percent": 1.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "mean_losses": 9.855,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "contract-repeat",
+    "model": "v3.1",
+    "population": 100,
+    "days": 180,
+    "n_seeds": 3,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "mean_losses": 9.855,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "contract-valid",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.25,
+      "min_percent": 0.0,
+      "max_percent": 1.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "mean_losses": 4.5,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "contract-wrong",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "mean_losses": 0.0,
+    "imposed_rejected": 8
+  },
+  {
+    "case": "contradictory",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 48.375,
+      "min_percent": 40.0,
+      "max_percent": 53.0
+    },
+    "mean_losses": 8960.000000000004,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "crowd-late-invite",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 2.375,
+      "min_percent": 1.0,
+      "max_percent": 3.0
+    },
+    "expressed": {
+      "mean_percent": 2.25,
+      "min_percent": 0.0,
+      "max_percent": 3.0
+    },
+    "negative_savings": {
+      "mean_percent": 48.375,
+      "min_percent": 40.0,
+      "max_percent": 53.0
+    },
+    "mean_losses": 8960.000000000004,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "crowd-messages-only",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 48.375,
+      "min_percent": 40.0,
+      "max_percent": 53.0
+    },
+    "mean_losses": 8960.000000000004,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "crowd-no-shock",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 4.0,
+      "min_percent": 2.0,
+      "max_percent": 6.0
+    },
+    "expressed": {
+      "mean_percent": 4.0,
+      "min_percent": 2.0,
+      "max_percent": 6.0
+    },
+    "negative_savings": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "mean_losses": 0.0,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "crowd-none",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 5.25,
+      "min_percent": 3.0,
+      "max_percent": 10.0
+    },
+    "expressed": {
+      "mean_percent": 5.25,
+      "min_percent": 3.0,
+      "max_percent": 10.0
+    },
+    "negative_savings": {
+      "mean_percent": 48.375,
+      "min_percent": 40.0,
+      "max_percent": 53.0
+    },
+    "mean_losses": 8960.000000000004,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "crowd-none",
+    "model": "v3.1",
+    "population": 1000,
+    "days": 30,
+    "n_seeds": 2,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.8,
+      "min_percent": 0.4,
+      "max_percent": 1.2
+    },
+    "expressed": {
+      "mean_percent": 0.8,
+      "min_percent": 0.4,
+      "max_percent": 1.2
+    },
+    "negative_savings": {
+      "mean_percent": 48.5,
+      "min_percent": 48.5,
+      "max_percent": 48.5
+    },
+    "mean_losses": 89599.99999999984,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "crowd-peer",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 48.375,
+      "min_percent": 40.0,
+      "max_percent": 53.0
+    },
+    "mean_losses": 8960.000000000004,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "crowd-same-place-split",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 2.0,
+      "min_percent": 2.0,
+      "max_percent": 2.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 48.375,
+      "min_percent": 40.0,
+      "max_percent": 53.0
+    },
+    "mean_losses": 8960.000000000004,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "crowd-solo",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 1.0,
+      "min_percent": 1.0,
+      "max_percent": 1.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 48.375,
+      "min_percent": 40.0,
+      "max_percent": 53.0
+    },
+    "mean_losses": 8960.000000000004,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "crowd-support-loss",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 2.0,
+      "min_percent": 2.0,
+      "max_percent": 2.0
+    },
+    "expressed": {
+      "mean_percent": 2.0,
+      "min_percent": 2.0,
+      "max_percent": 2.0
+    },
+    "negative_savings": {
+      "mean_percent": 48.375,
+      "min_percent": 40.0,
+      "max_percent": 53.0
+    },
+    "mean_losses": 8960.000000000004,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "crowd-two",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 2.0,
+      "min_percent": 2.0,
+      "max_percent": 2.0
+    },
+    "expressed": {
+      "mean_percent": 2.0,
+      "min_percent": 2.0,
+      "max_percent": 2.0
+    },
+    "negative_savings": {
+      "mean_percent": 48.375,
+      "min_percent": 40.0,
+      "max_percent": 53.0
+    },
+    "mean_losses": 8960.000000000004,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "deflation20",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "mean_losses": 0.0,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "extreme900",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 100.0,
+      "min_percent": 100.0,
+      "max_percent": 100.0
+    },
+    "mean_losses": 100800.0,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "forecast-accurate",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 48.375,
+      "min_percent": 40.0,
+      "max_percent": 53.0
+    },
+    "mean_losses": 8960.000000000004,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "forecast-false",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 48.375,
+      "min_percent": 40.0,
+      "max_percent": 53.0
+    },
+    "mean_losses": 8960.000000000004,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "i40-A-known",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 9.75,
+      "min_percent": 6.0,
+      "max_percent": 16.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "mean_losses": 4480.000000000002,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "i40-A-positive",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 1.0,
+      "min_percent": 0.0,
+      "max_percent": 4.0
+    },
+    "withdrawn": {
+      "mean_percent": 9.75,
+      "min_percent": 6.0,
+      "max_percent": 16.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "mean_losses": 4480.000000000002,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "i40-external-known",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "mean_losses": 4480.000000000002,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "i40-external-positive",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "mean_losses": 4480.000000000002,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "i40-leader-known",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 9.75,
+      "min_percent": 6.0,
+      "max_percent": 16.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "mean_losses": 4480.000000000002,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "i40-leader-positive",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 1.0,
+      "min_percent": 0.0,
+      "max_percent": 4.0
+    },
+    "withdrawn": {
+      "mean_percent": 9.75,
+      "min_percent": 6.0,
+      "max_percent": 16.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "mean_losses": 4480.000000000002,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "i40-unknown-known",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "mean_losses": 4480.000000000002,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "i40-unknown-positive",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "mean_losses": 4480.000000000002,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "i80-A-known",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 9.75,
+      "min_percent": 6.0,
+      "max_percent": 16.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 48.375,
+      "min_percent": 40.0,
+      "max_percent": 53.0
+    },
+    "mean_losses": 8960.000000000004,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "i80-A-positive",
+    "model": "v2",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 4,
+    "ever_changed": {
+      "mean_percent": 66.25,
+      "min_percent": 64.0,
+      "max_percent": 68.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 49.0,
+      "min_percent": 46.0,
+      "max_percent": 53.0
+    },
+    "mean_losses": 8960.000000000004,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "i80-A-positive",
+    "model": "v3.0",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 4,
+    "ever_changed": {
+      "mean_percent": 7.0,
+      "min_percent": 4.0,
+      "max_percent": 12.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 49.0,
+      "min_percent": 46.0,
+      "max_percent": 53.0
+    },
+    "mean_losses": 8960.000000000004,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "i80-A-positive",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 5.875,
+      "min_percent": 1.0,
+      "max_percent": 12.0
+    },
+    "withdrawn": {
+      "mean_percent": 9.75,
+      "min_percent": 6.0,
+      "max_percent": 16.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 48.375,
+      "min_percent": 40.0,
+      "max_percent": 53.0
+    },
+    "mean_losses": 8960.000000000004,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "i80-A-positive",
+    "model": "v3.1",
+    "population": 100,
+    "days": 180,
+    "n_seeds": 3,
+    "ever_changed": {
+      "mean_percent": 8.0,
+      "min_percent": 3.0,
+      "max_percent": 14.0
+    },
+    "withdrawn": {
+      "mean_percent": 11.666666666666666,
+      "min_percent": 9.0,
+      "max_percent": 16.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 73.0,
+      "min_percent": 73.0,
+      "max_percent": 73.0
+    },
+    "mean_losses": 56959.99999999991,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "i80-A-positive",
+    "model": "v3.1",
+    "population": 1000,
+    "days": 30,
+    "n_seeds": 2,
+    "ever_changed": {
+      "mean_percent": 0.75,
+      "min_percent": 0.4,
+      "max_percent": 1.1
+    },
+    "withdrawn": {
+      "mean_percent": 1.4,
+      "min_percent": 0.7,
+      "max_percent": 2.1
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 48.5,
+      "min_percent": 48.5,
+      "max_percent": 48.5
+    },
+    "mean_losses": 89599.99999999984,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "i80-external-known",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 48.375,
+      "min_percent": 40.0,
+      "max_percent": 53.0
+    },
+    "mean_losses": 8960.000000000004,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "i80-external-positive",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 48.375,
+      "min_percent": 40.0,
+      "max_percent": 53.0
+    },
+    "mean_losses": 8960.000000000004,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "i80-leader-known",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 9.75,
+      "min_percent": 6.0,
+      "max_percent": 16.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 48.375,
+      "min_percent": 40.0,
+      "max_percent": 53.0
+    },
+    "mean_losses": 8960.000000000004,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "i80-leader-positive",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 5.75,
+      "min_percent": 0.0,
+      "max_percent": 12.0
+    },
+    "withdrawn": {
+      "mean_percent": 9.75,
+      "min_percent": 6.0,
+      "max_percent": 16.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 48.375,
+      "min_percent": 40.0,
+      "max_percent": 53.0
+    },
+    "mean_losses": 8960.000000000004,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "i80-unknown-known",
+    "model": "v2",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 4,
+    "ever_changed": {
+      "mean_percent": 66.25,
+      "min_percent": 64.0,
+      "max_percent": 68.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 49.0,
+      "min_percent": 46.0,
+      "max_percent": 53.0
+    },
+    "mean_losses": 8960.000000000004,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "i80-unknown-known",
+    "model": "v3.0",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 4,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 49.0,
+      "min_percent": 46.0,
+      "max_percent": 53.0
+    },
+    "mean_losses": 8960.000000000004,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "i80-unknown-known",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 48.375,
+      "min_percent": 40.0,
+      "max_percent": 53.0
+    },
+    "mean_losses": 8960.000000000004,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "i80-unknown-positive",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 48.375,
+      "min_percent": 40.0,
+      "max_percent": 53.0
+    },
+    "mean_losses": 8960.000000000004,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "i80-unknown-positive",
+    "model": "v3.1",
+    "population": 100,
+    "days": 180,
+    "n_seeds": 3,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 73.0,
+      "min_percent": 73.0,
+      "max_percent": 73.0
+    },
+    "mean_losses": 56959.99999999991,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "late_equal_cost60",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "mean_losses": 4439.999999999999,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "mild10",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "mean_losses": 1120.0000000000011,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "moderate40",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "mean_losses": 4480.000000000002,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "none",
+    "model": "v2",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 4,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "mean_losses": 0.0,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "none",
+    "model": "v3.0",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 4,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "mean_losses": 0.0,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "none",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "mean_losses": 0.0,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "peer-authority-text",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 48.375,
+      "min_percent": 40.0,
+      "max_percent": 53.0
+    },
+    "mean_losses": 8960.000000000004,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "power-reversal",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "mean_losses": 0.0,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "pressure-valid",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "mean_losses": 0.0,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "pulse60",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "mean_losses": 1680.000000000001,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "ramp60",
+    "model": "v2",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 4,
+    "ever_changed": {
+      "mean_percent": 0.25,
+      "min_percent": 0.0,
+      "max_percent": 1.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "mean_losses": 4439.999999999999,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "ramp60",
+    "model": "v3.0",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 4,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "mean_losses": 4439.999999999999,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "ramp60",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "mean_losses": 4439.999999999999,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "ramp60",
+    "model": "v3.1",
+    "population": 1000,
+    "days": 30,
+    "n_seeds": 2,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "mean_losses": 44399.99999999984,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "repeat-many",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 48.375,
+      "min_percent": 40.0,
+      "max_percent": 53.0
+    },
+    "mean_losses": 8960.000000000004,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "repeat-once",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 48.375,
+      "min_percent": 40.0,
+      "max_percent": 53.0
+    },
+    "mean_losses": 8960.000000000004,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "repeated_pulses60",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "mean_losses": 3599.9999999999995,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "severe80",
+    "model": "v2",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 4,
+    "ever_changed": {
+      "mean_percent": 66.25,
+      "min_percent": 64.0,
+      "max_percent": 68.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 49.0,
+      "min_percent": 46.0,
+      "max_percent": 53.0
+    },
+    "mean_losses": 8960.000000000004,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "severe80",
+    "model": "v3.0",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 4,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 49.0,
+      "min_percent": 46.0,
+      "max_percent": 53.0
+    },
+    "mean_losses": 8960.000000000004,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "severe80",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 48.375,
+      "min_percent": 40.0,
+      "max_percent": 53.0
+    },
+    "mean_losses": 8960.000000000004,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "severe80",
+    "model": "v3.1",
+    "population": 100,
+    "days": 180,
+    "n_seeds": 3,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 73.0,
+      "min_percent": 73.0,
+      "max_percent": 73.0
+    },
+    "mean_losses": 56959.99999999991,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "source-aligned",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 48.375,
+      "min_percent": 40.0,
+      "max_percent": 53.0
+    },
+    "mean_losses": 8960.000000000004,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "source-opposed",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 48.375,
+      "min_percent": 40.0,
+      "max_percent": 53.0
+    },
+    "mean_losses": 8960.000000000004,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "source-ordinary",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 48.375,
+      "min_percent": 40.0,
+      "max_percent": 53.0
+    },
+    "mean_losses": 8960.000000000004,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "source-same_group",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 48.375,
+      "min_percent": 40.0,
+      "max_percent": 53.0
+    },
+    "mean_losses": 8960.000000000004,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "source-wealthy",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 48.375,
+      "min_percent": 40.0,
+      "max_percent": 53.0
+    },
+    "mean_losses": 8960.000000000004,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "sudden60",
+    "model": "v2",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 4,
+    "ever_changed": {
+      "mean_percent": 20.0,
+      "min_percent": 14.0,
+      "max_percent": 31.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 23.0,
+      "min_percent": 20.0,
+      "max_percent": 31.0
+    },
+    "mean_losses": 6720.000000000002,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "sudden60",
+    "model": "v3.0",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 4,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 23.0,
+      "min_percent": 20.0,
+      "max_percent": 31.0
+    },
+    "mean_losses": 6720.000000000002,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "sudden60",
+    "model": "v3.1",
+    "population": 100,
+    "days": 30,
+    "n_seeds": 8,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 22.25,
+      "min_percent": 15.0,
+      "max_percent": 31.0
+    },
+    "mean_losses": 6720.000000000002,
+    "imposed_rejected": 0
+  },
+  {
+    "case": "sudden60",
+    "model": "v3.1",
+    "population": 1000,
+    "days": 30,
+    "n_seeds": 2,
+    "ever_changed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "withdrawn": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "attended": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "expressed": {
+      "mean_percent": 0.0,
+      "min_percent": 0.0,
+      "max_percent": 0.0
+    },
+    "negative_savings": {
+      "mean_percent": 21.8,
+      "min_percent": 21.3,
+      "max_percent": 22.3
+    },
+    "mean_losses": 67200.0000000002,
+    "imposed_rejected": 0
+  }
+]

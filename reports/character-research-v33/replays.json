@@ -1,0 +1,48 @@
+{
+  "v33_replays": [
+    {
+      "id": "replication--i80-A-positive-n100-s0-v3.3-d30",
+      "checkpoint_day": 5,
+      "end_day": 29,
+      "original_sha256": "d81a7f59b8a6e9e8861117d7d26af3d78d583ce5f2e6814cdc614e8ee5767a35",
+      "restored_sha256": "d81a7f59b8a6e9e8861117d7d26af3d78d583ce5f2e6814cdc614e8ee5767a35",
+      "exact_snapshot_match": true,
+      "matches_study_deep_state": true
+    },
+    {
+      "id": "replication--source-aligned-n100-s0-v3.3-d30",
+      "checkpoint_day": 5,
+      "end_day": 29,
+      "original_sha256": "c60ee8be67ac50550cb2b77fac5c51b76fe8e55bd1b8f2a4fd7bbe7d5b127107",
+      "restored_sha256": "c60ee8be67ac50550cb2b77fac5c51b76fe8e55bd1b8f2a4fd7bbe7d5b127107",
+      "exact_snapshot_match": true,
+      "matches_study_deep_state": true
+    },
+    {
+      "id": "new-mechanism--x-colocation-shared-support-n100-s0-v3.3-d30",
+      "checkpoint_day": 5,
+      "end_day": 29,
+      "original_sha256": "55ce46906a9086ce104424683ba8c3d03e8fbaa07a5f9668f06f4778f3553d03",
+      "restored_sha256": "55ce46906a9086ce104424683ba8c3d03e8fbaa07a5f9668f06f4778f3553d03",
+      "exact_snapshot_match": true,
+      "matches_study_deep_state": true
+    },
+    {
+      "id": "agenda--agenda-qualification-only-n100-s0-v3.3-d30",
+      "checkpoint_day": 5,
+      "end_day": 29,
+      "original_sha256": "aabd5bd1e55167ea398c4d0f49354ba4c2b88752712f4971dade8987e1e4a3ba",
+      "restored_sha256": "aabd5bd1e55167ea398c4d0f49354ba4c2b88752712f4971dade8987e1e4a3ba",
+      "exact_snapshot_match": true,
+      "matches_study_deep_state": true
+    }
+  ],
+  "frozen_v31_control": {
+    "archive_sha256": "4be915d374fedf1c789d38b1992d60b6eb7e3099374ae562113d88aa1205ebe6",
+    "profile_bytes_identical": true,
+    "frozen_snapshot_sha256": "a20edb9bb01e81e4341374031d54d6f6eb1c9026c0f05c5dc9c274186bfc9c2b",
+    "current_v31_snapshot_sha256": "a20edb9bb01e81e4341374031d54d6f6eb1c9026c0f05c5dc9c274186bfc9c2b",
+    "exact_snapshot_match": true,
+    "scope": "100 agents, seed 44, 10 days, price shock + locally delivered forecast, baseline provider"
+  }
+}

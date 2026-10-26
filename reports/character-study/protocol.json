@@ -1,0 +1,3946 @@
+{
+  "date": "2026-10-25",
+  "purpose": "fixed character acceptance study, not calibrated social prediction",
+  "model_sources": {
+    "engine.py": "1c9b7e65017072fbbdad0abd023ac1e22e687d7e255e39f7e4f3ea9fe25759cb",
+    "dynamics.py": "ffd9f77eeee3fab4904d48c29e395747e0a887e0ee7fcd2438a9f37a629e8bc7",
+    "appraisal.py": "6053f8f9e85c09fd87f94f28d4a41d3db20cc52f974049f8207f63965de7d3af",
+    "collective.py": "2000525f4f58c83993703de5b7d2742639a392b9ffe8f7b9d0cb1e398862ebe5",
+    "behavior.py": "ed5dc2c6baa83da9ddcf804b0fe1ef06b058b5fd127f557a057bcd51ba5e32f4",
+    "behavior.json": "898103740ec353c41b29cf23e0e2f3ad3c7e7017e1afbe007725b0940c06d56c",
+    "behavior-v3.json": "b5e3a6473f32551db7e40c495d31d10730af33549ef4fe764cdb4be38f4b4c19",
+    "behavior-v2.json": "f7eb05d9bef5c69524d9262838cfb5a42c9f6d91e2486fb0887348afd362b376"
+  },
+  "runner_sha256": "f14c03c82ac3a01c66b8ef4286165a715630f698dea1e734591601dd8c5510d7",
+  "cases": [
+    {
+      "name": "none",
+      "family": "macro",
+      "price": 1.0
+    },
+    {
+      "name": "mild10",
+      "family": "macro",
+      "price": 1.1
+    },
+    {
+      "name": "moderate40",
+      "family": "macro",
+      "price": 1.4
+    },
+    {
+      "name": "sudden60",
+      "family": "macro",
+      "price": 1.6
+    },
+    {
+      "name": "severe80",
+      "family": "macro",
+      "price": 1.8
+    },
+    {
+      "name": "extreme900",
+      "family": "macro",
+      "price": 10.0
+    },
+    {
+      "name": "deflation20",
+      "family": "macro",
+      "price": 0.8
+    },
+    {
+      "name": "ramp60",
+      "family": "macro",
+      "price": 1.6
+    },
+    {
+      "name": "late_equal_cost60",
+      "family": "macro",
+      "price": 1.6
+    },
+    {
+      "name": "pulse60",
+      "family": "macro",
+      "price": 1.6
+    },
+    {
+      "name": "repeated_pulses60",
+      "family": "macro",
+      "price": 1.6
+    },
+    {
+      "name": "i40-unknown-known",
+      "family": "information",
+      "price": 1.4,
+      "blame": "unknown",
+      "benefit": "known"
+    },
+    {
+      "name": "i40-unknown-positive",
+      "family": "information",
+      "price": 1.4,
+      "blame": "unknown",
+      "benefit": "positive"
+    },
+    {
+      "name": "i40-A-known",
+      "family": "information",
+      "price": 1.4,
+      "blame": "A",
+      "benefit": "known"
+    },
+    {
+      "name": "i40-A-positive",
+      "family": "information",
+      "price": 1.4,
+      "blame": "A",
+      "benefit": "positive"
+    },
+    {
+      "name": "i40-external-known",
+      "family": "information",
+      "price": 1.4,
+      "blame": "external",
+      "benefit": "known"
+    },
+    {
+      "name": "i40-external-positive",
+      "family": "information",
+      "price": 1.4,
+      "blame": "external",
+      "benefit": "positive"
+    },
+    {
+      "name": "i40-leader-known",
+      "family": "information",
+      "price": 1.4,
+      "blame": "leader",
+      "benefit": "known"
+    },
+    {
+      "name": "i40-leader-positive",
+      "family": "information",
+      "price": 1.4,
+      "blame": "leader",
+      "benefit": "positive"
+    },
+    {
+      "name": "i80-unknown-known",
+      "family": "information",
+      "price": 1.8,
+      "blame": "unknown",
+      "benefit": "known"
+    },
+    {
+      "name": "i80-unknown-positive",
+      "family": "information",
+      "price": 1.8,
+      "blame": "unknown",
+      "benefit": "positive"
+    },
+    {
+      "name": "i80-A-known",
+      "family": "information",
+      "price": 1.8,
+      "blame": "A",
+      "benefit": "known"
+    },
+    {
+      "name": "i80-A-positive",
+      "family": "information",
+      "price": 1.8,
+      "blame": "A",
+      "benefit": "positive"
+    },
+    {
+      "name": "i80-external-known",
+      "family": "information",
+      "price": 1.8,
+      "blame": "external",
+      "benefit": "known"
+    },
+    {
+      "name": "i80-external-positive",
+      "family": "information",
+      "price": 1.8,
+      "blame": "external",
+      "benefit": "positive"
+    },
+    {
+      "name": "i80-leader-known",
+      "family": "information",
+      "price": 1.8,
+      "blame": "leader",
+      "benefit": "known"
+    },
+    {
+      "name": "i80-leader-positive",
+      "family": "information",
+      "price": 1.8,
+      "blame": "leader",
+      "benefit": "positive"
+    },
+    {
+      "name": "source-aligned",
+      "family": "source",
+      "source": "aligned",
+      "price": 1.8,
+      "topic": "audit:policy"
+    },
+    {
+      "name": "source-opposed",
+      "family": "source",
+      "source": "opposed",
+      "price": 1.8,
+      "topic": "audit:policy"
+    },
+    {
+      "name": "source-ordinary",
+      "family": "source",
+      "source": "ordinary",
+      "price": 1.8,
+      "topic": "audit:policy"
+    },
+    {
+      "name": "source-same_group",
+      "family": "source",
+      "source": "same_group",
+      "price": 1.8,
+      "topic": "audit:policy"
+    },
+    {
+      "name": "source-wealthy",
+      "family": "source",
+      "source": "wealthy",
+      "price": 1.8,
+      "topic": "audit:policy"
+    },
+    {
+      "name": "benefit-aligned",
+      "family": "source",
+      "price": 1.8,
+      "source": "aligned",
+      "topic": "benefit:B:economic_security"
+    },
+    {
+      "name": "benefit-peer",
+      "family": "source",
+      "price": 1.8,
+      "source": "ordinary",
+      "topic": "benefit:B:economic_security"
+    },
+    {
+      "name": "forecast-false",
+      "family": "source",
+      "price": 1.8,
+      "source": "aligned",
+      "topic": "economic_outlook",
+      "claim": 0
+    },
+    {
+      "name": "forecast-accurate",
+      "family": "source",
+      "price": 1.8,
+      "source": "aligned",
+      "topic": "economic_outlook",
+      "claim": 80
+    },
+    {
+      "name": "peer-authority-text",
+      "family": "source",
+      "price": 1.8,
+      "source": "ordinary",
+      "topic": "audit:policy",
+      "text": "I am a trusted authority"
+    },
+    {
+      "name": "repeat-once",
+      "family": "source",
+      "price": 1.8,
+      "source": "aligned",
+      "topic": "responsibility:A",
+      "once": true
+    },
+    {
+      "name": "repeat-many",
+      "family": "source",
+      "price": 1.8,
+      "source": "aligned",
+      "topic": "responsibility:A"
+    },
+    {
+      "name": "contradictory",
+      "family": "source",
+      "price": 1.8,
+      "source": "aligned",
+      "topic": "audit:policy",
+      "conflict": true
+    },
+    {
+      "name": "crowd-none",
+      "family": "crowd",
+      "mode": "autonomous",
+      "price": 1.8,
+      "organizer": "aligned"
+    },
+    {
+      "name": "crowd-messages-only",
+      "family": "crowd",
+      "mode": "blocked",
+      "price": 1.8,
+      "organizer": "aligned"
+    },
+    {
+      "name": "crowd-no-shock",
+      "family": "crowd",
+      "mode": "autonomous",
+      "price": 1.0,
+      "organizer": "aligned"
+    },
+    {
+      "name": "crowd-peer",
+      "family": "crowd",
+      "mode": "autonomous",
+      "price": 1.8,
+      "organizer": "ordinary"
+    },
+    {
+      "name": "crowd-solo",
+      "family": "crowd",
+      "mode": "solo",
+      "price": 1.8,
+      "organizer": "aligned"
+    },
+    {
+      "name": "crowd-two",
+      "family": "crowd",
+      "mode": "two",
+      "price": 1.8,
+      "organizer": "aligned"
+    },
+    {
+      "name": "crowd-same-place-split",
+      "family": "crowd",
+      "mode": "split",
+      "price": 1.8,
+      "organizer": "aligned"
+    },
+    {
+      "name": "crowd-support-loss",
+      "family": "crowd",
+      "mode": "leave",
+      "price": 1.8,
+      "organizer": "aligned"
+    },
+    {
+      "name": "crowd-late-invite",
+      "family": "crowd",
+      "mode": "late",
+      "price": 1.8,
+      "organizer": "aligned"
+    },
+    {
+      "name": "contract-valid",
+      "family": "institution",
+      "price": 1.0,
+      "institution": "contract-valid"
+    },
+    {
+      "name": "contract-wrong",
+      "family": "institution",
+      "price": 1.0,
+      "institution": "contract-wrong"
+    },
+    {
+      "name": "contract-repeat",
+      "family": "institution",
+      "price": 1.0,
+      "institution": "contract-repeat"
+    },
+    {
+      "name": "pressure-valid",
+      "family": "institution",
+      "price": 1.0,
+      "institution": "pressure-valid"
+    },
+    {
+      "name": "contract-and-crowd",
+      "family": "institution",
+      "price": 1.0,
+      "institution": "contract-and-crowd"
+    },
+    {
+      "name": "power-reversal",
+      "family": "macro",
+      "price": 1.0
+    }
+  ],
+  "jobs": [
+    {
+      "case": "none",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "none",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "none",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "none",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "none",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "none",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "none",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "none",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "mild10",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "mild10",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "mild10",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "mild10",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "mild10",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "mild10",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "mild10",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "mild10",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "moderate40",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "moderate40",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "moderate40",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "moderate40",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "moderate40",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "moderate40",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "moderate40",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "moderate40",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "sudden60",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "sudden60",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "sudden60",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "sudden60",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "sudden60",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "sudden60",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "sudden60",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "sudden60",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "severe80",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "severe80",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "severe80",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "severe80",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "severe80",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "severe80",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "severe80",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "severe80",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "extreme900",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "extreme900",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "extreme900",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "extreme900",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "extreme900",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "extreme900",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "extreme900",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "extreme900",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "deflation20",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "deflation20",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "deflation20",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "deflation20",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "deflation20",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "deflation20",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "deflation20",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "deflation20",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "ramp60",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "ramp60",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "ramp60",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "ramp60",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "ramp60",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "ramp60",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "ramp60",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "ramp60",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "late_equal_cost60",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "late_equal_cost60",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "late_equal_cost60",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "late_equal_cost60",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "late_equal_cost60",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "late_equal_cost60",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "late_equal_cost60",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "late_equal_cost60",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "pulse60",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "pulse60",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "pulse60",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "pulse60",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "pulse60",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "pulse60",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "pulse60",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "pulse60",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "repeated_pulses60",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "repeated_pulses60",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "repeated_pulses60",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "repeated_pulses60",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "repeated_pulses60",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "repeated_pulses60",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "repeated_pulses60",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "repeated_pulses60",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-unknown-known",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-unknown-known",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-unknown-known",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-unknown-known",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-unknown-known",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-unknown-known",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-unknown-known",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-unknown-known",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-unknown-positive",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-unknown-positive",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-unknown-positive",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-unknown-positive",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-unknown-positive",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-unknown-positive",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-unknown-positive",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-unknown-positive",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-A-known",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-A-known",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-A-known",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-A-known",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-A-known",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-A-known",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-A-known",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-A-known",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-A-positive",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-A-positive",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-A-positive",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-A-positive",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-A-positive",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-A-positive",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-A-positive",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-A-positive",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-external-known",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-external-known",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-external-known",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-external-known",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-external-known",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-external-known",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-external-known",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-external-known",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-external-positive",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-external-positive",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-external-positive",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-external-positive",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-external-positive",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-external-positive",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-external-positive",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-external-positive",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-leader-known",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-leader-known",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-leader-known",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-leader-known",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-leader-known",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-leader-known",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-leader-known",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-leader-known",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-leader-positive",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-leader-positive",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-leader-positive",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-leader-positive",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-leader-positive",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-leader-positive",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-leader-positive",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i40-leader-positive",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-unknown-known",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-unknown-known",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-unknown-known",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-unknown-known",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-unknown-known",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-unknown-known",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-unknown-known",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-unknown-known",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-unknown-positive",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-unknown-positive",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-unknown-positive",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-unknown-positive",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-unknown-positive",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-unknown-positive",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-unknown-positive",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-unknown-positive",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-A-known",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-A-known",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-A-known",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-A-known",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-A-known",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-A-known",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-A-known",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-A-known",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-A-positive",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-A-positive",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-A-positive",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-A-positive",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-A-positive",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-A-positive",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-A-positive",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-A-positive",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-external-known",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-external-known",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-external-known",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-external-known",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-external-known",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-external-known",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-external-known",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-external-known",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-external-positive",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-external-positive",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-external-positive",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-external-positive",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-external-positive",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-external-positive",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-external-positive",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-external-positive",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-leader-known",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-leader-known",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-leader-known",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-leader-known",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-leader-known",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-leader-known",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-leader-known",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-leader-known",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-leader-positive",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-leader-positive",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-leader-positive",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-leader-positive",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-leader-positive",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-leader-positive",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-leader-positive",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-leader-positive",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-aligned",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-aligned",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-aligned",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-aligned",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-aligned",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-aligned",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-aligned",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-aligned",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-opposed",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-opposed",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-opposed",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-opposed",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-opposed",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-opposed",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-opposed",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-opposed",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-ordinary",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-ordinary",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-ordinary",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-ordinary",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-ordinary",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-ordinary",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-ordinary",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-ordinary",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-same_group",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-same_group",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-same_group",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-same_group",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-same_group",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-same_group",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-same_group",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-same_group",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-wealthy",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-wealthy",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-wealthy",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-wealthy",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-wealthy",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-wealthy",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-wealthy",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "source-wealthy",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "benefit-aligned",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "benefit-aligned",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "benefit-aligned",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "benefit-aligned",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "benefit-aligned",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "benefit-aligned",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "benefit-aligned",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "benefit-aligned",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "benefit-peer",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "benefit-peer",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "benefit-peer",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "benefit-peer",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "benefit-peer",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "benefit-peer",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "benefit-peer",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "benefit-peer",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "forecast-false",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "forecast-false",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "forecast-false",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "forecast-false",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "forecast-false",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "forecast-false",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "forecast-false",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "forecast-false",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "forecast-accurate",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "forecast-accurate",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "forecast-accurate",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "forecast-accurate",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "forecast-accurate",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "forecast-accurate",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "forecast-accurate",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "forecast-accurate",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "peer-authority-text",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "peer-authority-text",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "peer-authority-text",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "peer-authority-text",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "peer-authority-text",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "peer-authority-text",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "peer-authority-text",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "peer-authority-text",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "repeat-once",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "repeat-once",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "repeat-once",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "repeat-once",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "repeat-once",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "repeat-once",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "repeat-once",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "repeat-once",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "repeat-many",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "repeat-many",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "repeat-many",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "repeat-many",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "repeat-many",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "repeat-many",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "repeat-many",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "repeat-many",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contradictory",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contradictory",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contradictory",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contradictory",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contradictory",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contradictory",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contradictory",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contradictory",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-none",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-none",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-none",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-none",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-none",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-none",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-none",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-none",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-messages-only",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-messages-only",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-messages-only",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-messages-only",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-messages-only",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-messages-only",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-messages-only",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-messages-only",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-no-shock",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-no-shock",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-no-shock",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-no-shock",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-no-shock",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-no-shock",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-no-shock",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-no-shock",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-peer",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-peer",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-peer",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-peer",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-peer",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-peer",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-peer",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-peer",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-solo",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-solo",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-solo",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-solo",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-solo",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-solo",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-solo",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-solo",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-two",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-two",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-two",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-two",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-two",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-two",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-two",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-two",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-same-place-split",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-same-place-split",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-same-place-split",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-same-place-split",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-same-place-split",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-same-place-split",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-same-place-split",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-same-place-split",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-support-loss",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-support-loss",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-support-loss",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-support-loss",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-support-loss",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-support-loss",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-support-loss",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-support-loss",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-late-invite",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-late-invite",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-late-invite",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-late-invite",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-late-invite",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-late-invite",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-late-invite",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-late-invite",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contract-valid",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contract-valid",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contract-valid",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contract-valid",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contract-valid",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contract-valid",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contract-valid",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contract-valid",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contract-wrong",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contract-wrong",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contract-wrong",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contract-wrong",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contract-wrong",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contract-wrong",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contract-wrong",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contract-wrong",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contract-repeat",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contract-repeat",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contract-repeat",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contract-repeat",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contract-repeat",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contract-repeat",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contract-repeat",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contract-repeat",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "pressure-valid",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "pressure-valid",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "pressure-valid",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "pressure-valid",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "pressure-valid",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "pressure-valid",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "pressure-valid",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "pressure-valid",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contract-and-crowd",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contract-and-crowd",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contract-and-crowd",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contract-and-crowd",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contract-and-crowd",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contract-and-crowd",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contract-and-crowd",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "contract-and-crowd",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "power-reversal",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "power-reversal",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "power-reversal",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "power-reversal",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "power-reversal",
+      "seed": 4,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "power-reversal",
+      "seed": 5,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "power-reversal",
+      "seed": 6,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "power-reversal",
+      "seed": 7,
+      "population": 100,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "none",
+      "seed": 0,
+      "population": 100,
+      "model": "v2",
+      "days": 30
+    },
+    {
+      "case": "none",
+      "seed": 1,
+      "population": 100,
+      "model": "v2",
+      "days": 30
+    },
+    {
+      "case": "none",
+      "seed": 2,
+      "population": 100,
+      "model": "v2",
+      "days": 30
+    },
+    {
+      "case": "none",
+      "seed": 3,
+      "population": 100,
+      "model": "v2",
+      "days": 30
+    },
+    {
+      "case": "none",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.0",
+      "days": 30
+    },
+    {
+      "case": "none",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.0",
+      "days": 30
+    },
+    {
+      "case": "none",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.0",
+      "days": 30
+    },
+    {
+      "case": "none",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.0",
+      "days": 30
+    },
+    {
+      "case": "sudden60",
+      "seed": 0,
+      "population": 100,
+      "model": "v2",
+      "days": 30
+    },
+    {
+      "case": "sudden60",
+      "seed": 1,
+      "population": 100,
+      "model": "v2",
+      "days": 30
+    },
+    {
+      "case": "sudden60",
+      "seed": 2,
+      "population": 100,
+      "model": "v2",
+      "days": 30
+    },
+    {
+      "case": "sudden60",
+      "seed": 3,
+      "population": 100,
+      "model": "v2",
+      "days": 30
+    },
+    {
+      "case": "sudden60",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.0",
+      "days": 30
+    },
+    {
+      "case": "sudden60",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.0",
+      "days": 30
+    },
+    {
+      "case": "sudden60",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.0",
+      "days": 30
+    },
+    {
+      "case": "sudden60",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.0",
+      "days": 30
+    },
+    {
+      "case": "severe80",
+      "seed": 0,
+      "population": 100,
+      "model": "v2",
+      "days": 30
+    },
+    {
+      "case": "severe80",
+      "seed": 1,
+      "population": 100,
+      "model": "v2",
+      "days": 30
+    },
+    {
+      "case": "severe80",
+      "seed": 2,
+      "population": 100,
+      "model": "v2",
+      "days": 30
+    },
+    {
+      "case": "severe80",
+      "seed": 3,
+      "population": 100,
+      "model": "v2",
+      "days": 30
+    },
+    {
+      "case": "severe80",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.0",
+      "days": 30
+    },
+    {
+      "case": "severe80",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.0",
+      "days": 30
+    },
+    {
+      "case": "severe80",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.0",
+      "days": 30
+    },
+    {
+      "case": "severe80",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.0",
+      "days": 30
+    },
+    {
+      "case": "ramp60",
+      "seed": 0,
+      "population": 100,
+      "model": "v2",
+      "days": 30
+    },
+    {
+      "case": "ramp60",
+      "seed": 1,
+      "population": 100,
+      "model": "v2",
+      "days": 30
+    },
+    {
+      "case": "ramp60",
+      "seed": 2,
+      "population": 100,
+      "model": "v2",
+      "days": 30
+    },
+    {
+      "case": "ramp60",
+      "seed": 3,
+      "population": 100,
+      "model": "v2",
+      "days": 30
+    },
+    {
+      "case": "ramp60",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.0",
+      "days": 30
+    },
+    {
+      "case": "ramp60",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.0",
+      "days": 30
+    },
+    {
+      "case": "ramp60",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.0",
+      "days": 30
+    },
+    {
+      "case": "ramp60",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.0",
+      "days": 30
+    },
+    {
+      "case": "i80-A-positive",
+      "seed": 0,
+      "population": 100,
+      "model": "v2",
+      "days": 30
+    },
+    {
+      "case": "i80-A-positive",
+      "seed": 1,
+      "population": 100,
+      "model": "v2",
+      "days": 30
+    },
+    {
+      "case": "i80-A-positive",
+      "seed": 2,
+      "population": 100,
+      "model": "v2",
+      "days": 30
+    },
+    {
+      "case": "i80-A-positive",
+      "seed": 3,
+      "population": 100,
+      "model": "v2",
+      "days": 30
+    },
+    {
+      "case": "i80-A-positive",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.0",
+      "days": 30
+    },
+    {
+      "case": "i80-A-positive",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.0",
+      "days": 30
+    },
+    {
+      "case": "i80-A-positive",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.0",
+      "days": 30
+    },
+    {
+      "case": "i80-A-positive",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.0",
+      "days": 30
+    },
+    {
+      "case": "i80-unknown-known",
+      "seed": 0,
+      "population": 100,
+      "model": "v2",
+      "days": 30
+    },
+    {
+      "case": "i80-unknown-known",
+      "seed": 1,
+      "population": 100,
+      "model": "v2",
+      "days": 30
+    },
+    {
+      "case": "i80-unknown-known",
+      "seed": 2,
+      "population": 100,
+      "model": "v2",
+      "days": 30
+    },
+    {
+      "case": "i80-unknown-known",
+      "seed": 3,
+      "population": 100,
+      "model": "v2",
+      "days": 30
+    },
+    {
+      "case": "i80-unknown-known",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.0",
+      "days": 30
+    },
+    {
+      "case": "i80-unknown-known",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.0",
+      "days": 30
+    },
+    {
+      "case": "i80-unknown-known",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.0",
+      "days": 30
+    },
+    {
+      "case": "i80-unknown-known",
+      "seed": 3,
+      "population": 100,
+      "model": "v3.0",
+      "days": 30
+    },
+    {
+      "case": "sudden60",
+      "seed": 0,
+      "population": 1000,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "sudden60",
+      "seed": 1,
+      "population": 1000,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "ramp60",
+      "seed": 0,
+      "population": 1000,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "ramp60",
+      "seed": 1,
+      "population": 1000,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-A-positive",
+      "seed": 0,
+      "population": 1000,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "i80-A-positive",
+      "seed": 1,
+      "population": 1000,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-none",
+      "seed": 0,
+      "population": 1000,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "crowd-none",
+      "seed": 1,
+      "population": 1000,
+      "model": "v3.1",
+      "days": 30
+    },
+    {
+      "case": "severe80",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 180
+    },
+    {
+      "case": "severe80",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 180
+    },
+    {
+      "case": "severe80",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 180
+    },
+    {
+      "case": "i80-A-positive",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 180
+    },
+    {
+      "case": "i80-A-positive",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 180
+    },
+    {
+      "case": "i80-A-positive",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 180
+    },
+    {
+      "case": "i80-unknown-positive",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 180
+    },
+    {
+      "case": "i80-unknown-positive",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 180
+    },
+    {
+      "case": "i80-unknown-positive",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 180
+    },
+    {
+      "case": "contract-repeat",
+      "seed": 0,
+      "population": 100,
+      "model": "v3.1",
+      "days": 180
+    },
+    {
+      "case": "contract-repeat",
+      "seed": 1,
+      "population": 100,
+      "model": "v3.1",
+      "days": 180
+    },
+    {
+      "case": "contract-repeat",
+      "seed": 2,
+      "population": 100,
+      "model": "v3.1",
+      "days": 180
+    }
+  ],
+  "notes": [
+    "Only source probes add a controlled common network; other families retain original topology.",
+    "Source probes use Wait to isolate read-time rules; forced crowd cases use Wait. Other runs use reference autonomous policy.",
+    "Same-endpoint early/ramp shocks have different cumulative costs. late_equal_cost60 matches ramp cumulative daily price excess at day 30.",
+    "Positive benefit and responsibility messages are testimony, not objective truth.",
+    "Daily observations are sampled at actual day-end; subdaily gatherings are measured from their event logs.",
+    "Historical profiles differ in state schema; world hashes cover common physical/personality initialization only.",
+    "Macro power-reversal is intentionally unannounced; agents must not react to hidden world power.",
+    "No behavior coefficients changed; zero core change in v3.1 is deliberately frozen, not validated ideological realism."
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "profile_fields_identical": {
+    "groups": true,
+    "dynamics": true,
+    "belief_step": true
+  },
+  "read_only_code_inspection": true,
+  "observer_local_message_probe": {
+    "seed": 44,
+    "agent": "A0098",
+    "original_source": "A0061",
+    "before": 50.0,
+    "after": 55.37555447942315,
+    "out_degree": 1,
+    "in_degree": 4,
+    "core_orientation": 1.0
+  },
+  "neutral_initial_adoption_bound": {
+    "discontented": {
+      "assumptions": "initial alignment none, evidence 0, authorities A/B, default profile; no private-state injection",
+      "max_evidence": 0.3749999999999997,
+      "max_attraction": 0.5,
+      "max_score": 0.18749999999999986,
+      "threshold_lower_bound": 1.28,
+      "can_cross": false
+    },
+    "observer": {
+      "assumptions": "initial alignment none, evidence 0, authorities A/B, default profile; no private-state injection",
+      "max_evidence": 0.3749999999999997,
+      "max_attraction": 0.3,
+      "max_score": 0.11249999999999992,
+      "threshold_lower_bound": 1.729,
+      "can_cross": false
+    }
+  },
+  "source_hashes": {
+    "society/engine.py": "685efad9203b34931eca6c3a1aba74a7b15fa83664ad6049ebbf18400e15394e",
+    "society/dynamics.py": "63b4dd0f9ac53cf7f0616f0b855a5ed617894f30a99ae5ca241ca7420fe7d642",
+    "society/appraisal.py": "6053f8f9e85c09fd87f94f28d4a41d3db20cc52f974049f8207f63965de7d3af",
+    "society/behavior.json": "b5e3a6473f32551db7e40c495d31d10730af33549ef4fe764cdb4be38f4b4c19",
+    "society/behavior-v2.json": "f7eb05d9bef5c69524d9262838cfb5a42c9f6d91e2486fb0887348afd362b376"
+  }
+}

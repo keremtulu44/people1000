@@ -1,0 +1,5 @@
+260 completed comparative runs
+40 paired A/B/C/D initial worlds and economic losses equal
+0 duplicate processed IDs / scope violations / final budget violations
+100 and 1000-agent 60-day full/replay/resume hashes equal
+54 tests passed; compileall exit 0; git diff --check exit 0

@@ -1,0 +1,226 @@
+[
+  {
+    "id": "replication--none-n100-s0-v2-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--none-n100-s1-v2-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--none-n100-s2-v2-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--none-n100-s3-v2-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--none-n100-s0-v3.0-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--none-n100-s1-v3.0-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--none-n100-s2-v3.0-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--none-n100-s3-v3.0-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--sudden60-n100-s0-v2-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--sudden60-n100-s1-v2-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--sudden60-n100-s2-v2-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--sudden60-n100-s3-v2-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--sudden60-n100-s0-v3.0-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--sudden60-n100-s1-v3.0-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--sudden60-n100-s2-v3.0-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--sudden60-n100-s3-v3.0-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--severe80-n100-s0-v2-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--severe80-n100-s1-v2-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--severe80-n100-s2-v2-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--severe80-n100-s3-v2-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--severe80-n100-s0-v3.0-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--severe80-n100-s1-v3.0-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--severe80-n100-s2-v3.0-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--severe80-n100-s3-v3.0-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--ramp60-n100-s0-v2-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--ramp60-n100-s1-v2-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--ramp60-n100-s2-v2-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--ramp60-n100-s3-v2-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--ramp60-n100-s0-v3.0-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--ramp60-n100-s1-v3.0-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--ramp60-n100-s2-v3.0-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--ramp60-n100-s3-v3.0-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--i80-A-positive-n100-s1-v2-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--i80-A-positive-n100-s0-v2-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--i80-A-positive-n100-s2-v2-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--i80-A-positive-n100-s3-v2-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--i80-A-positive-n100-s1-v3.0-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--i80-A-positive-n100-s0-v3.0-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--i80-A-positive-n100-s2-v3.0-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--i80-A-positive-n100-s3-v3.0-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--i80-unknown-known-n100-s1-v2-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--i80-unknown-known-n100-s0-v2-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--i80-unknown-known-n100-s3-v2-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--i80-unknown-known-n100-s2-v2-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--i80-unknown-known-n100-s1-v3.0-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--i80-unknown-known-n100-s0-v3.0-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--i80-unknown-known-n100-s2-v3.0-d30",
+    "differences": {}
+  },
+  {
+    "id": "replication--i80-unknown-known-n100-s3-v3.0-d30",
+    "differences": {}
+  },
+  {
+    "id": "directional-dose-late_equal_cost60-n100-s0-v2-d30",
+    "differences": {}
+  },
+  {
+    "id": "directional-dose-late_equal_cost60-n100-s1-v2-d30",
+    "differences": {}
+  },
+  {
+    "id": "directional-dose-late_equal_cost60-n100-s2-v2-d30",
+    "differences": {}
+  },
+  {
+    "id": "directional-dose-late_equal_cost60-n100-s3-v2-d30",
+    "differences": {}
+  },
+  {
+    "id": "directional-dose-late_equal_cost60-n100-s0-v3.0-d30",
+    "differences": {}
+  },
+  {
+    "id": "directional-dose-late_equal_cost60-n100-s1-v3.0-d30",
+    "differences": {}
+  },
+  {
+    "id": "directional-dose-late_equal_cost60-n100-s2-v3.0-d30",
+    "differences": {}
+  },
+  {
+    "id": "directional-dose-late_equal_cost60-n100-s3-v3.0-d30",
+    "differences": {}
+  }
+]

@@ -1,0 +1,98 @@
+test_attributed_burden_does_not_transfer_to_new_pole (test_appraisal.AppraisalContracts.test_attributed_burden_does_not_transfer_to_new_pole) ... ok
+test_benefit_uses_trust_interests_and_private_topic_views (test_appraisal.AppraisalContracts.test_benefit_uses_trust_interests_and_private_topic_views) ... ok
+test_current_pole_and_known_leader_are_distinct_hypotheses (test_appraisal.AppraisalContracts.test_current_pole_and_known_leader_are_distinct_hypotheses) ... ok
+test_direct_contract_notice_is_local_and_income_scoped (test_appraisal.AppraisalContracts.test_direct_contract_notice_is_local_and_income_scoped) ... ok
+test_equal_expected_improvements_give_no_relative_advantage (test_appraisal.AppraisalContracts.test_equal_expected_improvements_give_no_relative_advantage) ... ok
+test_external_and_unknown_attributions_do_not_blame_own_pole (test_appraisal.AppraisalContracts.test_external_and_unknown_attributions_do_not_blame_own_pole) ... ok
+test_hidden_source_change_does_not_rewrite_old_attribution (test_appraisal.AppraisalContracts.test_hidden_source_change_does_not_rewrite_old_attribution) ... ok
+test_hidden_world_power_does_not_influence_assessment (test_appraisal.AppraisalContracts.test_hidden_world_power_does_not_influence_assessment) ... ok
+test_known_alternative_alone_has_zero_advantage (test_appraisal.AppraisalContracts.test_known_alternative_alone_has_zero_advantage) ... ok
+test_late_claim_does_not_retroactively_assign_past_loss (test_appraisal.AppraisalContracts.test_late_claim_does_not_retroactively_assign_past_loss) ... ok
+test_positive_evidence_and_attributed_harm_can_still_produce_change (test_appraisal.AppraisalContracts.test_positive_evidence_and_attributed_harm_can_still_produce_change) ... ok
+test_profile_coefficients_preserved_and_old_version_explicit (test_appraisal.AppraisalContracts.test_profile_coefficients_preserved_and_old_version_explicit) ... ok
+test_repeated_same_author_is_not_independent_confirmation (test_appraisal.AppraisalContracts.test_repeated_same_author_is_not_independent_confirmation) ... ok
+test_resume_and_replay_preserve_appraisals (test_appraisal.AppraisalContracts.test_resume_and_replay_preserve_appraisals) ... ok
+test_topic_change_resistance_blocks_unaccepted_benefit_claim (test_appraisal.AppraisalContracts.test_topic_change_resistance_blocks_unaccepted_benefit_claim) ... ok
+test_unknown_loss_has_no_automatic_political_blame (test_appraisal.AppraisalContracts.test_unknown_loss_has_no_automatic_political_blame) ... ok
+test_unread_evidence_cannot_change_appraisal (test_appraisal.AppraisalContracts.test_unread_evidence_cannot_change_appraisal) ... ok
+test_awareness_control_has_no_assessed_advantage (test_appraisal_trial.SmallPairedTrial.test_awareness_control_has_no_assessed_advantage) ... ok
+test_same_world_losses_and_reach_across_versions (test_appraisal_trial.SmallPairedTrial.test_same_world_losses_and_reach_across_versions) ... ERROR
+test_core_floor_does_not_emit_false_changes (test_behavior.BehavioralContracts.test_core_floor_does_not_emit_false_changes) ... ok
+test_core_orientation_is_slower_but_not_impossible (test_behavior.BehavioralContracts.test_core_orientation_is_slower_but_not_impossible) ... ok
+test_disabled_mechanism_keeps_accumulators_and_loyalty (test_behavior.BehavioralContracts.test_disabled_mechanism_keeps_accumulators_and_loyalty) ... ok
+test_forecast_contradiction_requires_later_local_observation (test_behavior.BehavioralContracts.test_forecast_contradiction_requires_later_local_observation) ... ok
+test_hysteresis_has_separate_return_threshold_and_cooldown (test_behavior.BehavioralContracts.test_hysteresis_has_separate_return_threshold_and_cooldown) ... ok
+test_peer_public_signal_uses_resistance_not_private_state (test_behavior.BehavioralContracts.test_peer_public_signal_uses_resistance_not_private_state) ... ok
+test_pressure_changes_public_not_private (test_behavior.BehavioralContracts.test_pressure_changes_public_not_private) ... ok
+test_private_public_and_action_are_distinct (test_behavior.BehavioralContracts.test_private_public_and_action_are_distinct) ... ok
+test_repeated_loss_can_change_some_not_all_agents (test_behavior.BehavioralContracts.test_repeated_loss_can_change_some_not_all_agents) ... ok
+test_restricted_audience_cannot_relay_outside (test_behavior.BehavioralContracts.test_restricted_audience_cannot_relay_outside) ... ok
+test_resume_behavior_matches_uninterrupted (test_behavior.BehavioralContracts.test_resume_behavior_matches_uninterrupted) ... ok
+test_single_shock_not_instant_alignment (test_behavior.BehavioralContracts.test_single_shock_not_instant_alignment) ... ok
+test_truthful_forecast_can_restore_trust (test_behavior.BehavioralContracts.test_truthful_forecast_can_restore_trust) ... ok
+test_unreached_agent_has_no_forecast_evidence (test_behavior.BehavioralContracts.test_unreached_agent_has_no_forecast_evidence) ... ok
+test_ablation_validation (test_diagnosis.DiagnosisContracts.test_ablation_validation) ... ok
+test_all_arms_have_identical_initial_agents_and_topology (test_diagnosis.DiagnosisContracts.test_all_arms_have_identical_initial_agents_and_topology) ... ok
+test_audit_exposes_existing_float_boundary_without_calibrating_it (test_diagnosis.DiagnosisContracts.test_audit_exposes_existing_float_boundary_without_calibrating_it) ... ok
+test_economic_ablation_retains_personal_experience (test_diagnosis.DiagnosisContracts.test_economic_ablation_retains_personal_experience) ... ok
+test_explanations_survive_resume_and_repeat (test_diagnosis.DiagnosisContracts.test_explanations_survive_resume_and_repeat) ... ok
+test_instrumentation_matches_archived_behavior_when_available (test_diagnosis.DiagnosisContracts.test_instrumentation_matches_archived_behavior_when_available) ... ok
+test_no_shock_is_not_silently_treated_as_a_shock (test_diagnosis.DiagnosisContracts.test_no_shock_is_not_silently_treated_as_a_shock) ... ok
+test_peer_ablation_has_positive_control (test_diagnosis.DiagnosisContracts.test_peer_ablation_has_positive_control) ... ok
+test_profile_not_modified_by_setup_or_execution (test_diagnosis.DiagnosisContracts.test_profile_not_modified_by_setup_or_execution) ... ok
+test_transition_explanation_is_contemporaneous_and_balanced (test_diagnosis.DiagnosisContracts.test_transition_explanation_is_contemporaneous_and_balanced) ... ok
+test_trust_ablation_disables_only_erosion_and_keeps_messages (test_diagnosis.DiagnosisContracts.test_trust_ablation_disables_only_erosion_and_keeps_messages) ... ok
+test_attention_and_action_limits (test_engine.EngineTests.test_attention_and_action_limits) ... ok
+test_authority_scope_and_idempotency (test_engine.EngineTests.test_authority_scope_and_idempotency) ... ok
+test_daily_accounting (test_engine.EngineTests.test_daily_accounting) ... ok
+test_delayed_message_and_provenance (test_engine.EngineTests.test_delayed_message_and_provenance) ... ok
+test_delivery_does_not_mean_reading (test_engine.EngineTests.test_delivery_does_not_mean_reading) ... ok
+test_identity_and_traits_survive_support_change (test_engine.EngineTests.test_identity_and_traits_survive_support_change) ... ok
+test_invalid_output_is_rejected (test_engine.EngineTests.test_invalid_output_is_rejected) ... ok
+test_no_path_and_unlearned_relay_rejected (test_engine.EngineTests.test_no_path_and_unlearned_relay_rejected) ... ok
+test_observation_excludes_world_and_is_detached (test_engine.EngineTests.test_observation_excludes_world_and_is_detached) ... ok
+test_observer_traits_unchanged (test_engine.EngineTests.test_observer_traits_unchanged) ... ok
+test_permissions_not_supplied_by_proposal (test_engine.EngineTests.test_permissions_not_supplied_by_proposal) ... ok
+test_population_and_seed (test_engine.EngineTests.test_population_and_seed) ... ok
+test_protocol_and_unknown_perception (test_engine.EngineTests.test_protocol_and_unknown_perception) ... ok
+test_provider_failure_retains_event (test_engine.EngineTests.test_provider_failure_retains_event) ... ok
+test_snapshot_resume_and_branch (test_engine.EngineTests.test_snapshot_resume_and_branch) ... ok
+test_topic_isolation_and_peer_gate (test_engine.EngineTests.test_topic_isolation_and_peer_gate) ... ok
+test_experiment_repeats_and_continues_exactly (test_experiments.ExperimentContracts.test_experiment_repeats_and_continues_exactly) ... ok
+test_future_interventions_survive_midexperiment_reload (test_experiments.ExperimentContracts.test_future_interventions_survive_midexperiment_reload) ... ok
+test_primary_arms_share_initial_world_and_economic_losses (test_experiments.ExperimentContracts.test_primary_arms_share_initial_world_and_economic_losses) ... ok
+test_scope_is_delivery_restriction_not_topology_change (test_experiments.ExperimentContracts.test_scope_is_delivery_restriction_not_topology_change) ... ok
+test_alignment_does_not_rewrite_identity_or_other_state (test_hardening.HardeningTests.test_alignment_does_not_rewrite_identity_or_other_state) ... ok
+test_boundary_daily_precedes_prequeued_decision (test_hardening.HardeningTests.test_boundary_daily_precedes_prequeued_decision) ... ok
+test_config_rejects_invalid_types (test_hardening.HardeningTests.test_config_rejects_invalid_types) ... ok
+test_configurable_topic_threshold (test_hardening.HardeningTests.test_configurable_topic_threshold) ... ok
+test_delivered_read_and_memory_times_are_separate (test_hardening.HardeningTests.test_delivered_read_and_memory_times_are_separate) ... ok
+test_duplicate_daily_does_not_repeat_economy (test_hardening.HardeningTests.test_duplicate_daily_does_not_repeat_economy) ... ok
+test_failed_provider_resume (test_hardening.HardeningTests.test_failed_provider_resume) ... ok
+test_historical_source_metadata_not_live_private_state (test_hardening.HardeningTests.test_historical_source_metadata_not_live_private_state) ... ok
+test_inbox_exhaustion_and_next_day_refill (test_hardening.HardeningTests.test_inbox_exhaustion_and_next_day_refill) ... ok
+test_initial_daily_does_not_refill_spent_budget (test_hardening.HardeningTests.test_initial_daily_does_not_refill_spent_budget) ... ok
+test_insufficient_resources_no_partial_pressure (test_hardening.HardeningTests.test_insufficient_resources_no_partial_pressure) ... ok
+test_legacy_snapshot_migration_without_rng_draws (test_hardening.HardeningTests.test_legacy_snapshot_migration_without_rng_draws) ... ok
+test_malformed_actions_no_mutation_and_snapshot_safe (test_hardening.HardeningTests.test_malformed_actions_no_mutation_and_snapshot_safe) ... ok
+test_pause_reload_at_multiple_boundaries (test_hardening.HardeningTests.test_pause_reload_at_multiple_boundaries) ... ok
+test_profile_frozen_in_snapshot (test_hardening.HardeningTests.test_profile_frozen_in_snapshot) ... ok
+test_profiles_population_and_personal_bounds (test_hardening.HardeningTests.test_profiles_population_and_personal_bounds) ... ok
+test_provider_ignores_nonmessage_experiences (test_hardening.HardeningTests.test_provider_ignores_nonmessage_experiences) ... ok
+test_rejected_events_do_not_enter_queue (test_hardening.HardeningTests.test_rejected_events_do_not_enter_queue) ... ok
+test_same_time_fifo_and_causal_ids (test_hardening.HardeningTests.test_same_time_fifo_and_causal_ids) ... ok
+test_seed_reproduces_complete_run (test_hardening.HardeningTests.test_seed_reproduces_complete_run) ... ok
+
+======================================================================
+ERROR: test_same_world_losses_and_reach_across_versions (test_appraisal_trial.SmallPairedTrial.test_same_world_losses_and_reach_across_versions)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/user/people1000/tests/test_appraisal_trial.py", line 13, in test_same_world_losses_and_reach_across_versions
+    self.assertEqual(old.behavior_profile['version'],'2.0.0')
+                     ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+KeyError: 'version'
+
+----------------------------------------------------------------------
+Ran 84 tests in 8.529s
+
+FAILED (errors=1)

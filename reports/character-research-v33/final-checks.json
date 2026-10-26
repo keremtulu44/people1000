@@ -1,0 +1,18 @@
+{
+  "main_runs": 808,
+  "supplementary_execution_runs": 24,
+  "supplementary_untreated_controls": 4,
+  "test_total": 150,
+  "test_passed": 149,
+  "test_skipped": 1,
+  "compileall": "passed",
+  "model_source_hashes_match_protocol": true,
+  "only_research_fixture_changed_during_study": [
+    "society/character_research_v33.py"
+  ],
+  "archive_sha256": "8ba7a6a7451c82f0a876c6fa9cb0e6603416d1bf5846170aec9d0323a769e6e9",
+  "manifest_files": 60,
+  "real_paid_api_requests": 0,
+  "replay_checks": "four exact v3.3 continuations and one frozen v3.1 full snapshot match",
+  "archived_source_test_suite": "150 tests: 149 passed, one historical-artifact skip"
+}

@@ -1,0 +1,26 @@
+{
+  "completed_runs": 508,
+  "primary_v31_runs": 440,
+  "raw_files_verified": 1091,
+  "raw_bytes": 261618025,
+  "actual_agent_day_rows": 1920000,
+  "world_pair_cohorts": 18,
+  "initial_common_worlds_equal": true,
+  "model_sources_unchanged": true,
+  "total_transitions": 1052,
+  "transitions_with_structured_appraisal": 176,
+  "transitions_without_structured_appraisal": 876,
+  "transition_accessibility_errors": 0,
+  "solo_expression_errors": 0,
+  "unclosed_gatherings": 0,
+  "v31_core_changes": 0,
+  "v31_public_header_mismatches": [],
+  "archived_provider_observations_checked": 10267,
+  "headcount_leak_observations": 0,
+  "imposed_rejections_by_case": {
+    "contract-wrong": {
+      "revoke_contract": 8
+    }
+  },
+  "scope": "Accessible evidence IDs checked for every run at execution; public metadata reconstructed from real day-0 snapshots and chronological logs. Provider views checked only where full seed-0 snapshots exist."
+}

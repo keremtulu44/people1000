@@ -1,0 +1,218 @@
+{
+  "sudden60 minus ramp60: losses": {
+    "n": 8,
+    "mean_difference": 2280.0000000000027,
+    "min": 2280.0000000000027,
+    "max": 2280.0000000000027,
+    "bootstrap95": [
+      2280.0000000000027,
+      2280.0000000000027
+    ],
+    "per_seed": [
+      2280.0000000000027,
+      2280.0000000000027,
+      2280.0000000000027,
+      2280.0000000000027,
+      2280.0000000000027,
+      2280.0000000000027,
+      2280.0000000000027,
+      2280.0000000000027
+    ]
+  },
+  "ramp60 minus late_equal_cost60: losses": {
+    "n": 8,
+    "mean_difference": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "bootstrap95": [
+      0.0,
+      0.0
+    ],
+    "per_seed": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "i80-A-positive minus i80-unknown-positive: ever_changed": {
+    "n": 8,
+    "mean_difference": 5.875,
+    "min": 1.0,
+    "max": 12.0,
+    "bootstrap95": [
+      3.875,
+      8.125
+    ],
+    "per_seed": [
+      12.0,
+      1.0,
+      7.000000000000001,
+      4.0,
+      6.0,
+      4.0,
+      8.0,
+      5.0
+    ]
+  },
+  "i80-A-positive minus i80-A-known: ever_changed": {
+    "n": 8,
+    "mean_difference": 5.875,
+    "min": 1.0,
+    "max": 12.0,
+    "bootstrap95": [
+      3.875,
+      8.125
+    ],
+    "per_seed": [
+      12.0,
+      1.0,
+      7.000000000000001,
+      4.0,
+      6.0,
+      4.0,
+      8.0,
+      5.0
+    ]
+  },
+  "crowd-none minus crowd-messages-only: expressed": {
+    "n": 8,
+    "mean_difference": 5.25,
+    "min": 3.0,
+    "max": 10.0,
+    "bootstrap95": [
+      4.0,
+      6.875
+    ],
+    "per_seed": [
+      6.0,
+      6.0,
+      4.0,
+      4.0,
+      3.0,
+      3.0,
+      10.0,
+      6.0
+    ]
+  },
+  "crowd-none minus crowd-no-shock: attended": {
+    "n": 8,
+    "mean_difference": 1.25,
+    "min": 0.0,
+    "max": 4.000000000000001,
+    "bootstrap95": [
+      0.5,
+      2.1250000000000004
+    ],
+    "per_seed": [
+      0.0,
+      1.9999999999999998,
+      1.0000000000000002,
+      1.0000000000000002,
+      0.0,
+      0.9999999999999999,
+      4.000000000000001,
+      0.9999999999999996
+    ]
+  },
+  "severe80: v3.1 minus v2 change_pp": {
+    "n": 4,
+    "mean_difference": -66.25,
+    "min": -68.0,
+    "max": -64.0,
+    "bootstrap95": [
+      -68.0,
+      -64.5
+    ],
+    "per_seed": [
+      -64.0,
+      -65.0,
+      -68.0,
+      -68.0
+    ]
+  },
+  "severe80: v3.1 minus v3.0 change_pp": {
+    "n": 4,
+    "mean_difference": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "bootstrap95": [
+      0.0,
+      0.0
+    ],
+    "per_seed": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "i80-A-positive: v3.1 minus v2 change_pp": {
+    "n": 4,
+    "mean_difference": -60.25,
+    "min": -64.0,
+    "max": -52.0,
+    "bootstrap95": [
+      -64.0,
+      -55.0
+    ],
+    "per_seed": [
+      -52.0,
+      -64.0,
+      -61.00000000000001,
+      -64.0
+    ]
+  },
+  "i80-A-positive: v3.1 minus v3.0 change_pp": {
+    "n": 4,
+    "mean_difference": -1.0,
+    "min": -4.0,
+    "max": 0.0,
+    "bootstrap95": [
+      -3.0,
+      0.0
+    ],
+    "per_seed": [
+      0.0,
+      -4.0,
+      0.0,
+      0.0
+    ]
+  },
+  "ramp60: v3.1 minus v2 change_pp": {
+    "n": 4,
+    "mean_difference": -0.25,
+    "min": -1.0,
+    "max": 0.0,
+    "bootstrap95": [
+      -0.75,
+      0.0
+    ],
+    "per_seed": [
+      -1.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "ramp60: v3.1 minus v3.0 change_pp": {
+    "n": 4,
+    "mean_difference": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "bootstrap95": [
+      0.0,
+      0.0
+    ],
+    "per_seed": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  }
+}

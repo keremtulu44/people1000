@@ -1,0 +1,506 @@
+[
+  {
+    "id": "agenda--agenda-notice-n100-s0-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s0-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-notice-n100-s1-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s1-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-notice-n100-s3-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s3-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-notice-n100-s2-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s2-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-claim-aligned-n100-s1-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s1-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-claim-aligned-n100-s0-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s0-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-claim-aligned-n100-s2-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s2-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-claim-aligned-n100-s3-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s3-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-claim-opposed-n100-s0-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s0-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-claim-opposed-n100-s1-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s1-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-claim-opposed-n100-s2-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s2-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-claim-opposed-n100-s3-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s3-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-claim-peer-n100-s0-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s0-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-claim-peer-n100-s1-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s1-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-claim-peer-n100-s2-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s2-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-claim-peer-n100-s3-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s3-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-claim-manager-only-n100-s0-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s0-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-claim-manager-only-n100-s1-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s1-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-claim-manager-only-n100-s2-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s2-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-claim-manager-only-n100-s3-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s3-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-evidence-direct-n100-s0-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s0-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-evidence-direct-n100-s1-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s1-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-evidence-direct-n100-s2-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s2-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-evidence-direct-n100-s3-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s3-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-evidence-transmitted-n100-s0-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s0-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-evidence-transmitted-n100-s1-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s1-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-evidence-transmitted-n100-s2-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s2-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-evidence-transmitted-n100-s3-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s3-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-evidence-unread-n100-s0-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s0-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-evidence-unread-n100-s1-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s1-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-evidence-unread-n100-s2-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s2-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-evidence-unread-n100-s3-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s3-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-false-assertion-n100-s0-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s0-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-false-assertion-n100-s1-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s1-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-false-assertion-n100-s2-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s2-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-false-assertion-n100-s3-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s3-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-contradiction-n100-s0-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s0-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-contradiction-n100-s1-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s1-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-contradiction-n100-s3-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s3-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-contradiction-n100-s2-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s2-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-repeat-claims-n100-s0-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s0-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-repeat-claims-n100-s1-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s1-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-repeat-claims-n100-s2-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s2-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-repeat-claims-n100-s3-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s3-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-repeat-notice-n100-s0-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s0-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-repeat-notice-n100-s1-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s1-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-repeat-notice-n100-s2-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s2-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-repeat-notice-n100-s3-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s3-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-procedure-proof-only-n100-s0-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s0-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-procedure-proof-only-n100-s1-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s1-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-procedure-proof-only-n100-s2-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s2-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-procedure-proof-only-n100-s3-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s3-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-qualification-only-n100-s0-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s0-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-qualification-only-n100-s1-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s1-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-qualification-only-n100-s2-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s2-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-qualification-only-n100-s3-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s3-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-no-notice-n100-s0-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s0-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-no-notice-n100-s1-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s1-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-no-notice-n100-s2-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s2-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-no-notice-n100-s3-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s3-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-low-channel-trust-n100-s0-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s0-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-low-channel-trust-n100-s1-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s1-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-low-channel-trust-n100-s2-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s2-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-low-channel-trust-n100-s3-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s3-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-high-channel-trust-n100-s0-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s0-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-high-channel-trust-n100-s1-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s1-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-high-channel-trust-n100-s2-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s2-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-high-channel-trust-n100-s3-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s3-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-sparse-contact-n100-s0-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s0-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-sparse-contact-n100-s1-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s1-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-sparse-contact-n100-s2-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s2-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-sparse-contact-n100-s3-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s3-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-early-document-n100-s0-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s0-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-early-document-n100-s1-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s1-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-early-document-n100-s2-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s2-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-early-document-n100-s3-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s3-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-late-document-n100-s0-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s0-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-late-document-n100-s1-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s1-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-late-document-n100-s2-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s2-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda--agenda-late-document-n100-s3-v3.3-d30",
+    "control": "agenda--agenda-no-notice-n100-s3-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "untreated Wait"
+  },
+  {
+    "id": "agenda-scale--agenda-notice-n1000-s0-v3.3-d30",
+    "control": "agenda-scale--agenda-notice-n1000-s0-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "notice vs received-document Wait"
+  },
+  {
+    "id": "agenda-scale--agenda-notice-n1000-s1-v3.3-d30",
+    "control": "agenda-scale--agenda-notice-n1000-s1-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "notice vs received-document Wait"
+  },
+  {
+    "id": "agenda-scale--agenda-evidence-direct-n1000-s0-v3.3-d30",
+    "control": "agenda-scale--agenda-notice-n1000-s0-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "notice vs received-document Wait"
+  },
+  {
+    "id": "agenda-scale--agenda-evidence-direct-n1000-s1-v3.3-d30",
+    "control": "agenda-scale--agenda-notice-n1000-s1-v3.3-d30",
+    "deep_changed_agents": [],
+    "comparison": "notice vs received-document Wait"
+  }
+]

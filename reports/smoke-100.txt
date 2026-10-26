@@ -1,0 +1,33 @@
+{
+  "time": 4320,
+  "population": 100,
+  "reach": {
+    "M00000206": [
+      "A0014",
+      "A0035",
+      "A0056"
+    ]
+  },
+  "delivery_latency_minutes": {
+    "M00000206": [
+      220,
+      61,
+      320
+    ]
+  },
+  "mean_support_gap": 0.0,
+  "alignment_changes": 0,
+  "losses_by_group": {
+    "power_aligned": 143.99999999999997,
+    "opposition": 143.99999999999997,
+    "authority": 71.99999999999997,
+    "wealthy": 57.59999999999997,
+    "discontented": 47.99999999999998,
+    "observer": 14.399999999999997
+  },
+  "perception_error": 23.578655035308014,
+  "perception_sample_count": 2,
+  "rejected_actions": 0,
+  "provider_calls": 3
+}
+Kayıt: runs/hardened-100.json

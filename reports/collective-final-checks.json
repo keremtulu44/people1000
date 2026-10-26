@@ -1,0 +1,19 @@
+{
+  "model": "3.1.0",
+  "tests": 99,
+  "status": "OK",
+  "pilot_runs": 10,
+  "compileall": "passed",
+  "diff_check": "passed",
+  "cli_demo_resume": "passed",
+  "test_output": "reports/collective-tests.txt",
+  "legacy_check": "reports/collective-legacy-check.txt",
+  "sources": {
+    "society/engine.py": "1c9b7e65017072fbbdad0abd023ac1e22e687d7e255e39f7e4f3ea9fe25759cb",
+    "society/dynamics.py": "ffd9f77eeee3fab4904d48c29e395747e0a887e0ee7fcd2438a9f37a629e8bc7",
+    "society/collective.py": "2000525f4f58c83993703de5b7d2742639a392b9ffe8f7b9d0cb1e398862ebe5",
+    "society/behavior.json": "898103740ec353c41b29cf23e0e2f3ad3c7e7017e1afbe007725b0940c06d56c",
+    "society/behavior-v3.json": "b5e3a6473f32551db7e40c495d31d10730af33549ef4fe764cdb4be38f4b4c19",
+    "society/behavior-v2.json": "f7eb05d9bef5c69524d9262838cfb5a42c9f6d91e2486fb0887348afd362b376"
+  }
+}

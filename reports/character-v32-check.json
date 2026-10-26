@@ -1,0 +1,1097 @@
+{
+  "schema_version": 1,
+  "description": "Mechanism probes; no target rates or real-world validation.",
+  "schedule": "Both endpoints day 90: sudden +30% at day 90 vs 90 equal level increments days 1..90. Receipts start day 0; run through day 91. Different cumulative exposure is intentional, not controlled away.",
+  "local_nonprice_scope": "Only one directly notified discontented individual per run. No political attribution or monetary loss is invented.",
+  "legacy_replay": {
+    "archive_sha256": "4be915d374fedf1c789d38b1992d60b6eb7e3099374ae562113d88aa1205ebe6",
+    "profile_bytes_identical": true,
+    "frozen_snapshot_sha256": "a20edb9bb01e81e4341374031d54d6f6eb1c9026c0f05c5dc9c274186bfc9c2b",
+    "current_v31_snapshot_sha256": "a20edb9bb01e81e4341374031d54d6f6eb1c9026c0f05c5dc9c274186bfc9c2b",
+    "exact_snapshot_match": true,
+    "scope": "100 agents, seed 44, 10 days, price shock + locally delivered forecast, baseline provider"
+  },
+  "runs": [
+    {
+      "seed": 0,
+      "model": "v3.1",
+      "case": "price_sudden",
+      "population": 100,
+      "days_with_receipts": 92,
+      "losses": 120.0000000000002,
+      "alignment_changes": 0,
+      "core_changes": 0,
+      "support_withdrawals": 0,
+      "gatherings_created": 0,
+      "attendances": 0,
+      "institutional_contests": 0,
+      "self_study_actions": 0,
+      "rejected_actions": 0,
+      "decision_reasons": {},
+      "target_temporal": {},
+      "total_institutional_position": 15.0,
+      "observer_development": [
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "seed": 0,
+      "model": "v3.1",
+      "case": "price_gradual",
+      "population": 100,
+      "days_with_receipts": 92,
+      "losses": 5460.000000000008,
+      "alignment_changes": 0,
+      "core_changes": 0,
+      "support_withdrawals": 0,
+      "gatherings_created": 0,
+      "attendances": 0,
+      "institutional_contests": 0,
+      "self_study_actions": 0,
+      "rejected_actions": 0,
+      "decision_reasons": {},
+      "target_temporal": {},
+      "total_institutional_position": 15.0,
+      "observer_development": [
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "seed": 0,
+      "model": "v3.2",
+      "case": "price_sudden",
+      "population": 100,
+      "days_with_receipts": 92,
+      "losses": 120.0000000000002,
+      "alignment_changes": 0,
+      "core_changes": 0,
+      "support_withdrawals": 0,
+      "gatherings_created": 0,
+      "attendances": 0,
+      "institutional_contests": 151,
+      "self_study_actions": 276,
+      "rejected_actions": 0,
+      "decision_reasons": {
+        "pursue_local_institutional_aspiration": 68,
+        "defend_observed_institutional_position": 83,
+        "no_current_personal_distress": 910,
+        "self_development": 276,
+        "no_affordable_material_rivalry": 1383,
+        "seek_local_support": 10,
+        "no_known_gathering": 6,
+        "risk_exceeds_local_readiness": 1
+      },
+      "target_temporal": {
+        "living_cost": {
+          "expected": 0.021428571428571432,
+          "fatigue": 0.003333333333333334,
+          "level": 0.30000000000000004,
+          "updated_day": 91,
+          "surprise": 0.30000000000000004,
+          "reaction": 0.3033333333333334
+        },
+        "income_security": {
+          "expected": 0.0,
+          "fatigue": 0.0,
+          "level": 0.0,
+          "updated_day": 91,
+          "surprise": 0.0,
+          "reaction": 0.0
+        }
+      },
+      "total_institutional_position": 15.0,
+      "observer_development": [
+        0.8658833495997563,
+        0.8929093389806984,
+        0.9287205125210442
+      ]
+    },
+    {
+      "seed": 0,
+      "model": "v3.2",
+      "case": "price_gradual",
+      "population": 100,
+      "days_with_receipts": 92,
+      "losses": 5460.000000000008,
+      "alignment_changes": 0,
+      "core_changes": 0,
+      "support_withdrawals": 0,
+      "gatherings_created": 0,
+      "attendances": 0,
+      "institutional_contests": 151,
+      "self_study_actions": 276,
+      "rejected_actions": 0,
+      "decision_reasons": {
+        "pursue_local_institutional_aspiration": 68,
+        "defend_observed_institutional_position": 83,
+        "no_current_personal_distress": 20,
+        "self_development": 276,
+        "no_affordable_material_rivalry": 1650,
+        "seek_local_support": 900,
+        "no_known_gathering": 540,
+        "risk_exceeds_local_readiness": 90
+      },
+      "target_temporal": {
+        "living_cost": {
+          "expected": 0.2567216461423915,
+          "fatigue": 0.11186175833231862,
+          "level": 0.3000000000000014,
+          "updated_day": 91,
+          "surprise": 0.04660745800050292,
+          "reaction": 0.15846921633282154
+        },
+        "income_security": {
+          "expected": 0.0,
+          "fatigue": 0.0,
+          "level": 0.0,
+          "updated_day": 91,
+          "surprise": 0.0,
+          "reaction": 0.0
+        }
+      },
+      "total_institutional_position": 15.0,
+      "observer_development": [
+        0.8658833495997563,
+        0.8929093389806984,
+        0.9287205125210442
+      ]
+    },
+    {
+      "seed": 0,
+      "model": "v3.2",
+      "case": "nonprice_sudden",
+      "population": 100,
+      "days_with_receipts": 92,
+      "losses": 0.0,
+      "alignment_changes": 0,
+      "core_changes": 0,
+      "support_withdrawals": 0,
+      "gatherings_created": 0,
+      "attendances": 0,
+      "institutional_contests": 151,
+      "self_study_actions": 276,
+      "rejected_actions": 0,
+      "decision_reasons": {
+        "pursue_local_institutional_aspiration": 68,
+        "defend_observed_institutional_position": 83,
+        "no_current_personal_distress": 919,
+        "self_development": 276,
+        "no_affordable_material_rivalry": 1382,
+        "seek_local_support": 2
+      },
+      "target_temporal": {
+        "living_cost": {
+          "expected": 0.0,
+          "fatigue": 0.0,
+          "level": 0.0,
+          "updated_day": 91,
+          "surprise": 0.0,
+          "reaction": 0.0
+        },
+        "income_security": {
+          "expected": 0.0,
+          "fatigue": 0.0,
+          "level": 0.0,
+          "updated_day": 91,
+          "surprise": 0.0,
+          "reaction": 0.0
+        },
+        "supply_access": {
+          "expected": 0.02142857142857143,
+          "fatigue": 0.003333333333333333,
+          "level": 0.3,
+          "updated_day": 91,
+          "surprise": 0.3,
+          "reaction": 0.30333333333333334
+        }
+      },
+      "total_institutional_position": 15.0,
+      "observer_development": [
+        0.8658833495997563,
+        0.8929093389806984,
+        0.9287205125210442
+      ]
+    },
+    {
+      "seed": 0,
+      "model": "v3.2",
+      "case": "nonprice_gradual",
+      "population": 100,
+      "days_with_receipts": 92,
+      "losses": 0.0,
+      "alignment_changes": 0,
+      "core_changes": 0,
+      "support_withdrawals": 0,
+      "gatherings_created": 0,
+      "attendances": 0,
+      "institutional_contests": 151,
+      "self_study_actions": 276,
+      "rejected_actions": 0,
+      "decision_reasons": {
+        "pursue_local_institutional_aspiration": 68,
+        "defend_observed_institutional_position": 83,
+        "no_current_personal_distress": 830,
+        "self_development": 276,
+        "no_affordable_material_rivalry": 1471,
+        "seek_local_support": 91,
+        "no_read_local_support": 89
+      },
+      "target_temporal": {
+        "living_cost": {
+          "expected": 0.0,
+          "fatigue": 0.0,
+          "level": 0.0,
+          "updated_day": 91,
+          "surprise": 0.0,
+          "reaction": 0.0
+        },
+        "income_security": {
+          "expected": 0.0,
+          "fatigue": 0.0,
+          "level": 0.0,
+          "updated_day": 91,
+          "surprise": 0.0,
+          "reaction": 0.0
+        },
+        "supply_access": {
+          "expected": 0.2567216461423907,
+          "fatigue": 0.11186175833231846,
+          "level": 0.3,
+          "updated_day": 91,
+          "surprise": 0.04660745800050231,
+          "reaction": 0.15846921633282077
+        }
+      },
+      "total_institutional_position": 15.0,
+      "observer_development": [
+        0.8658833495997563,
+        0.8929093389806984,
+        0.9287205125210442
+      ]
+    },
+    {
+      "seed": 44,
+      "model": "v3.1",
+      "case": "price_sudden",
+      "population": 100,
+      "days_with_receipts": 92,
+      "losses": 120.0000000000002,
+      "alignment_changes": 0,
+      "core_changes": 0,
+      "support_withdrawals": 0,
+      "gatherings_created": 0,
+      "attendances": 0,
+      "institutional_contests": 0,
+      "self_study_actions": 0,
+      "rejected_actions": 0,
+      "decision_reasons": {},
+      "target_temporal": {},
+      "total_institutional_position": 15.0,
+      "observer_development": [
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "seed": 44,
+      "model": "v3.1",
+      "case": "price_gradual",
+      "population": 100,
+      "days_with_receipts": 92,
+      "losses": 5460.000000000008,
+      "alignment_changes": 0,
+      "core_changes": 0,
+      "support_withdrawals": 0,
+      "gatherings_created": 0,
+      "attendances": 0,
+      "institutional_contests": 0,
+      "self_study_actions": 0,
+      "rejected_actions": 0,
+      "decision_reasons": {},
+      "target_temporal": {},
+      "total_institutional_position": 15.0,
+      "observer_development": [
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "seed": 44,
+      "model": "v3.2",
+      "case": "price_sudden",
+      "population": 100,
+      "days_with_receipts": 92,
+      "losses": 120.0000000000002,
+      "alignment_changes": 0,
+      "core_changes": 0,
+      "support_withdrawals": 0,
+      "gatherings_created": 0,
+      "attendances": 0,
+      "institutional_contests": 172,
+      "self_study_actions": 276,
+      "rejected_actions": 0,
+      "decision_reasons": {
+        "pursue_local_institutional_aspiration": 75,
+        "no_affordable_local_opportunity": 92,
+        "defend_observed_institutional_position": 97,
+        "no_current_personal_distress": 910,
+        "self_development": 276,
+        "no_affordable_material_rivalry": 1289,
+        "seek_local_support": 10,
+        "no_known_gathering": 9
+      },
+      "target_temporal": {
+        "living_cost": {
+          "expected": 0.021428571428571432,
+          "fatigue": 0.003333333333333334,
+          "level": 0.30000000000000004,
+          "updated_day": 91,
+          "surprise": 0.30000000000000004,
+          "reaction": 0.3033333333333334
+        },
+        "income_security": {
+          "expected": 0.0,
+          "fatigue": 0.0,
+          "level": 0.0,
+          "updated_day": 91,
+          "surprise": 0.0,
+          "reaction": 0.0
+        }
+      },
+      "total_institutional_position": 15.0,
+      "observer_development": [
+        0.9517995748939304,
+        0.9947068344451968,
+        0.9242686796424211
+      ]
+    },
+    {
+      "seed": 44,
+      "model": "v3.2",
+      "case": "price_gradual",
+      "population": 100,
+      "days_with_receipts": 92,
+      "losses": 5460.000000000008,
+      "alignment_changes": 0,
+      "core_changes": 0,
+      "support_withdrawals": 0,
+      "gatherings_created": 0,
+      "attendances": 0,
+      "institutional_contests": 172,
+      "self_study_actions": 276,
+      "rejected_actions": 0,
+      "decision_reasons": {
+        "pursue_local_institutional_aspiration": 75,
+        "no_affordable_local_opportunity": 92,
+        "defend_observed_institutional_position": 97,
+        "no_current_personal_distress": 20,
+        "self_development": 276,
+        "no_affordable_material_rivalry": 1378,
+        "seek_local_support": 900,
+        "no_known_gathering": 810
+      },
+      "target_temporal": {
+        "living_cost": {
+          "expected": 0.2567216461423915,
+          "fatigue": 0.11186175833231862,
+          "level": 0.3000000000000014,
+          "updated_day": 91,
+          "surprise": 0.04660745800050292,
+          "reaction": 0.15846921633282154
+        },
+        "income_security": {
+          "expected": 0.0,
+          "fatigue": 0.0,
+          "level": 0.0,
+          "updated_day": 91,
+          "surprise": 0.0,
+          "reaction": 0.0
+        }
+      },
+      "total_institutional_position": 15.0,
+      "observer_development": [
+        0.9517995748939304,
+        0.9947068344451968,
+        0.9242686796424211
+      ]
+    },
+    {
+      "seed": 44,
+      "model": "v3.2",
+      "case": "nonprice_sudden",
+      "population": 100,
+      "days_with_receipts": 92,
+      "losses": 0.0,
+      "alignment_changes": 0,
+      "core_changes": 0,
+      "support_withdrawals": 0,
+      "gatherings_created": 0,
+      "attendances": 0,
+      "institutional_contests": 172,
+      "self_study_actions": 276,
+      "rejected_actions": 0,
+      "decision_reasons": {
+        "pursue_local_institutional_aspiration": 75,
+        "no_affordable_local_opportunity": 92,
+        "defend_observed_institutional_position": 97,
+        "no_current_personal_distress": 921,
+        "self_development": 276,
+        "no_affordable_material_rivalry": 1288,
+        "seek_local_support": 2
+      },
+      "target_temporal": {
+        "living_cost": {
+          "expected": 0.0,
+          "fatigue": 0.0,
+          "level": 0.0,
+          "updated_day": 91,
+          "surprise": 0.0,
+          "reaction": 0.0
+        },
+        "income_security": {
+          "expected": 0.0,
+          "fatigue": 0.0,
+          "level": 0.0,
+          "updated_day": 91,
+          "surprise": 0.0,
+          "reaction": 0.0
+        },
+        "supply_access": {
+          "expected": 0.02142857142857143,
+          "fatigue": 0.003333333333333333,
+          "level": 0.3,
+          "updated_day": 91,
+          "surprise": 0.3,
+          "reaction": 0.30333333333333334
+        }
+      },
+      "total_institutional_position": 15.0,
+      "observer_development": [
+        0.9517995748939304,
+        0.9947068344451968,
+        0.9242686796424211
+      ]
+    },
+    {
+      "seed": 44,
+      "model": "v3.2",
+      "case": "nonprice_gradual",
+      "population": 100,
+      "days_with_receipts": 92,
+      "losses": 0.0,
+      "alignment_changes": 0,
+      "core_changes": 0,
+      "support_withdrawals": 0,
+      "gatherings_created": 0,
+      "attendances": 0,
+      "institutional_contests": 172,
+      "self_study_actions": 276,
+      "rejected_actions": 0,
+      "decision_reasons": {
+        "pursue_local_institutional_aspiration": 75,
+        "no_affordable_local_opportunity": 92,
+        "defend_observed_institutional_position": 97,
+        "no_current_personal_distress": 921,
+        "self_development": 276,
+        "no_affordable_material_rivalry": 1288,
+        "seek_local_support": 91,
+        "no_read_local_support": 89
+      },
+      "target_temporal": {
+        "living_cost": {
+          "expected": 0.0,
+          "fatigue": 0.0,
+          "level": 0.0,
+          "updated_day": 91,
+          "surprise": 0.0,
+          "reaction": 0.0
+        },
+        "income_security": {
+          "expected": 0.0,
+          "fatigue": 0.0,
+          "level": 0.0,
+          "updated_day": 91,
+          "surprise": 0.0,
+          "reaction": 0.0
+        },
+        "supply_access": {
+          "expected": 0.2567216461423907,
+          "fatigue": 0.11186175833231846,
+          "level": 0.3,
+          "updated_day": 91,
+          "surprise": 0.04660745800050231,
+          "reaction": 0.15846921633282077
+        }
+      },
+      "total_institutional_position": 15.0,
+      "observer_development": [
+        0.9517995748939304,
+        0.9947068344451968,
+        0.9242686796424211
+      ]
+    },
+    {
+      "seed": 101,
+      "model": "v3.1",
+      "case": "price_sudden",
+      "population": 100,
+      "days_with_receipts": 92,
+      "losses": 120.0000000000002,
+      "alignment_changes": 0,
+      "core_changes": 0,
+      "support_withdrawals": 0,
+      "gatherings_created": 0,
+      "attendances": 0,
+      "institutional_contests": 0,
+      "self_study_actions": 0,
+      "rejected_actions": 0,
+      "decision_reasons": {},
+      "target_temporal": {},
+      "total_institutional_position": 15.0,
+      "observer_development": [
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "seed": 101,
+      "model": "v3.1",
+      "case": "price_gradual",
+      "population": 100,
+      "days_with_receipts": 92,
+      "losses": 5460.000000000008,
+      "alignment_changes": 0,
+      "core_changes": 0,
+      "support_withdrawals": 0,
+      "gatherings_created": 0,
+      "attendances": 0,
+      "institutional_contests": 0,
+      "self_study_actions": 0,
+      "rejected_actions": 0,
+      "decision_reasons": {},
+      "target_temporal": {},
+      "total_institutional_position": 15.0,
+      "observer_development": [
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "seed": 101,
+      "model": "v3.2",
+      "case": "price_sudden",
+      "population": 100,
+      "days_with_receipts": 92,
+      "losses": 120.0000000000002,
+      "alignment_changes": 0,
+      "core_changes": 0,
+      "support_withdrawals": 0,
+      "gatherings_created": 0,
+      "attendances": 0,
+      "institutional_contests": 175,
+      "self_study_actions": 276,
+      "rejected_actions": 0,
+      "decision_reasons": {
+        "pursue_local_institutional_aspiration": 93,
+        "defend_observed_institutional_position": 82,
+        "no_current_personal_distress": 910,
+        "self_development": 276,
+        "no_affordable_material_rivalry": 1381,
+        "seek_local_support": 10,
+        "risk_exceeds_local_readiness": 1,
+        "no_known_gathering": 8
+      },
+      "target_temporal": {
+        "living_cost": {
+          "expected": 0.021428571428571432,
+          "fatigue": 0.003333333333333334,
+          "level": 0.30000000000000004,
+          "updated_day": 91,
+          "surprise": 0.30000000000000004,
+          "reaction": 0.3033333333333334
+        },
+        "income_security": {
+          "expected": 0.0,
+          "fatigue": 0.0,
+          "level": 0.0,
+          "updated_day": 91,
+          "surprise": 0.0,
+          "reaction": 0.0
+        }
+      },
+      "total_institutional_position": 15.0,
+      "observer_development": [
+        0.9363501289048775,
+        0.9698254401056288,
+        0.9213252162598514
+      ]
+    },
+    {
+      "seed": 101,
+      "model": "v3.2",
+      "case": "price_gradual",
+      "population": 100,
+      "days_with_receipts": 92,
+      "losses": 5460.000000000008,
+      "alignment_changes": 0,
+      "core_changes": 0,
+      "support_withdrawals": 0,
+      "gatherings_created": 0,
+      "attendances": 0,
+      "institutional_contests": 175,
+      "self_study_actions": 276,
+      "rejected_actions": 0,
+      "decision_reasons": {
+        "pursue_local_institutional_aspiration": 93,
+        "defend_observed_institutional_position": 82,
+        "no_current_personal_distress": 20,
+        "self_development": 276,
+        "no_affordable_material_rivalry": 1470,
+        "seek_local_support": 900,
+        "risk_exceeds_local_readiness": 90,
+        "no_known_gathering": 720
+      },
+      "target_temporal": {
+        "living_cost": {
+          "expected": 0.2567216461423915,
+          "fatigue": 0.11186175833231862,
+          "level": 0.3000000000000014,
+          "updated_day": 91,
+          "surprise": 0.04660745800050292,
+          "reaction": 0.15846921633282154
+        },
+        "income_security": {
+          "expected": 0.0,
+          "fatigue": 0.0,
+          "level": 0.0,
+          "updated_day": 91,
+          "surprise": 0.0,
+          "reaction": 0.0
+        }
+      },
+      "total_institutional_position": 15.0,
+      "observer_development": [
+        0.9363501289048775,
+        0.9698254401056288,
+        0.9213252162598514
+      ]
+    },
+    {
+      "seed": 101,
+      "model": "v3.2",
+      "case": "nonprice_sudden",
+      "population": 100,
+      "days_with_receipts": 92,
+      "losses": 0.0,
+      "alignment_changes": 0,
+      "core_changes": 0,
+      "support_withdrawals": 0,
+      "gatherings_created": 0,
+      "attendances": 0,
+      "institutional_contests": 175,
+      "self_study_actions": 276,
+      "rejected_actions": 0,
+      "decision_reasons": {
+        "pursue_local_institutional_aspiration": 93,
+        "defend_observed_institutional_position": 82,
+        "no_current_personal_distress": 921,
+        "self_development": 276,
+        "no_affordable_material_rivalry": 1380,
+        "seek_local_support": 2
+      },
+      "target_temporal": {
+        "living_cost": {
+          "expected": 0.0,
+          "fatigue": 0.0,
+          "level": 0.0,
+          "updated_day": 91,
+          "surprise": 0.0,
+          "reaction": 0.0
+        },
+        "income_security": {
+          "expected": 0.0,
+          "fatigue": 0.0,
+          "level": 0.0,
+          "updated_day": 91,
+          "surprise": 0.0,
+          "reaction": 0.0
+        },
+        "supply_access": {
+          "expected": 0.02142857142857143,
+          "fatigue": 0.003333333333333333,
+          "level": 0.3,
+          "updated_day": 91,
+          "surprise": 0.3,
+          "reaction": 0.30333333333333334
+        }
+      },
+      "total_institutional_position": 15.0,
+      "observer_development": [
+        0.9363501289048775,
+        0.9698254401056288,
+        0.9213252162598514
+      ]
+    },
+    {
+      "seed": 101,
+      "model": "v3.2",
+      "case": "nonprice_gradual",
+      "population": 100,
+      "days_with_receipts": 92,
+      "losses": 0.0,
+      "alignment_changes": 0,
+      "core_changes": 0,
+      "support_withdrawals": 0,
+      "gatherings_created": 0,
+      "attendances": 0,
+      "institutional_contests": 175,
+      "self_study_actions": 276,
+      "rejected_actions": 0,
+      "decision_reasons": {
+        "pursue_local_institutional_aspiration": 93,
+        "defend_observed_institutional_position": 82,
+        "no_current_personal_distress": 921,
+        "self_development": 276,
+        "no_affordable_material_rivalry": 1380,
+        "seek_local_support": 91,
+        "no_read_local_support": 89
+      },
+      "target_temporal": {
+        "living_cost": {
+          "expected": 0.0,
+          "fatigue": 0.0,
+          "level": 0.0,
+          "updated_day": 91,
+          "surprise": 0.0,
+          "reaction": 0.0
+        },
+        "income_security": {
+          "expected": 0.0,
+          "fatigue": 0.0,
+          "level": 0.0,
+          "updated_day": 91,
+          "surprise": 0.0,
+          "reaction": 0.0
+        },
+        "supply_access": {
+          "expected": 0.2567216461423907,
+          "fatigue": 0.11186175833231846,
+          "level": 0.3,
+          "updated_day": 91,
+          "surprise": 0.04660745800050231,
+          "reaction": 0.15846921633282077
+        }
+      },
+      "total_institutional_position": 15.0,
+      "observer_development": [
+        0.9363501289048775,
+        0.9698254401056288,
+        0.9213252162598514
+      ]
+    },
+    {
+      "seed": 777,
+      "model": "v3.1",
+      "case": "price_sudden",
+      "population": 100,
+      "days_with_receipts": 92,
+      "losses": 120.0000000000002,
+      "alignment_changes": 0,
+      "core_changes": 0,
+      "support_withdrawals": 0,
+      "gatherings_created": 0,
+      "attendances": 0,
+      "institutional_contests": 0,
+      "self_study_actions": 0,
+      "rejected_actions": 0,
+      "decision_reasons": {},
+      "target_temporal": {},
+      "total_institutional_position": 15.0,
+      "observer_development": [
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "seed": 777,
+      "model": "v3.1",
+      "case": "price_gradual",
+      "population": 100,
+      "days_with_receipts": 92,
+      "losses": 5460.000000000008,
+      "alignment_changes": 0,
+      "core_changes": 0,
+      "support_withdrawals": 0,
+      "gatherings_created": 0,
+      "attendances": 0,
+      "institutional_contests": 0,
+      "self_study_actions": 0,
+      "rejected_actions": 0,
+      "decision_reasons": {},
+      "target_temporal": {},
+      "total_institutional_position": 15.0,
+      "observer_development": [
+        null,
+        null,
+        null
+      ]
+    },
+    {
+      "seed": 777,
+      "model": "v3.2",
+      "case": "price_sudden",
+      "population": 100,
+      "days_with_receipts": 92,
+      "losses": 120.0000000000002,
+      "alignment_changes": 0,
+      "core_changes": 0,
+      "support_withdrawals": 0,
+      "gatherings_created": 0,
+      "attendances": 0,
+      "institutional_contests": 151,
+      "self_study_actions": 276,
+      "rejected_actions": 0,
+      "decision_reasons": {
+        "pursue_local_institutional_aspiration": 81,
+        "defend_observed_institutional_position": 70,
+        "no_current_personal_distress": 910,
+        "self_development": 276,
+        "no_affordable_material_rivalry": 1381,
+        "seek_local_support": 10,
+        "no_known_gathering": 9
+      },
+      "target_temporal": {
+        "living_cost": {
+          "expected": 0.021428571428571432,
+          "fatigue": 0.003333333333333334,
+          "level": 0.30000000000000004,
+          "updated_day": 91,
+          "surprise": 0.30000000000000004,
+          "reaction": 0.3033333333333334
+        },
+        "income_security": {
+          "expected": 0.0,
+          "fatigue": 0.0,
+          "level": 0.0,
+          "updated_day": 91,
+          "surprise": 0.0,
+          "reaction": 0.0
+        }
+      },
+      "total_institutional_position": 15.0,
+      "observer_development": [
+        0.9857367846037673,
+        0.9539444317278646,
+        0.9137443403447324
+      ]
+    },
+    {
+      "seed": 777,
+      "model": "v3.2",
+      "case": "price_gradual",
+      "population": 100,
+      "days_with_receipts": 92,
+      "losses": 5460.000000000008,
+      "alignment_changes": 0,
+      "core_changes": 0,
+      "support_withdrawals": 0,
+      "gatherings_created": 0,
+      "attendances": 0,
+      "institutional_contests": 151,
+      "self_study_actions": 276,
+      "rejected_actions": 0,
+      "decision_reasons": {
+        "pursue_local_institutional_aspiration": 81,
+        "defend_observed_institutional_position": 70,
+        "no_current_personal_distress": 20,
+        "self_development": 276,
+        "no_affordable_material_rivalry": 1470,
+        "seek_local_support": 900,
+        "no_known_gathering": 810
+      },
+      "target_temporal": {
+        "living_cost": {
+          "expected": 0.2567216461423915,
+          "fatigue": 0.11186175833231862,
+          "level": 0.3000000000000014,
+          "updated_day": 91,
+          "surprise": 0.04660745800050292,
+          "reaction": 0.15846921633282154
+        },
+        "income_security": {
+          "expected": 0.0,
+          "fatigue": 0.0,
+          "level": 0.0,
+          "updated_day": 91,
+          "surprise": 0.0,
+          "reaction": 0.0
+        }
+      },
+      "total_institutional_position": 15.0,
+      "observer_development": [
+        0.9857367846037673,
+        0.9539444317278646,
+        0.9137443403447324
+      ]
+    },
+    {
+      "seed": 777,
+      "model": "v3.2",
+      "case": "nonprice_sudden",
+      "population": 100,
+      "days_with_receipts": 92,
+      "losses": 0.0,
+      "alignment_changes": 0,
+      "core_changes": 0,
+      "support_withdrawals": 0,
+      "gatherings_created": 0,
+      "attendances": 0,
+      "institutional_contests": 151,
+      "self_study_actions": 276,
+      "rejected_actions": 0,
+      "decision_reasons": {
+        "pursue_local_institutional_aspiration": 81,
+        "defend_observed_institutional_position": 70,
+        "no_current_personal_distress": 921,
+        "self_development": 276,
+        "no_affordable_material_rivalry": 1380,
+        "seek_local_support": 2
+      },
+      "target_temporal": {
+        "living_cost": {
+          "expected": 0.0,
+          "fatigue": 0.0,
+          "level": 0.0,
+          "updated_day": 91,
+          "surprise": 0.0,
+          "reaction": 0.0
+        },
+        "income_security": {
+          "expected": 0.0,
+          "fatigue": 0.0,
+          "level": 0.0,
+          "updated_day": 91,
+          "surprise": 0.0,
+          "reaction": 0.0
+        },
+        "supply_access": {
+          "expected": 0.02142857142857143,
+          "fatigue": 0.003333333333333333,
+          "level": 0.3,
+          "updated_day": 91,
+          "surprise": 0.3,
+          "reaction": 0.30333333333333334
+        }
+      },
+      "total_institutional_position": 15.0,
+      "observer_development": [
+        0.9857367846037673,
+        0.9539444317278646,
+        0.9137443403447324
+      ]
+    },
+    {
+      "seed": 777,
+      "model": "v3.2",
+      "case": "nonprice_gradual",
+      "population": 100,
+      "days_with_receipts": 92,
+      "losses": 0.0,
+      "alignment_changes": 0,
+      "core_changes": 0,
+      "support_withdrawals": 0,
+      "gatherings_created": 0,
+      "attendances": 0,
+      "institutional_contests": 151,
+      "self_study_actions": 276,
+      "rejected_actions": 0,
+      "decision_reasons": {
+        "pursue_local_institutional_aspiration": 81,
+        "defend_observed_institutional_position": 70,
+        "no_current_personal_distress": 921,
+        "self_development": 276,
+        "no_affordable_material_rivalry": 1380,
+        "seek_local_support": 91,
+        "no_read_local_support": 89
+      },
+      "target_temporal": {
+        "living_cost": {
+          "expected": 0.0,
+          "fatigue": 0.0,
+          "level": 0.0,
+          "updated_day": 91,
+          "surprise": 0.0,
+          "reaction": 0.0
+        },
+        "income_security": {
+          "expected": 0.0,
+          "fatigue": 0.0,
+          "level": 0.0,
+          "updated_day": 91,
+          "surprise": 0.0,
+          "reaction": 0.0
+        },
+        "supply_access": {
+          "expected": 0.2567216461423907,
+          "fatigue": 0.11186175833231846,
+          "level": 0.3,
+          "updated_day": 91,
+          "surprise": 0.04660745800050231,
+          "reaction": 0.15846921633282077
+        }
+      },
+      "total_institutional_position": 15.0,
+      "observer_development": [
+        0.9857367846037673,
+        0.9539444317278646,
+        0.9137443403447324
+      ]
+    }
+  ],
+  "run_count": 24,
+  "source_sha256": {
+    "society/__init__.py": "aef3efaef9af7ea2f117ffc08da540cbb7df5a6a222ac0cb825409e847a7da39",
+    "society/analyze_experiments.py": "4a9b82370d2a06152b425ef46901a1d691f54062af3d1890b78b7d5351e45a8c",
+    "society/appraisal.py": "e6349295c339db04a7a05187977a64702193ed2d84e78ef537c10a81f6d996d4",
+    "society/appraisal_trial.py": "b674915a7d5fe097c3cd2453a6fe6562df248e46eb8c6772bbf9ea729ebe61a9",
+    "society/behavior-v2.json": "f7eb05d9bef5c69524d9262838cfb5a42c9f6d91e2486fb0887348afd362b376",
+    "society/behavior-v3.json": "b5e3a6473f32551db7e40c495d31d10730af33549ef4fe764cdb4be38f4b4c19",
+    "society/behavior-v31.json": "898103740ec353c41b29cf23e0e2f3ad3c7e7017e1afbe007725b0940c06d56c",
+    "society/behavior.json": "5f716af9c4e2ca34dea09ee5e9d02d6edafc229ad3d958a3e54ee0206a93487e",
+    "society/behavior.py": "240d479d6c1e2a367e15bf303a1362073ecab0866bd928f3323f6e895ae7ec20",
+    "society/character_study.py": "7adcc966edc5edcb2723150d13c24d1be482af4f73637a0f2812c00bccd21c69",
+    "society/character_study_addenda.py": "1366cca49b2e98103154f9f34654b30b400203d06e8302dec33a0eea29a48a33",
+    "society/character_study_followup.py": "4e5bc9b05640053a7e2eb72e5ba81686bd470d488751948b391dfcdcbe63b466",
+    "society/character_study_report.py": "838a0065edf1998c35263e206df22715acd7022bb4e9214667cf824e415a1953",
+    "society/character_v32_check.py": "06f4c07d742ad1f0d955186b382ec2ba998faacfa70e44a5c56822d736414de0",
+    "society/characters.py": "a11b99474461d7c65a2b6b5e5308ddb31549764010b02bc019babdb492667d23",
+    "society/cli.py": "8fbbb20acca5a364d59c0dde675075334d9662ede7775a8ab18e732b109f445f",
+    "society/collective.py": "58183825573c1921c77b06dc4142b230dc3c5489a4cea45fb9c24811ae80aba4",
+    "society/collective_check.py": "8e4f6c8a3bfb5ce3195c0762d3c48530eeeac6727fd303c8ba93a63e39e5f961",
+    "society/diagnosis.py": "8f71bd82e183befe23371d8c949e0a39d043a353b2a899e959973203eef8d642",
+    "society/diagnosis_report.py": "14cfe0e3916f18c82578d851d63fc30af9f5a41bf87ec713c5fe4a3237e8a53c",
+    "society/dynamics.py": "9acb93711145873f436ee95afab04909eb9cdf1886f16f10d09ae5fd789fcb58",
+    "society/engine.py": "6c5b987e81ed960eca2c200020c8d64381868b9fad8660501e6883e5a4e19cc9",
+    "society/experiments.py": "97012b251b461bdc25cb7c5c8ef5c00fef85f3a17c1fcb99ca57fc5712a044f5",
+    "society/verify_runs.py": "30b939cf8103a4bda4846b8dbdab62c5cd18e548d10bb7f85c66055e99f95fc7",
+    "tests/test_appraisal.py": "7fcef905485f4e1413a0484b99c92200e537d200ea39741524512410ad20a398",
+    "tests/test_appraisal_trial.py": "3e290ebee5d2a850590568b935f5501cb3af0281bb93eeb9848db01ec3a2ff47",
+    "tests/test_behavior.py": "26e4d0f722f9c492518024817eb1bd8c23f00b202a64452b56f0bd5001a80370",
+    "tests/test_character_study.py": "dbde1b56d078e3dd51083ad8de6579998c78841f6343f1d1462c57d8de5262c7",
+    "tests/test_characters.py": "1dd4f3752df42d3b8f9257932da8cc502388cde9088bce64a23bbef01ee29671",
+    "tests/test_collective.py": "e247383bffd419160b83a1aff1096c888f30abe4c47a2d0d14f60eace196fe20",
+    "tests/test_diagnosis.py": "76a43a5eaa092effd60fd1ea4fd440cc0c248f1713b6e02ea500608ddddae50d",
+    "tests/test_engine.py": "b238943c352babf800a3562a45caf05125d68103d44507b16483945c58f71466",
+    "tests/test_experiments.py": "ec91a5632f735863d9ab38f0847808501f3c2265e1ac31e354379c63a5b3e3de",
+    "tests/test_hardening.py": "89d75bd68ca1c65f261125b0fc0716233adfdc5cb1ede01255d94a4232063dac"
+  }
+}

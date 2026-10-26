@@ -1,0 +1,72 @@
+[
+  {
+    "command": [
+      "python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "tests",
+      "-v"
+    ],
+    "exit_code": 0,
+    "output": "reports/tests.txt"
+  },
+  {
+    "command": [
+      "python",
+      "-m",
+      "society.cli",
+      "--demo",
+      "--days",
+      "3",
+      "--output",
+      "runs/hardened-100.json"
+    ],
+    "exit_code": 0,
+    "output": "reports/smoke-100.txt"
+  },
+  {
+    "command": [
+      "python",
+      "-m",
+      "society.cli",
+      "--population",
+      "1000",
+      "--demo",
+      "--days",
+      "3",
+      "--output",
+      "runs/hardened-1000.json"
+    ],
+    "exit_code": 0,
+    "output": "reports/smoke-1000.txt"
+  },
+  {
+    "command": [
+      "python",
+      "-m",
+      "society.cli",
+      "--resume",
+      "runs/hardened-100.json",
+      "--days",
+      "2",
+      "--output",
+      "runs/hardened-resumed.json"
+    ],
+    "exit_code": 0,
+    "output": "reports/smoke-resume.txt"
+  },
+  {
+    "command": [
+      "python",
+      "-m",
+      "compileall",
+      "-q",
+      "society",
+      "tests"
+    ],
+    "exit_code": 0,
+    "output": "reports/compile.txt"
+  }
+]

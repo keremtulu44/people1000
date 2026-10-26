@@ -1,0 +1,1 @@
+{"runs": 260, "counts": {"transitions": 56204, "without_authority_message": 52791, "loyalty_before_available": 56204}}

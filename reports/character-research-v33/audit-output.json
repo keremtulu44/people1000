@@ -1,0 +1,47 @@
+{
+  "runs": 808,
+  "verified_persisted_files": 1616,
+  "actual_sampled_group_days": 156240,
+  "verified_raw_agent_days": 2928000,
+  "causal_transition_records": 1014,
+  "sources_unchanged_after_declared_fixture_amendment": true,
+  "source_amendments": [
+    {
+      "reason": "Agenda-scale fixture selected a peer outside targets, impossible when all 1000 people are targets. Fall back to an existing power-aligned source. No behavioral, economic, API or coefficient changes.",
+      "completed_before_fix": 803,
+      "affected_scope": "Only four agenda-scale prepared() jobs; ordinary 100-person fixture chooses exactly the same source as before.",
+      "file": "society/character_research_v33.py",
+      "old_sha256": "b1799c3aee9dbb13bbf49ce3cb8ed25902426affa724f6a85378795be5fa1d0e",
+      "new_sha256": "9b7e56b46fecc04ce20ceafa7915de4d6fa92a4dcd8cd68d743ecd939fc627aa",
+      "failure_log": "failures.jsonl",
+      "original_protocol": "protocol-original.json",
+      "original_runner": "runner-before-fixture-fix.py"
+    }
+  ],
+  "fresh_v32_pairs": 32,
+  "fresh_v32_outcome_mismatches": 0,
+  "ordinary_deep_state_comparisons": 84,
+  "ordinary_deep_state_mismatches": 0,
+  "historical_controls": 56,
+  "historical_control_mismatches": 0,
+  "network_attempts": 0,
+  "review_statuses": {
+    "accepted": 1049
+  },
+  "daily_reference_reasons": {
+    "no_current_personal_distress": 808630,
+    "pursue_local_institutional_aspiration": 160083,
+    "self_development": 82800,
+    "no_affordable_material_rivalry": 244579,
+    "defend_observed_institutional_position": 9218,
+    "no_known_gathering": 1268216,
+    "seek_local_support": 180356,
+    "no_acceptable_invitation_or_readiness": 4965,
+    "invite_local_contact": 60,
+    "support_withdrawal": 883,
+    "withdraw_after_personally_failed_forecast": 74,
+    "seek_actual_gathering_after_local_grievance": 16,
+    "no_affordable_local_opportunity": 120
+  },
+  "analyzer_sha256": "f0f27d4669c930fe7b6ac6162d4c9e13fe334be71ff56b33cfe08cbac2b46f56"
+}

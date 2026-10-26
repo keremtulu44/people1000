@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "people1000"
+version = "0.1.0"
+description = "Traceable, bounded-information society simulation core"
+requires-python = ">=3.11"
+
+[project.scripts]
+people1000 = "society.cli:main"
+
+[tool.setuptools]
+packages = ["society"]
+
+[tool.setuptools.package-data]
+society = ["behavior.json", "behavior-v2.json", "behavior-v3.json", "behavior-v31.json", "behavior-v32.json"]

@@ -1,0 +1,1017 @@
+START 1/508 none-n100-s0-v3.1-d30
+DONE none-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 2/508 none-n100-s1-v3.1-d30
+DONE none-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 3/508 none-n100-s2-v3.1-d30
+DONE none-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 4/508 none-n100-s3-v3.1-d30
+DONE none-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 5/508 none-n100-s4-v3.1-d30
+DONE none-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 6/508 none-n100-s5-v3.1-d30
+DONE none-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 7/508 none-n100-s6-v3.1-d30
+DONE none-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 8/508 none-n100-s7-v3.1-d30
+DONE none-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 9/508 mild10-n100-s0-v3.1-d30
+DONE mild10-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 10/508 mild10-n100-s1-v3.1-d30
+DONE mild10-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 11/508 mild10-n100-s2-v3.1-d30
+DONE mild10-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 12/508 mild10-n100-s3-v3.1-d30
+DONE mild10-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 13/508 mild10-n100-s4-v3.1-d30
+DONE mild10-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 14/508 mild10-n100-s5-v3.1-d30
+DONE mild10-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 15/508 mild10-n100-s6-v3.1-d30
+DONE mild10-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 16/508 mild10-n100-s7-v3.1-d30
+DONE mild10-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 17/508 moderate40-n100-s0-v3.1-d30
+DONE moderate40-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 18/508 moderate40-n100-s1-v3.1-d30
+DONE moderate40-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 19/508 moderate40-n100-s2-v3.1-d30
+DONE moderate40-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 20/508 moderate40-n100-s3-v3.1-d30
+DONE moderate40-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 21/508 moderate40-n100-s4-v3.1-d30
+DONE moderate40-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 22/508 moderate40-n100-s5-v3.1-d30
+DONE moderate40-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 23/508 moderate40-n100-s6-v3.1-d30
+DONE moderate40-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 24/508 moderate40-n100-s7-v3.1-d30
+DONE moderate40-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 25/508 sudden60-n100-s0-v3.1-d30
+DONE sudden60-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 26/508 sudden60-n100-s1-v3.1-d30
+DONE sudden60-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 27/508 sudden60-n100-s2-v3.1-d30
+DONE sudden60-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 28/508 sudden60-n100-s3-v3.1-d30
+DONE sudden60-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 29/508 sudden60-n100-s4-v3.1-d30
+DONE sudden60-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 30/508 sudden60-n100-s5-v3.1-d30
+DONE sudden60-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 31/508 sudden60-n100-s6-v3.1-d30
+DONE sudden60-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 32/508 sudden60-n100-s7-v3.1-d30
+DONE sudden60-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 33/508 severe80-n100-s0-v3.1-d30
+DONE severe80-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 34/508 severe80-n100-s1-v3.1-d30
+DONE severe80-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 35/508 severe80-n100-s2-v3.1-d30
+DONE severe80-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 36/508 severe80-n100-s3-v3.1-d30
+DONE severe80-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 37/508 severe80-n100-s4-v3.1-d30
+DONE severe80-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 38/508 severe80-n100-s5-v3.1-d30
+DONE severe80-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 39/508 severe80-n100-s6-v3.1-d30
+DONE severe80-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 40/508 severe80-n100-s7-v3.1-d30
+DONE severe80-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 41/508 extreme900-n100-s0-v3.1-d30
+DONE extreme900-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 42/508 extreme900-n100-s1-v3.1-d30
+DONE extreme900-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 43/508 extreme900-n100-s2-v3.1-d30
+DONE extreme900-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 44/508 extreme900-n100-s3-v3.1-d30
+DONE extreme900-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 45/508 extreme900-n100-s4-v3.1-d30
+DONE extreme900-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 46/508 extreme900-n100-s5-v3.1-d30
+DONE extreme900-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 47/508 extreme900-n100-s6-v3.1-d30
+DONE extreme900-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 48/508 extreme900-n100-s7-v3.1-d30
+DONE extreme900-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 49/508 deflation20-n100-s0-v3.1-d30
+DONE deflation20-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 50/508 deflation20-n100-s1-v3.1-d30
+DONE deflation20-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 51/508 deflation20-n100-s2-v3.1-d30
+DONE deflation20-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 52/508 deflation20-n100-s3-v3.1-d30
+DONE deflation20-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 53/508 deflation20-n100-s4-v3.1-d30
+DONE deflation20-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 54/508 deflation20-n100-s5-v3.1-d30
+DONE deflation20-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 55/508 deflation20-n100-s6-v3.1-d30
+DONE deflation20-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 56/508 deflation20-n100-s7-v3.1-d30
+DONE deflation20-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 57/508 ramp60-n100-s0-v3.1-d30
+DONE ramp60-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 58/508 ramp60-n100-s1-v3.1-d30
+DONE ramp60-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 59/508 ramp60-n100-s2-v3.1-d30
+DONE ramp60-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 60/508 ramp60-n100-s3-v3.1-d30
+DONE ramp60-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 61/508 ramp60-n100-s4-v3.1-d30
+DONE ramp60-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 62/508 ramp60-n100-s5-v3.1-d30
+DONE ramp60-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 63/508 ramp60-n100-s6-v3.1-d30
+DONE ramp60-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 64/508 ramp60-n100-s7-v3.1-d30
+DONE ramp60-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 65/508 late_equal_cost60-n100-s0-v3.1-d30
+DONE late_equal_cost60-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 66/508 late_equal_cost60-n100-s1-v3.1-d30
+DONE late_equal_cost60-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 67/508 late_equal_cost60-n100-s2-v3.1-d30
+DONE late_equal_cost60-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 68/508 late_equal_cost60-n100-s3-v3.1-d30
+DONE late_equal_cost60-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 69/508 late_equal_cost60-n100-s4-v3.1-d30
+DONE late_equal_cost60-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 70/508 late_equal_cost60-n100-s5-v3.1-d30
+DONE late_equal_cost60-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 71/508 late_equal_cost60-n100-s6-v3.1-d30
+DONE late_equal_cost60-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 72/508 late_equal_cost60-n100-s7-v3.1-d30
+DONE late_equal_cost60-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 73/508 pulse60-n100-s0-v3.1-d30
+DONE pulse60-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 74/508 pulse60-n100-s1-v3.1-d30
+DONE pulse60-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 75/508 pulse60-n100-s2-v3.1-d30
+DONE pulse60-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 76/508 pulse60-n100-s3-v3.1-d30
+DONE pulse60-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 77/508 pulse60-n100-s4-v3.1-d30
+DONE pulse60-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 78/508 pulse60-n100-s5-v3.1-d30
+DONE pulse60-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 79/508 pulse60-n100-s6-v3.1-d30
+DONE pulse60-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 80/508 pulse60-n100-s7-v3.1-d30
+DONE pulse60-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 81/508 repeated_pulses60-n100-s0-v3.1-d30
+DONE repeated_pulses60-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 82/508 repeated_pulses60-n100-s1-v3.1-d30
+DONE repeated_pulses60-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 83/508 repeated_pulses60-n100-s2-v3.1-d30
+DONE repeated_pulses60-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 84/508 repeated_pulses60-n100-s3-v3.1-d30
+DONE repeated_pulses60-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 85/508 repeated_pulses60-n100-s4-v3.1-d30
+DONE repeated_pulses60-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 86/508 repeated_pulses60-n100-s5-v3.1-d30
+DONE repeated_pulses60-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 87/508 repeated_pulses60-n100-s6-v3.1-d30
+DONE repeated_pulses60-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 88/508 repeated_pulses60-n100-s7-v3.1-d30
+DONE repeated_pulses60-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 89/508 i40-unknown-known-n100-s0-v3.1-d30
+DONE i40-unknown-known-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 90/508 i40-unknown-known-n100-s1-v3.1-d30
+DONE i40-unknown-known-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 91/508 i40-unknown-known-n100-s2-v3.1-d30
+DONE i40-unknown-known-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 92/508 i40-unknown-known-n100-s3-v3.1-d30
+DONE i40-unknown-known-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 93/508 i40-unknown-known-n100-s4-v3.1-d30
+DONE i40-unknown-known-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 94/508 i40-unknown-known-n100-s5-v3.1-d30
+DONE i40-unknown-known-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 95/508 i40-unknown-known-n100-s6-v3.1-d30
+DONE i40-unknown-known-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 96/508 i40-unknown-known-n100-s7-v3.1-d30
+DONE i40-unknown-known-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 97/508 i40-unknown-positive-n100-s0-v3.1-d30
+DONE i40-unknown-positive-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 98/508 i40-unknown-positive-n100-s1-v3.1-d30
+DONE i40-unknown-positive-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 99/508 i40-unknown-positive-n100-s2-v3.1-d30
+DONE i40-unknown-positive-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 100/508 i40-unknown-positive-n100-s3-v3.1-d30
+DONE i40-unknown-positive-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 101/508 i40-unknown-positive-n100-s4-v3.1-d30
+DONE i40-unknown-positive-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 102/508 i40-unknown-positive-n100-s5-v3.1-d30
+DONE i40-unknown-positive-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 103/508 i40-unknown-positive-n100-s6-v3.1-d30
+DONE i40-unknown-positive-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 104/508 i40-unknown-positive-n100-s7-v3.1-d30
+DONE i40-unknown-positive-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 105/508 i40-A-known-n100-s0-v3.1-d30
+DONE i40-A-known-n100-s0-v3.1-d30 switched=0 withdrawn=16 attended=0
+START 106/508 i40-A-known-n100-s1-v3.1-d30
+DONE i40-A-known-n100-s1-v3.1-d30 switched=0 withdrawn=10 attended=0
+START 107/508 i40-A-known-n100-s2-v3.1-d30
+DONE i40-A-known-n100-s2-v3.1-d30 switched=0 withdrawn=9 attended=0
+START 108/508 i40-A-known-n100-s3-v3.1-d30
+DONE i40-A-known-n100-s3-v3.1-d30 switched=0 withdrawn=6 attended=0
+START 109/508 i40-A-known-n100-s4-v3.1-d30
+DONE i40-A-known-n100-s4-v3.1-d30 switched=0 withdrawn=9 attended=0
+START 110/508 i40-A-known-n100-s5-v3.1-d30
+DONE i40-A-known-n100-s5-v3.1-d30 switched=0 withdrawn=7 attended=0
+START 111/508 i40-A-known-n100-s6-v3.1-d30
+DONE i40-A-known-n100-s6-v3.1-d30 switched=0 withdrawn=13 attended=0
+START 112/508 i40-A-known-n100-s7-v3.1-d30
+DONE i40-A-known-n100-s7-v3.1-d30 switched=0 withdrawn=8 attended=0
+START 113/508 i40-A-positive-n100-s0-v3.1-d30
+DONE i40-A-positive-n100-s0-v3.1-d30 switched=4 withdrawn=16 attended=0
+START 114/508 i40-A-positive-n100-s1-v3.1-d30
+DONE i40-A-positive-n100-s1-v3.1-d30 switched=0 withdrawn=10 attended=0
+START 115/508 i40-A-positive-n100-s2-v3.1-d30
+DONE i40-A-positive-n100-s2-v3.1-d30 switched=0 withdrawn=9 attended=0
+START 116/508 i40-A-positive-n100-s3-v3.1-d30
+DONE i40-A-positive-n100-s3-v3.1-d30 switched=1 withdrawn=6 attended=0
+START 117/508 i40-A-positive-n100-s4-v3.1-d30
+DONE i40-A-positive-n100-s4-v3.1-d30 switched=1 withdrawn=9 attended=0
+START 118/508 i40-A-positive-n100-s5-v3.1-d30
+DONE i40-A-positive-n100-s5-v3.1-d30 switched=1 withdrawn=7 attended=0
+START 119/508 i40-A-positive-n100-s6-v3.1-d30
+DONE i40-A-positive-n100-s6-v3.1-d30 switched=1 withdrawn=13 attended=0
+START 120/508 i40-A-positive-n100-s7-v3.1-d30
+DONE i40-A-positive-n100-s7-v3.1-d30 switched=0 withdrawn=8 attended=0
+START 121/508 i40-external-known-n100-s0-v3.1-d30
+DONE i40-external-known-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 122/508 i40-external-known-n100-s1-v3.1-d30
+DONE i40-external-known-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 123/508 i40-external-known-n100-s2-v3.1-d30
+DONE i40-external-known-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 124/508 i40-external-known-n100-s3-v3.1-d30
+DONE i40-external-known-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 125/508 i40-external-known-n100-s4-v3.1-d30
+DONE i40-external-known-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 126/508 i40-external-known-n100-s5-v3.1-d30
+DONE i40-external-known-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 127/508 i40-external-known-n100-s6-v3.1-d30
+DONE i40-external-known-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 128/508 i40-external-known-n100-s7-v3.1-d30
+DONE i40-external-known-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 129/508 i40-external-positive-n100-s0-v3.1-d30
+DONE i40-external-positive-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 130/508 i40-external-positive-n100-s1-v3.1-d30
+DONE i40-external-positive-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 131/508 i40-external-positive-n100-s2-v3.1-d30
+DONE i40-external-positive-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 132/508 i40-external-positive-n100-s3-v3.1-d30
+DONE i40-external-positive-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 133/508 i40-external-positive-n100-s4-v3.1-d30
+DONE i40-external-positive-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 134/508 i40-external-positive-n100-s5-v3.1-d30
+DONE i40-external-positive-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 135/508 i40-external-positive-n100-s6-v3.1-d30
+DONE i40-external-positive-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 136/508 i40-external-positive-n100-s7-v3.1-d30
+DONE i40-external-positive-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 137/508 i40-leader-known-n100-s0-v3.1-d30
+DONE i40-leader-known-n100-s0-v3.1-d30 switched=0 withdrawn=16 attended=0
+START 138/508 i40-leader-known-n100-s1-v3.1-d30
+DONE i40-leader-known-n100-s1-v3.1-d30 switched=0 withdrawn=10 attended=0
+START 139/508 i40-leader-known-n100-s2-v3.1-d30
+DONE i40-leader-known-n100-s2-v3.1-d30 switched=0 withdrawn=9 attended=0
+START 140/508 i40-leader-known-n100-s3-v3.1-d30
+DONE i40-leader-known-n100-s3-v3.1-d30 switched=0 withdrawn=6 attended=0
+START 141/508 i40-leader-known-n100-s4-v3.1-d30
+DONE i40-leader-known-n100-s4-v3.1-d30 switched=0 withdrawn=9 attended=0
+START 142/508 i40-leader-known-n100-s5-v3.1-d30
+DONE i40-leader-known-n100-s5-v3.1-d30 switched=0 withdrawn=7 attended=0
+START 143/508 i40-leader-known-n100-s6-v3.1-d30
+DONE i40-leader-known-n100-s6-v3.1-d30 switched=0 withdrawn=13 attended=0
+START 144/508 i40-leader-known-n100-s7-v3.1-d30
+DONE i40-leader-known-n100-s7-v3.1-d30 switched=0 withdrawn=8 attended=0
+START 145/508 i40-leader-positive-n100-s0-v3.1-d30
+DONE i40-leader-positive-n100-s0-v3.1-d30 switched=4 withdrawn=16 attended=0
+START 146/508 i40-leader-positive-n100-s1-v3.1-d30
+DONE i40-leader-positive-n100-s1-v3.1-d30 switched=0 withdrawn=10 attended=0
+START 147/508 i40-leader-positive-n100-s2-v3.1-d30
+DONE i40-leader-positive-n100-s2-v3.1-d30 switched=0 withdrawn=9 attended=0
+START 148/508 i40-leader-positive-n100-s3-v3.1-d30
+DONE i40-leader-positive-n100-s3-v3.1-d30 switched=1 withdrawn=6 attended=0
+START 149/508 i40-leader-positive-n100-s4-v3.1-d30
+DONE i40-leader-positive-n100-s4-v3.1-d30 switched=1 withdrawn=9 attended=0
+START 150/508 i40-leader-positive-n100-s5-v3.1-d30
+DONE i40-leader-positive-n100-s5-v3.1-d30 switched=1 withdrawn=7 attended=0
+START 151/508 i40-leader-positive-n100-s6-v3.1-d30
+DONE i40-leader-positive-n100-s6-v3.1-d30 switched=1 withdrawn=13 attended=0
+START 152/508 i40-leader-positive-n100-s7-v3.1-d30
+DONE i40-leader-positive-n100-s7-v3.1-d30 switched=0 withdrawn=8 attended=0
+START 153/508 i80-unknown-known-n100-s0-v3.1-d30
+DONE i80-unknown-known-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 154/508 i80-unknown-known-n100-s1-v3.1-d30
+DONE i80-unknown-known-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 155/508 i80-unknown-known-n100-s2-v3.1-d30
+DONE i80-unknown-known-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 156/508 i80-unknown-known-n100-s3-v3.1-d30
+DONE i80-unknown-known-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 157/508 i80-unknown-known-n100-s4-v3.1-d30
+DONE i80-unknown-known-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 158/508 i80-unknown-known-n100-s5-v3.1-d30
+DONE i80-unknown-known-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 159/508 i80-unknown-known-n100-s6-v3.1-d30
+DONE i80-unknown-known-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 160/508 i80-unknown-known-n100-s7-v3.1-d30
+DONE i80-unknown-known-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 161/508 i80-unknown-positive-n100-s0-v3.1-d30
+DONE i80-unknown-positive-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 162/508 i80-unknown-positive-n100-s1-v3.1-d30
+DONE i80-unknown-positive-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 163/508 i80-unknown-positive-n100-s2-v3.1-d30
+DONE i80-unknown-positive-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 164/508 i80-unknown-positive-n100-s3-v3.1-d30
+DONE i80-unknown-positive-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 165/508 i80-unknown-positive-n100-s4-v3.1-d30
+DONE i80-unknown-positive-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 166/508 i80-unknown-positive-n100-s5-v3.1-d30
+DONE i80-unknown-positive-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 167/508 i80-unknown-positive-n100-s6-v3.1-d30
+DONE i80-unknown-positive-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 168/508 i80-unknown-positive-n100-s7-v3.1-d30
+DONE i80-unknown-positive-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 169/508 i80-A-known-n100-s0-v3.1-d30
+DONE i80-A-known-n100-s0-v3.1-d30 switched=0 withdrawn=16 attended=0
+START 170/508 i80-A-known-n100-s1-v3.1-d30
+DONE i80-A-known-n100-s1-v3.1-d30 switched=0 withdrawn=10 attended=0
+START 171/508 i80-A-known-n100-s2-v3.1-d30
+DONE i80-A-known-n100-s2-v3.1-d30 switched=0 withdrawn=9 attended=0
+START 172/508 i80-A-known-n100-s3-v3.1-d30
+DONE i80-A-known-n100-s3-v3.1-d30 switched=0 withdrawn=6 attended=0
+START 173/508 i80-A-known-n100-s4-v3.1-d30
+DONE i80-A-known-n100-s4-v3.1-d30 switched=0 withdrawn=9 attended=0
+START 174/508 i80-A-known-n100-s5-v3.1-d30
+DONE i80-A-known-n100-s5-v3.1-d30 switched=0 withdrawn=7 attended=0
+START 175/508 i80-A-known-n100-s6-v3.1-d30
+DONE i80-A-known-n100-s6-v3.1-d30 switched=0 withdrawn=13 attended=0
+START 176/508 i80-A-known-n100-s7-v3.1-d30
+DONE i80-A-known-n100-s7-v3.1-d30 switched=0 withdrawn=8 attended=0
+START 177/508 i80-A-positive-n100-s0-v3.1-d30
+DONE i80-A-positive-n100-s0-v3.1-d30 switched=12 withdrawn=16 attended=0
+START 178/508 i80-A-positive-n100-s1-v3.1-d30
+DONE i80-A-positive-n100-s1-v3.1-d30 switched=1 withdrawn=10 attended=0
+START 179/508 i80-A-positive-n100-s2-v3.1-d30
+DONE i80-A-positive-n100-s2-v3.1-d30 switched=7 withdrawn=9 attended=0
+START 180/508 i80-A-positive-n100-s3-v3.1-d30
+DONE i80-A-positive-n100-s3-v3.1-d30 switched=4 withdrawn=6 attended=0
+START 181/508 i80-A-positive-n100-s4-v3.1-d30
+DONE i80-A-positive-n100-s4-v3.1-d30 switched=6 withdrawn=9 attended=0
+START 182/508 i80-A-positive-n100-s5-v3.1-d30
+DONE i80-A-positive-n100-s5-v3.1-d30 switched=4 withdrawn=7 attended=0
+START 183/508 i80-A-positive-n100-s6-v3.1-d30
+DONE i80-A-positive-n100-s6-v3.1-d30 switched=8 withdrawn=13 attended=0
+START 184/508 i80-A-positive-n100-s7-v3.1-d30
+DONE i80-A-positive-n100-s7-v3.1-d30 switched=5 withdrawn=8 attended=0
+START 185/508 i80-external-known-n100-s0-v3.1-d30
+DONE i80-external-known-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 186/508 i80-external-known-n100-s1-v3.1-d30
+DONE i80-external-known-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 187/508 i80-external-known-n100-s2-v3.1-d30
+DONE i80-external-known-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 188/508 i80-external-known-n100-s3-v3.1-d30
+DONE i80-external-known-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 189/508 i80-external-known-n100-s4-v3.1-d30
+DONE i80-external-known-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 190/508 i80-external-known-n100-s5-v3.1-d30
+DONE i80-external-known-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 191/508 i80-external-known-n100-s6-v3.1-d30
+DONE i80-external-known-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 192/508 i80-external-known-n100-s7-v3.1-d30
+DONE i80-external-known-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 193/508 i80-external-positive-n100-s0-v3.1-d30
+DONE i80-external-positive-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 194/508 i80-external-positive-n100-s1-v3.1-d30
+DONE i80-external-positive-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 195/508 i80-external-positive-n100-s2-v3.1-d30
+DONE i80-external-positive-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 196/508 i80-external-positive-n100-s3-v3.1-d30
+DONE i80-external-positive-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 197/508 i80-external-positive-n100-s4-v3.1-d30
+DONE i80-external-positive-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 198/508 i80-external-positive-n100-s5-v3.1-d30
+DONE i80-external-positive-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 199/508 i80-external-positive-n100-s6-v3.1-d30
+DONE i80-external-positive-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 200/508 i80-external-positive-n100-s7-v3.1-d30
+DONE i80-external-positive-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 201/508 i80-leader-known-n100-s0-v3.1-d30
+DONE i80-leader-known-n100-s0-v3.1-d30 switched=0 withdrawn=16 attended=0
+START 202/508 i80-leader-known-n100-s1-v3.1-d30
+DONE i80-leader-known-n100-s1-v3.1-d30 switched=0 withdrawn=10 attended=0
+START 203/508 i80-leader-known-n100-s2-v3.1-d30
+DONE i80-leader-known-n100-s2-v3.1-d30 switched=0 withdrawn=9 attended=0
+START 204/508 i80-leader-known-n100-s3-v3.1-d30
+DONE i80-leader-known-n100-s3-v3.1-d30 switched=0 withdrawn=6 attended=0
+START 205/508 i80-leader-known-n100-s4-v3.1-d30
+DONE i80-leader-known-n100-s4-v3.1-d30 switched=0 withdrawn=9 attended=0
+START 206/508 i80-leader-known-n100-s5-v3.1-d30
+DONE i80-leader-known-n100-s5-v3.1-d30 switched=0 withdrawn=7 attended=0
+START 207/508 i80-leader-known-n100-s6-v3.1-d30
+DONE i80-leader-known-n100-s6-v3.1-d30 switched=0 withdrawn=13 attended=0
+START 208/508 i80-leader-known-n100-s7-v3.1-d30
+DONE i80-leader-known-n100-s7-v3.1-d30 switched=0 withdrawn=8 attended=0
+START 209/508 i80-leader-positive-n100-s0-v3.1-d30
+DONE i80-leader-positive-n100-s0-v3.1-d30 switched=12 withdrawn=16 attended=0
+START 210/508 i80-leader-positive-n100-s1-v3.1-d30
+DONE i80-leader-positive-n100-s1-v3.1-d30 switched=0 withdrawn=10 attended=0
+START 211/508 i80-leader-positive-n100-s2-v3.1-d30
+DONE i80-leader-positive-n100-s2-v3.1-d30 switched=7 withdrawn=9 attended=0
+START 212/508 i80-leader-positive-n100-s3-v3.1-d30
+DONE i80-leader-positive-n100-s3-v3.1-d30 switched=4 withdrawn=6 attended=0
+START 213/508 i80-leader-positive-n100-s4-v3.1-d30
+DONE i80-leader-positive-n100-s4-v3.1-d30 switched=6 withdrawn=9 attended=0
+START 214/508 i80-leader-positive-n100-s5-v3.1-d30
+DONE i80-leader-positive-n100-s5-v3.1-d30 switched=4 withdrawn=7 attended=0
+START 215/508 i80-leader-positive-n100-s6-v3.1-d30
+DONE i80-leader-positive-n100-s6-v3.1-d30 switched=8 withdrawn=13 attended=0
+START 216/508 i80-leader-positive-n100-s7-v3.1-d30
+DONE i80-leader-positive-n100-s7-v3.1-d30 switched=5 withdrawn=8 attended=0
+START 217/508 source-aligned-n100-s0-v3.1-d30
+DONE source-aligned-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 218/508 source-aligned-n100-s1-v3.1-d30
+DONE source-aligned-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 219/508 source-aligned-n100-s2-v3.1-d30
+DONE source-aligned-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 220/508 source-aligned-n100-s3-v3.1-d30
+DONE source-aligned-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 221/508 source-aligned-n100-s4-v3.1-d30
+DONE source-aligned-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 222/508 source-aligned-n100-s5-v3.1-d30
+DONE source-aligned-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 223/508 source-aligned-n100-s6-v3.1-d30
+DONE source-aligned-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 224/508 source-aligned-n100-s7-v3.1-d30
+DONE source-aligned-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 225/508 source-opposed-n100-s0-v3.1-d30
+DONE source-opposed-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 226/508 source-opposed-n100-s1-v3.1-d30
+DONE source-opposed-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 227/508 source-opposed-n100-s2-v3.1-d30
+DONE source-opposed-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 228/508 source-opposed-n100-s3-v3.1-d30
+DONE source-opposed-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 229/508 source-opposed-n100-s4-v3.1-d30
+DONE source-opposed-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 230/508 source-opposed-n100-s5-v3.1-d30
+DONE source-opposed-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 231/508 source-opposed-n100-s6-v3.1-d30
+DONE source-opposed-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 232/508 source-opposed-n100-s7-v3.1-d30
+DONE source-opposed-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 233/508 source-ordinary-n100-s0-v3.1-d30
+DONE source-ordinary-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 234/508 source-ordinary-n100-s1-v3.1-d30
+DONE source-ordinary-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 235/508 source-ordinary-n100-s2-v3.1-d30
+DONE source-ordinary-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 236/508 source-ordinary-n100-s3-v3.1-d30
+DONE source-ordinary-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 237/508 source-ordinary-n100-s4-v3.1-d30
+DONE source-ordinary-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 238/508 source-ordinary-n100-s5-v3.1-d30
+DONE source-ordinary-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 239/508 source-ordinary-n100-s6-v3.1-d30
+DONE source-ordinary-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 240/508 source-ordinary-n100-s7-v3.1-d30
+DONE source-ordinary-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 241/508 source-same_group-n100-s0-v3.1-d30
+DONE source-same_group-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 242/508 source-same_group-n100-s1-v3.1-d30
+DONE source-same_group-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 243/508 source-same_group-n100-s2-v3.1-d30
+DONE source-same_group-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 244/508 source-same_group-n100-s3-v3.1-d30
+DONE source-same_group-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 245/508 source-same_group-n100-s4-v3.1-d30
+DONE source-same_group-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 246/508 source-same_group-n100-s5-v3.1-d30
+DONE source-same_group-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 247/508 source-same_group-n100-s6-v3.1-d30
+DONE source-same_group-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 248/508 source-same_group-n100-s7-v3.1-d30
+DONE source-same_group-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 249/508 source-wealthy-n100-s0-v3.1-d30
+DONE source-wealthy-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 250/508 source-wealthy-n100-s1-v3.1-d30
+DONE source-wealthy-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 251/508 source-wealthy-n100-s2-v3.1-d30
+DONE source-wealthy-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 252/508 source-wealthy-n100-s3-v3.1-d30
+DONE source-wealthy-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 253/508 source-wealthy-n100-s4-v3.1-d30
+DONE source-wealthy-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 254/508 source-wealthy-n100-s5-v3.1-d30
+DONE source-wealthy-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 255/508 source-wealthy-n100-s6-v3.1-d30
+DONE source-wealthy-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 256/508 source-wealthy-n100-s7-v3.1-d30
+DONE source-wealthy-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 257/508 benefit-aligned-n100-s0-v3.1-d30
+DONE benefit-aligned-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 258/508 benefit-aligned-n100-s1-v3.1-d30
+DONE benefit-aligned-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 259/508 benefit-aligned-n100-s2-v3.1-d30
+DONE benefit-aligned-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 260/508 benefit-aligned-n100-s3-v3.1-d30
+DONE benefit-aligned-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 261/508 benefit-aligned-n100-s4-v3.1-d30
+DONE benefit-aligned-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 262/508 benefit-aligned-n100-s5-v3.1-d30
+DONE benefit-aligned-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 263/508 benefit-aligned-n100-s6-v3.1-d30
+DONE benefit-aligned-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 264/508 benefit-aligned-n100-s7-v3.1-d30
+DONE benefit-aligned-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 265/508 benefit-peer-n100-s0-v3.1-d30
+DONE benefit-peer-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 266/508 benefit-peer-n100-s1-v3.1-d30
+DONE benefit-peer-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 267/508 benefit-peer-n100-s2-v3.1-d30
+DONE benefit-peer-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 268/508 benefit-peer-n100-s3-v3.1-d30
+DONE benefit-peer-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 269/508 benefit-peer-n100-s4-v3.1-d30
+DONE benefit-peer-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 270/508 benefit-peer-n100-s5-v3.1-d30
+DONE benefit-peer-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 271/508 benefit-peer-n100-s6-v3.1-d30
+DONE benefit-peer-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 272/508 benefit-peer-n100-s7-v3.1-d30
+DONE benefit-peer-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 273/508 forecast-false-n100-s0-v3.1-d30
+DONE forecast-false-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 274/508 forecast-false-n100-s1-v3.1-d30
+DONE forecast-false-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 275/508 forecast-false-n100-s2-v3.1-d30
+DONE forecast-false-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 276/508 forecast-false-n100-s3-v3.1-d30
+DONE forecast-false-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 277/508 forecast-false-n100-s4-v3.1-d30
+DONE forecast-false-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 278/508 forecast-false-n100-s5-v3.1-d30
+DONE forecast-false-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 279/508 forecast-false-n100-s6-v3.1-d30
+DONE forecast-false-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 280/508 forecast-false-n100-s7-v3.1-d30
+DONE forecast-false-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 281/508 forecast-accurate-n100-s0-v3.1-d30
+DONE forecast-accurate-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 282/508 forecast-accurate-n100-s1-v3.1-d30
+DONE forecast-accurate-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 283/508 forecast-accurate-n100-s2-v3.1-d30
+DONE forecast-accurate-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 284/508 forecast-accurate-n100-s3-v3.1-d30
+DONE forecast-accurate-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 285/508 forecast-accurate-n100-s4-v3.1-d30
+DONE forecast-accurate-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 286/508 forecast-accurate-n100-s5-v3.1-d30
+DONE forecast-accurate-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 287/508 forecast-accurate-n100-s6-v3.1-d30
+DONE forecast-accurate-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 288/508 forecast-accurate-n100-s7-v3.1-d30
+DONE forecast-accurate-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 289/508 peer-authority-text-n100-s0-v3.1-d30
+DONE peer-authority-text-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 290/508 peer-authority-text-n100-s1-v3.1-d30
+DONE peer-authority-text-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 291/508 peer-authority-text-n100-s2-v3.1-d30
+DONE peer-authority-text-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 292/508 peer-authority-text-n100-s3-v3.1-d30
+DONE peer-authority-text-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 293/508 peer-authority-text-n100-s4-v3.1-d30
+DONE peer-authority-text-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 294/508 peer-authority-text-n100-s5-v3.1-d30
+DONE peer-authority-text-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 295/508 peer-authority-text-n100-s6-v3.1-d30
+DONE peer-authority-text-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 296/508 peer-authority-text-n100-s7-v3.1-d30
+DONE peer-authority-text-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 297/508 repeat-once-n100-s0-v3.1-d30
+DONE repeat-once-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 298/508 repeat-once-n100-s1-v3.1-d30
+DONE repeat-once-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 299/508 repeat-once-n100-s2-v3.1-d30
+DONE repeat-once-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 300/508 repeat-once-n100-s3-v3.1-d30
+DONE repeat-once-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 301/508 repeat-once-n100-s4-v3.1-d30
+DONE repeat-once-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 302/508 repeat-once-n100-s5-v3.1-d30
+DONE repeat-once-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 303/508 repeat-once-n100-s6-v3.1-d30
+DONE repeat-once-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 304/508 repeat-once-n100-s7-v3.1-d30
+DONE repeat-once-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 305/508 repeat-many-n100-s0-v3.1-d30
+DONE repeat-many-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 306/508 repeat-many-n100-s1-v3.1-d30
+DONE repeat-many-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 307/508 repeat-many-n100-s2-v3.1-d30
+DONE repeat-many-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 308/508 repeat-many-n100-s3-v3.1-d30
+DONE repeat-many-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 309/508 repeat-many-n100-s4-v3.1-d30
+DONE repeat-many-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 310/508 repeat-many-n100-s5-v3.1-d30
+DONE repeat-many-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 311/508 repeat-many-n100-s6-v3.1-d30
+DONE repeat-many-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 312/508 repeat-many-n100-s7-v3.1-d30
+DONE repeat-many-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 313/508 contradictory-n100-s0-v3.1-d30
+DONE contradictory-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 314/508 contradictory-n100-s1-v3.1-d30
+DONE contradictory-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 315/508 contradictory-n100-s2-v3.1-d30
+DONE contradictory-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 316/508 contradictory-n100-s3-v3.1-d30
+DONE contradictory-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 317/508 contradictory-n100-s4-v3.1-d30
+DONE contradictory-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 318/508 contradictory-n100-s5-v3.1-d30
+DONE contradictory-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 319/508 contradictory-n100-s6-v3.1-d30
+DONE contradictory-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 320/508 contradictory-n100-s7-v3.1-d30
+DONE contradictory-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 321/508 crowd-none-n100-s0-v3.1-d30
+DONE crowd-none-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=6
+START 322/508 crowd-none-n100-s1-v3.1-d30
+DONE crowd-none-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=6
+START 323/508 crowd-none-n100-s2-v3.1-d30
+DONE crowd-none-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=4
+START 324/508 crowd-none-n100-s3-v3.1-d30
+DONE crowd-none-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=4
+START 325/508 crowd-none-n100-s4-v3.1-d30
+DONE crowd-none-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=3
+START 326/508 crowd-none-n100-s5-v3.1-d30
+DONE crowd-none-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=3
+START 327/508 crowd-none-n100-s6-v3.1-d30
+DONE crowd-none-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=10
+START 328/508 crowd-none-n100-s7-v3.1-d30
+DONE crowd-none-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=6
+START 329/508 crowd-messages-only-n100-s0-v3.1-d30
+DONE crowd-messages-only-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 330/508 crowd-messages-only-n100-s1-v3.1-d30
+DONE crowd-messages-only-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 331/508 crowd-messages-only-n100-s2-v3.1-d30
+DONE crowd-messages-only-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 332/508 crowd-messages-only-n100-s3-v3.1-d30
+DONE crowd-messages-only-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 333/508 crowd-messages-only-n100-s4-v3.1-d30
+DONE crowd-messages-only-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 334/508 crowd-messages-only-n100-s5-v3.1-d30
+DONE crowd-messages-only-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 335/508 crowd-messages-only-n100-s6-v3.1-d30
+DONE crowd-messages-only-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 336/508 crowd-messages-only-n100-s7-v3.1-d30
+DONE crowd-messages-only-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 337/508 crowd-no-shock-n100-s0-v3.1-d30
+DONE crowd-no-shock-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=6
+START 338/508 crowd-no-shock-n100-s1-v3.1-d30
+DONE crowd-no-shock-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=4
+START 339/508 crowd-no-shock-n100-s2-v3.1-d30
+DONE crowd-no-shock-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=3
+START 340/508 crowd-no-shock-n100-s3-v3.1-d30
+DONE crowd-no-shock-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=3
+START 341/508 crowd-no-shock-n100-s4-v3.1-d30
+DONE crowd-no-shock-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=3
+START 342/508 crowd-no-shock-n100-s5-v3.1-d30
+DONE crowd-no-shock-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=2
+START 343/508 crowd-no-shock-n100-s6-v3.1-d30
+DONE crowd-no-shock-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=6
+START 344/508 crowd-no-shock-n100-s7-v3.1-d30
+DONE crowd-no-shock-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=5
+START 345/508 crowd-peer-n100-s0-v3.1-d30
+DONE crowd-peer-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 346/508 crowd-peer-n100-s1-v3.1-d30
+DONE crowd-peer-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 347/508 crowd-peer-n100-s2-v3.1-d30
+DONE crowd-peer-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 348/508 crowd-peer-n100-s3-v3.1-d30
+DONE crowd-peer-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 349/508 crowd-peer-n100-s4-v3.1-d30
+DONE crowd-peer-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 350/508 crowd-peer-n100-s5-v3.1-d30
+DONE crowd-peer-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 351/508 crowd-peer-n100-s6-v3.1-d30
+DONE crowd-peer-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 352/508 crowd-peer-n100-s7-v3.1-d30
+DONE crowd-peer-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 353/508 crowd-solo-n100-s0-v3.1-d30
+DONE crowd-solo-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=1
+START 354/508 crowd-solo-n100-s1-v3.1-d30
+DONE crowd-solo-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=1
+START 355/508 crowd-solo-n100-s2-v3.1-d30
+DONE crowd-solo-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=1
+START 356/508 crowd-solo-n100-s3-v3.1-d30
+DONE crowd-solo-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=1
+START 357/508 crowd-solo-n100-s4-v3.1-d30
+DONE crowd-solo-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=1
+START 358/508 crowd-solo-n100-s5-v3.1-d30
+DONE crowd-solo-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=1
+START 359/508 crowd-solo-n100-s6-v3.1-d30
+DONE crowd-solo-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=1
+START 360/508 crowd-solo-n100-s7-v3.1-d30
+DONE crowd-solo-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=1
+START 361/508 crowd-two-n100-s0-v3.1-d30
+DONE crowd-two-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=2
+START 362/508 crowd-two-n100-s1-v3.1-d30
+DONE crowd-two-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=2
+START 363/508 crowd-two-n100-s2-v3.1-d30
+DONE crowd-two-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=2
+START 364/508 crowd-two-n100-s3-v3.1-d30
+DONE crowd-two-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=2
+START 365/508 crowd-two-n100-s4-v3.1-d30
+DONE crowd-two-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=2
+START 366/508 crowd-two-n100-s5-v3.1-d30
+DONE crowd-two-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=2
+START 367/508 crowd-two-n100-s6-v3.1-d30
+DONE crowd-two-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=2
+START 368/508 crowd-two-n100-s7-v3.1-d30
+DONE crowd-two-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=2
+START 369/508 crowd-same-place-split-n100-s0-v3.1-d30
+DONE crowd-same-place-split-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=2
+START 370/508 crowd-same-place-split-n100-s1-v3.1-d30
+DONE crowd-same-place-split-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=2
+START 371/508 crowd-same-place-split-n100-s2-v3.1-d30
+DONE crowd-same-place-split-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=2
+START 372/508 crowd-same-place-split-n100-s3-v3.1-d30
+DONE crowd-same-place-split-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=2
+START 373/508 crowd-same-place-split-n100-s4-v3.1-d30
+DONE crowd-same-place-split-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=2
+START 374/508 crowd-same-place-split-n100-s5-v3.1-d30
+DONE crowd-same-place-split-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=2
+START 375/508 crowd-same-place-split-n100-s6-v3.1-d30
+DONE crowd-same-place-split-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=2
+START 376/508 crowd-same-place-split-n100-s7-v3.1-d30
+DONE crowd-same-place-split-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=2
+START 377/508 crowd-support-loss-n100-s0-v3.1-d30
+DONE crowd-support-loss-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=2
+START 378/508 crowd-support-loss-n100-s1-v3.1-d30
+DONE crowd-support-loss-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=2
+START 379/508 crowd-support-loss-n100-s2-v3.1-d30
+DONE crowd-support-loss-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=2
+START 380/508 crowd-support-loss-n100-s3-v3.1-d30
+DONE crowd-support-loss-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=2
+START 381/508 crowd-support-loss-n100-s4-v3.1-d30
+DONE crowd-support-loss-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=2
+START 382/508 crowd-support-loss-n100-s5-v3.1-d30
+DONE crowd-support-loss-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=2
+START 383/508 crowd-support-loss-n100-s6-v3.1-d30
+DONE crowd-support-loss-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=2
+START 384/508 crowd-support-loss-n100-s7-v3.1-d30
+DONE crowd-support-loss-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=2
+START 385/508 crowd-late-invite-n100-s0-v3.1-d30
+DONE crowd-late-invite-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=3
+START 386/508 crowd-late-invite-n100-s1-v3.1-d30
+DONE crowd-late-invite-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=3
+START 387/508 crowd-late-invite-n100-s2-v3.1-d30
+DONE crowd-late-invite-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=2
+START 388/508 crowd-late-invite-n100-s3-v3.1-d30
+DONE crowd-late-invite-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=3
+START 389/508 crowd-late-invite-n100-s4-v3.1-d30
+DONE crowd-late-invite-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=2
+START 390/508 crowd-late-invite-n100-s5-v3.1-d30
+DONE crowd-late-invite-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=1
+START 391/508 crowd-late-invite-n100-s6-v3.1-d30
+DONE crowd-late-invite-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=3
+START 392/508 crowd-late-invite-n100-s7-v3.1-d30
+DONE crowd-late-invite-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=2
+START 393/508 contract-valid-n100-s0-v3.1-d30
+DONE contract-valid-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 394/508 contract-valid-n100-s1-v3.1-d30
+DONE contract-valid-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 395/508 contract-valid-n100-s2-v3.1-d30
+DONE contract-valid-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 396/508 contract-valid-n100-s3-v3.1-d30
+DONE contract-valid-n100-s3-v3.1-d30 switched=0 withdrawn=1 attended=0
+START 397/508 contract-valid-n100-s4-v3.1-d30
+DONE contract-valid-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 398/508 contract-valid-n100-s5-v3.1-d30
+DONE contract-valid-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 399/508 contract-valid-n100-s6-v3.1-d30
+DONE contract-valid-n100-s6-v3.1-d30 switched=0 withdrawn=1 attended=0
+START 400/508 contract-valid-n100-s7-v3.1-d30
+DONE contract-valid-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 401/508 contract-wrong-n100-s0-v3.1-d30
+DONE contract-wrong-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 402/508 contract-wrong-n100-s1-v3.1-d30
+DONE contract-wrong-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 403/508 contract-wrong-n100-s2-v3.1-d30
+DONE contract-wrong-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 404/508 contract-wrong-n100-s3-v3.1-d30
+DONE contract-wrong-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 405/508 contract-wrong-n100-s4-v3.1-d30
+DONE contract-wrong-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 406/508 contract-wrong-n100-s5-v3.1-d30
+DONE contract-wrong-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 407/508 contract-wrong-n100-s6-v3.1-d30
+DONE contract-wrong-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 408/508 contract-wrong-n100-s7-v3.1-d30
+DONE contract-wrong-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 409/508 contract-repeat-n100-s0-v3.1-d30
+DONE contract-repeat-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 410/508 contract-repeat-n100-s1-v3.1-d30
+DONE contract-repeat-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 411/508 contract-repeat-n100-s2-v3.1-d30
+DONE contract-repeat-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 412/508 contract-repeat-n100-s3-v3.1-d30
+DONE contract-repeat-n100-s3-v3.1-d30 switched=0 withdrawn=1 attended=0
+START 413/508 contract-repeat-n100-s4-v3.1-d30
+DONE contract-repeat-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 414/508 contract-repeat-n100-s5-v3.1-d30
+DONE contract-repeat-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 415/508 contract-repeat-n100-s6-v3.1-d30
+DONE contract-repeat-n100-s6-v3.1-d30 switched=0 withdrawn=1 attended=0
+START 416/508 contract-repeat-n100-s7-v3.1-d30
+DONE contract-repeat-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 417/508 pressure-valid-n100-s0-v3.1-d30
+DONE pressure-valid-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 418/508 pressure-valid-n100-s1-v3.1-d30
+DONE pressure-valid-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 419/508 pressure-valid-n100-s2-v3.1-d30
+DONE pressure-valid-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 420/508 pressure-valid-n100-s3-v3.1-d30
+DONE pressure-valid-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 421/508 pressure-valid-n100-s4-v3.1-d30
+DONE pressure-valid-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 422/508 pressure-valid-n100-s5-v3.1-d30
+DONE pressure-valid-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 423/508 pressure-valid-n100-s6-v3.1-d30
+DONE pressure-valid-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 424/508 pressure-valid-n100-s7-v3.1-d30
+DONE pressure-valid-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 425/508 contract-and-crowd-n100-s0-v3.1-d30
+DONE contract-and-crowd-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=4
+START 426/508 contract-and-crowd-n100-s1-v3.1-d30
+DONE contract-and-crowd-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=5
+START 427/508 contract-and-crowd-n100-s2-v3.1-d30
+DONE contract-and-crowd-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=3
+START 428/508 contract-and-crowd-n100-s3-v3.1-d30
+DONE contract-and-crowd-n100-s3-v3.1-d30 switched=0 withdrawn=1 attended=5
+START 429/508 contract-and-crowd-n100-s4-v3.1-d30
+DONE contract-and-crowd-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=5
+START 430/508 contract-and-crowd-n100-s5-v3.1-d30
+DONE contract-and-crowd-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=1
+START 431/508 contract-and-crowd-n100-s6-v3.1-d30
+DONE contract-and-crowd-n100-s6-v3.1-d30 switched=0 withdrawn=1 attended=4
+START 432/508 contract-and-crowd-n100-s7-v3.1-d30
+DONE contract-and-crowd-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=5
+START 433/508 power-reversal-n100-s0-v3.1-d30
+DONE power-reversal-n100-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 434/508 power-reversal-n100-s1-v3.1-d30
+DONE power-reversal-n100-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 435/508 power-reversal-n100-s2-v3.1-d30
+DONE power-reversal-n100-s2-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 436/508 power-reversal-n100-s3-v3.1-d30
+DONE power-reversal-n100-s3-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 437/508 power-reversal-n100-s4-v3.1-d30
+DONE power-reversal-n100-s4-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 438/508 power-reversal-n100-s5-v3.1-d30
+DONE power-reversal-n100-s5-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 439/508 power-reversal-n100-s6-v3.1-d30
+DONE power-reversal-n100-s6-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 440/508 power-reversal-n100-s7-v3.1-d30
+DONE power-reversal-n100-s7-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 441/508 none-n100-s0-v2-d30
+DONE none-n100-s0-v2-d30 switched=0 withdrawn=0 attended=0
+START 442/508 none-n100-s1-v2-d30
+DONE none-n100-s1-v2-d30 switched=0 withdrawn=0 attended=0
+START 443/508 none-n100-s2-v2-d30
+DONE none-n100-s2-v2-d30 switched=0 withdrawn=0 attended=0
+START 444/508 none-n100-s3-v2-d30
+DONE none-n100-s3-v2-d30 switched=0 withdrawn=0 attended=0
+START 445/508 none-n100-s0-v3.0-d30
+DONE none-n100-s0-v3.0-d30 switched=0 withdrawn=0 attended=0
+START 446/508 none-n100-s1-v3.0-d30
+DONE none-n100-s1-v3.0-d30 switched=0 withdrawn=0 attended=0
+START 447/508 none-n100-s2-v3.0-d30
+DONE none-n100-s2-v3.0-d30 switched=0 withdrawn=0 attended=0
+START 448/508 none-n100-s3-v3.0-d30
+DONE none-n100-s3-v3.0-d30 switched=0 withdrawn=0 attended=0
+START 449/508 sudden60-n100-s0-v2-d30
+DONE sudden60-n100-s0-v2-d30 switched=14 withdrawn=0 attended=0
+START 450/508 sudden60-n100-s1-v2-d30
+DONE sudden60-n100-s1-v2-d30 switched=19 withdrawn=0 attended=0
+START 451/508 sudden60-n100-s2-v2-d30
+DONE sudden60-n100-s2-v2-d30 switched=16 withdrawn=0 attended=0
+START 452/508 sudden60-n100-s3-v2-d30
+DONE sudden60-n100-s3-v2-d30 switched=31 withdrawn=0 attended=0
+START 453/508 sudden60-n100-s0-v3.0-d30
+DONE sudden60-n100-s0-v3.0-d30 switched=0 withdrawn=0 attended=0
+START 454/508 sudden60-n100-s1-v3.0-d30
+DONE sudden60-n100-s1-v3.0-d30 switched=0 withdrawn=0 attended=0
+START 455/508 sudden60-n100-s2-v3.0-d30
+DONE sudden60-n100-s2-v3.0-d30 switched=0 withdrawn=0 attended=0
+START 456/508 sudden60-n100-s3-v3.0-d30
+DONE sudden60-n100-s3-v3.0-d30 switched=0 withdrawn=0 attended=0
+START 457/508 severe80-n100-s0-v2-d30
+DONE severe80-n100-s0-v2-d30 switched=64 withdrawn=0 attended=0
+START 458/508 severe80-n100-s1-v2-d30
+DONE severe80-n100-s1-v2-d30 switched=65 withdrawn=0 attended=0
+START 459/508 severe80-n100-s2-v2-d30
+DONE severe80-n100-s2-v2-d30 switched=68 withdrawn=0 attended=0
+START 460/508 severe80-n100-s3-v2-d30
+DONE severe80-n100-s3-v2-d30 switched=68 withdrawn=0 attended=0
+START 461/508 severe80-n100-s0-v3.0-d30
+DONE severe80-n100-s0-v3.0-d30 switched=0 withdrawn=0 attended=0
+START 462/508 severe80-n100-s1-v3.0-d30
+DONE severe80-n100-s1-v3.0-d30 switched=0 withdrawn=0 attended=0
+START 463/508 severe80-n100-s2-v3.0-d30
+DONE severe80-n100-s2-v3.0-d30 switched=0 withdrawn=0 attended=0
+START 464/508 severe80-n100-s3-v3.0-d30
+DONE severe80-n100-s3-v3.0-d30 switched=0 withdrawn=0 attended=0
+START 465/508 ramp60-n100-s0-v2-d30
+DONE ramp60-n100-s0-v2-d30 switched=1 withdrawn=0 attended=0
+START 466/508 ramp60-n100-s1-v2-d30
+DONE ramp60-n100-s1-v2-d30 switched=0 withdrawn=0 attended=0
+START 467/508 ramp60-n100-s2-v2-d30
+DONE ramp60-n100-s2-v2-d30 switched=0 withdrawn=0 attended=0
+START 468/508 ramp60-n100-s3-v2-d30
+DONE ramp60-n100-s3-v2-d30 switched=0 withdrawn=0 attended=0
+START 469/508 ramp60-n100-s0-v3.0-d30
+DONE ramp60-n100-s0-v3.0-d30 switched=0 withdrawn=0 attended=0
+START 470/508 ramp60-n100-s1-v3.0-d30
+DONE ramp60-n100-s1-v3.0-d30 switched=0 withdrawn=0 attended=0
+START 471/508 ramp60-n100-s2-v3.0-d30
+DONE ramp60-n100-s2-v3.0-d30 switched=0 withdrawn=0 attended=0
+START 472/508 ramp60-n100-s3-v3.0-d30
+DONE ramp60-n100-s3-v3.0-d30 switched=0 withdrawn=0 attended=0
+START 473/508 i80-A-positive-n100-s0-v2-d30
+DONE i80-A-positive-n100-s0-v2-d30 switched=64 withdrawn=0 attended=0
+START 474/508 i80-A-positive-n100-s1-v2-d30
+DONE i80-A-positive-n100-s1-v2-d30 switched=65 withdrawn=0 attended=0
+START 475/508 i80-A-positive-n100-s2-v2-d30
+DONE i80-A-positive-n100-s2-v2-d30 switched=68 withdrawn=0 attended=0
+START 476/508 i80-A-positive-n100-s3-v2-d30
+DONE i80-A-positive-n100-s3-v2-d30 switched=68 withdrawn=0 attended=0
+START 477/508 i80-A-positive-n100-s0-v3.0-d30
+DONE i80-A-positive-n100-s0-v3.0-d30 switched=12 withdrawn=0 attended=0
+START 478/508 i80-A-positive-n100-s1-v3.0-d30
+DONE i80-A-positive-n100-s1-v3.0-d30 switched=5 withdrawn=0 attended=0
+START 479/508 i80-A-positive-n100-s2-v3.0-d30
+DONE i80-A-positive-n100-s2-v3.0-d30 switched=7 withdrawn=0 attended=0
+START 480/508 i80-A-positive-n100-s3-v3.0-d30
+DONE i80-A-positive-n100-s3-v3.0-d30 switched=4 withdrawn=0 attended=0
+START 481/508 i80-unknown-known-n100-s0-v2-d30
+DONE i80-unknown-known-n100-s0-v2-d30 switched=64 withdrawn=0 attended=0
+START 482/508 i80-unknown-known-n100-s1-v2-d30
+DONE i80-unknown-known-n100-s1-v2-d30 switched=65 withdrawn=0 attended=0
+START 483/508 i80-unknown-known-n100-s2-v2-d30
+DONE i80-unknown-known-n100-s2-v2-d30 switched=68 withdrawn=0 attended=0
+START 484/508 i80-unknown-known-n100-s3-v2-d30
+DONE i80-unknown-known-n100-s3-v2-d30 switched=68 withdrawn=0 attended=0
+START 485/508 i80-unknown-known-n100-s0-v3.0-d30
+DONE i80-unknown-known-n100-s0-v3.0-d30 switched=0 withdrawn=0 attended=0
+START 486/508 i80-unknown-known-n100-s1-v3.0-d30
+DONE i80-unknown-known-n100-s1-v3.0-d30 switched=0 withdrawn=0 attended=0
+START 487/508 i80-unknown-known-n100-s2-v3.0-d30
+DONE i80-unknown-known-n100-s2-v3.0-d30 switched=0 withdrawn=0 attended=0
+START 488/508 i80-unknown-known-n100-s3-v3.0-d30
+DONE i80-unknown-known-n100-s3-v3.0-d30 switched=0 withdrawn=0 attended=0
+START 489/508 sudden60-n1000-s0-v3.1-d30
+DONE sudden60-n1000-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 490/508 sudden60-n1000-s1-v3.1-d30
+DONE sudden60-n1000-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 491/508 ramp60-n1000-s0-v3.1-d30
+DONE ramp60-n1000-s0-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 492/508 ramp60-n1000-s1-v3.1-d30
+DONE ramp60-n1000-s1-v3.1-d30 switched=0 withdrawn=0 attended=0
+START 493/508 i80-A-positive-n1000-s0-v3.1-d30
+DONE i80-A-positive-n1000-s0-v3.1-d30 switched=4 withdrawn=7 attended=0
+START 494/508 i80-A-positive-n1000-s1-v3.1-d30
+DONE i80-A-positive-n1000-s1-v3.1-d30 switched=11 withdrawn=21 attended=0
+START 495/508 crowd-none-n1000-s0-v3.1-d30
+DONE crowd-none-n1000-s0-v3.1-d30 switched=0 withdrawn=0 attended=4
+START 496/508 crowd-none-n1000-s1-v3.1-d30
+DONE crowd-none-n1000-s1-v3.1-d30 switched=0 withdrawn=0 attended=12
+START 497/508 severe80-n100-s0-v3.1-d180
+DONE severe80-n100-s0-v3.1-d180 switched=0 withdrawn=0 attended=0
+START 498/508 severe80-n100-s1-v3.1-d180
+DONE severe80-n100-s1-v3.1-d180 switched=0 withdrawn=0 attended=0
+START 499/508 severe80-n100-s2-v3.1-d180
+DONE severe80-n100-s2-v3.1-d180 switched=0 withdrawn=0 attended=0
+START 500/508 i80-A-positive-n100-s0-v3.1-d180
+DONE i80-A-positive-n100-s0-v3.1-d180 switched=14 withdrawn=16 attended=0
+START 501/508 i80-A-positive-n100-s1-v3.1-d180
+DONE i80-A-positive-n100-s1-v3.1-d180 switched=3 withdrawn=10 attended=0
+START 502/508 i80-A-positive-n100-s2-v3.1-d180
+DONE i80-A-positive-n100-s2-v3.1-d180 switched=7 withdrawn=9 attended=0
+START 503/508 i80-unknown-positive-n100-s0-v3.1-d180
+DONE i80-unknown-positive-n100-s0-v3.1-d180 switched=0 withdrawn=0 attended=0
+START 504/508 i80-unknown-positive-n100-s1-v3.1-d180
+DONE i80-unknown-positive-n100-s1-v3.1-d180 switched=0 withdrawn=0 attended=0
+START 505/508 i80-unknown-positive-n100-s2-v3.1-d180
+DONE i80-unknown-positive-n100-s2-v3.1-d180 switched=0 withdrawn=0 attended=0
+START 506/508 contract-repeat-n100-s0-v3.1-d180
+DONE contract-repeat-n100-s0-v3.1-d180 switched=0 withdrawn=0 attended=0
+START 507/508 contract-repeat-n100-s1-v3.1-d180
+DONE contract-repeat-n100-s1-v3.1-d180 switched=0 withdrawn=0 attended=0
+START 508/508 contract-repeat-n100-s2-v3.1-d180
+DONE contract-repeat-n100-s2-v3.1-d180 switched=0 withdrawn=0 attended=0
+ALL COMPLETE: 508 runs

@@ -1,0 +1,15 @@
+{"population": 100, "days": 60, "seed": 19, "completed_trajectories": 3, "hashes": {"full": "9f1ade1d14ef9914a14a13e71d1773a6ad188a799e243c3253959b2434277b43", "replay": "9f1ade1d14ef9914a14a13e71d1773a6ad188a799e243c3253959b2434277b43", "resumed": "9f1ade1d14ef9914a14a13e71d1773a6ad188a799e243c3253959b2434277b43"}, "full_replay_resume_equal": true, "total_wall_seconds": 1.3143357589999596, "full_metrics": {"experiment_id": "n100-s19-B-d60", "population": 100, "seed": 19, "behavior_version": "2.0.0", "initial_hash": "0808f46d80ef70897b12435956c5feaa9a4f5bdfb818f830562fdc47aa35b531", "wall_seconds": 0.21156182899994747, "events": 12401, "log_records": 19554, "memory_records": 6088, "events_per_agent_day": 2.0668333333333333, "messages": 8, "deliveries": 96, "reads": 88, "reached_agents": 22, "unreached_agents": 78, "leaks": 0, "scope_violations": 0, "alignment_changes": 201, "alignment_changed_agents": 87, "alignment_change_rate": 0.87, "topic_changes": 120, "topic_changed_agents": 100, "core_changes": 0, "trust_erosions": 175, "trust_recoveries": 0, "fully_recovered_pairs": 0, "recovery_censored_pairs": 22, "mean_recovery_days": null, "perception_error": 0.3488719010828324, "perception_sample_count": 18, "rejected_actions": 0, "budget_blocked_decisions": 0, "pressure_actions": 0, "rss_process_peak_kib": 35120, "unreached_switches": 67, "mean_private_loyalty": 0.2313840602499379, "mean_support_gap": 0.2751626353822231, "mean_trust": 0.6081364219825147, "losses": 18879.99999999996, "arm": "B", "days": 60, "snapshot_bytes": 5752901, "compressed_bytes": 876247, "artifact": "runs/behavior-verification/n100-s19-B-d60/state.json.gz"}}
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/user/people1000/society/verify_runs.py", line 38, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/user/people1000/society/verify_runs.py", line 17, in main
+    full,row,_=make_run(19,pop,'B',60,'runs/behavior-verification')
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/people1000/society/experiments.py", line 95, in make_run
+    sim.run(days*1440-1 if stop_at is None else stop_at)
+  File "/home/user/people1000/society/engine.py", line 366, in run
+    raise RuntimeError("Event limit reached; state remains resumable")
+RuntimeError: Event limit reached; state remains resumable

@@ -1,0 +1,162 @@
+[
+  {
+    "v32": "fresh-v32-control--none-n100-s0-v3.2-d30",
+    "v33": "replication--none-n100-s0-v3.3-d30",
+    "differences": {}
+  },
+  {
+    "v32": "fresh-v32-control--none-n100-s1-v3.2-d30",
+    "v33": "replication--none-n100-s1-v3.3-d30",
+    "differences": {}
+  },
+  {
+    "v32": "fresh-v32-control--none-n100-s2-v3.2-d30",
+    "v33": "replication--none-n100-s2-v3.3-d30",
+    "differences": {}
+  },
+  {
+    "v32": "fresh-v32-control--none-n100-s3-v3.2-d30",
+    "v33": "replication--none-n100-s3-v3.3-d30",
+    "differences": {}
+  },
+  {
+    "v32": "fresh-v32-control--severe80-n100-s0-v3.2-d30",
+    "v33": "replication--severe80-n100-s0-v3.3-d30",
+    "differences": {}
+  },
+  {
+    "v32": "fresh-v32-control--severe80-n100-s1-v3.2-d30",
+    "v33": "replication--severe80-n100-s1-v3.3-d30",
+    "differences": {}
+  },
+  {
+    "v32": "fresh-v32-control--severe80-n100-s2-v3.2-d30",
+    "v33": "replication--severe80-n100-s2-v3.3-d30",
+    "differences": {}
+  },
+  {
+    "v32": "fresh-v32-control--severe80-n100-s3-v3.2-d30",
+    "v33": "replication--severe80-n100-s3-v3.3-d30",
+    "differences": {}
+  },
+  {
+    "v32": "fresh-v32-control--i80-A-positive-n100-s0-v3.2-d30",
+    "v33": "replication--i80-A-positive-n100-s0-v3.3-d30",
+    "differences": {}
+  },
+  {
+    "v32": "fresh-v32-control--i80-A-positive-n100-s1-v3.2-d30",
+    "v33": "replication--i80-A-positive-n100-s1-v3.3-d30",
+    "differences": {}
+  },
+  {
+    "v32": "fresh-v32-control--i80-A-positive-n100-s2-v3.2-d30",
+    "v33": "replication--i80-A-positive-n100-s2-v3.3-d30",
+    "differences": {}
+  },
+  {
+    "v32": "fresh-v32-control--i80-A-positive-n100-s3-v3.2-d30",
+    "v33": "replication--i80-A-positive-n100-s3-v3.3-d30",
+    "differences": {}
+  },
+  {
+    "v32": "fresh-v32-control--i80-unknown-positive-n100-s0-v3.2-d30",
+    "v33": "replication--i80-unknown-positive-n100-s0-v3.3-d30",
+    "differences": {}
+  },
+  {
+    "v32": "fresh-v32-control--i80-unknown-positive-n100-s1-v3.2-d30",
+    "v33": "replication--i80-unknown-positive-n100-s1-v3.3-d30",
+    "differences": {}
+  },
+  {
+    "v32": "fresh-v32-control--i80-unknown-positive-n100-s2-v3.2-d30",
+    "v33": "replication--i80-unknown-positive-n100-s2-v3.3-d30",
+    "differences": {}
+  },
+  {
+    "v32": "fresh-v32-control--i80-unknown-positive-n100-s3-v3.2-d30",
+    "v33": "replication--i80-unknown-positive-n100-s3-v3.3-d30",
+    "differences": {}
+  },
+  {
+    "v32": "fresh-v32-control--source-aligned-n100-s0-v3.2-d30",
+    "v33": "replication--source-aligned-n100-s0-v3.3-d30",
+    "differences": {}
+  },
+  {
+    "v32": "fresh-v32-control--source-aligned-n100-s1-v3.2-d30",
+    "v33": "replication--source-aligned-n100-s1-v3.3-d30",
+    "differences": {}
+  },
+  {
+    "v32": "fresh-v32-control--source-aligned-n100-s2-v3.2-d30",
+    "v33": "replication--source-aligned-n100-s2-v3.3-d30",
+    "differences": {}
+  },
+  {
+    "v32": "fresh-v32-control--source-aligned-n100-s3-v3.2-d30",
+    "v33": "replication--source-aligned-n100-s3-v3.3-d30",
+    "differences": {}
+  },
+  {
+    "v32": "fresh-v32-control--source-opposed-n100-s1-v3.2-d30",
+    "v33": "replication--source-opposed-n100-s1-v3.3-d30",
+    "differences": {}
+  },
+  {
+    "v32": "fresh-v32-control--source-opposed-n100-s0-v3.2-d30",
+    "v33": "replication--source-opposed-n100-s0-v3.3-d30",
+    "differences": {}
+  },
+  {
+    "v32": "fresh-v32-control--source-opposed-n100-s2-v3.2-d30",
+    "v33": "replication--source-opposed-n100-s2-v3.3-d30",
+    "differences": {}
+  },
+  {
+    "v32": "fresh-v32-control--source-opposed-n100-s3-v3.2-d30",
+    "v33": "replication--source-opposed-n100-s3-v3.3-d30",
+    "differences": {}
+  },
+  {
+    "v32": "fresh-v32-control--crowd-none-n100-s0-v3.2-d30",
+    "v33": "replication--crowd-none-n100-s0-v3.3-d30",
+    "differences": {}
+  },
+  {
+    "v32": "fresh-v32-control--crowd-none-n100-s1-v3.2-d30",
+    "v33": "replication--crowd-none-n100-s1-v3.3-d30",
+    "differences": {}
+  },
+  {
+    "v32": "fresh-v32-control--crowd-none-n100-s3-v3.2-d30",
+    "v33": "replication--crowd-none-n100-s3-v3.3-d30",
+    "differences": {}
+  },
+  {
+    "v32": "fresh-v32-control--crowd-none-n100-s2-v3.2-d30",
+    "v33": "replication--crowd-none-n100-s2-v3.3-d30",
+    "differences": {}
+  },
+  {
+    "v32": "fresh-v32-control--contract-repeat-n100-s0-v3.2-d30",
+    "v33": "replication--contract-repeat-n100-s0-v3.3-d30",
+    "differences": {}
+  },
+  {
+    "v32": "fresh-v32-control--contract-repeat-n100-s1-v3.2-d30",
+    "v33": "replication--contract-repeat-n100-s1-v3.3-d30",
+    "differences": {}
+  },
+  {
+    "v32": "fresh-v32-control--contract-repeat-n100-s2-v3.2-d30",
+    "v33": "replication--contract-repeat-n100-s2-v3.3-d30",
+    "differences": {}
+  },
+  {
+    "v32": "fresh-v32-control--contract-repeat-n100-s3-v3.2-d30",
+    "v33": "replication--contract-repeat-n100-s3-v3.3-d30",
+    "differences": {}
+  }
+]
