@@ -292,12 +292,6 @@ def ask_operator(sim,question,advisor,connection_test=False,causal_directive=Non
         causal_directive=causal_day_directive(chain,1)
     user_payload={'question_or_scenario':question,'causal_directive':causal_directive,'operator_report':context}
     user_text='Yalnız BAĞLANTI TAMAM yaz.' if connection_test else json.dumps(user_payload,ensure_ascii=False)
-    payload={'model':advisor.model,'messages':[
-        {'role':'system','content':PHILOSOPHY_SYSTEM_PROMPT},
-        {'role':'user','content':user_text}],
-        'max_completion_tokens':64 if connection_test else max(advisor.max_output_tokens,1400)}
-    request=Request(advisor.endpoint,data=json.dumps(payload).encode(),headers={
-        'Content-Type':'application/json','Accept':'application/json','User-Agent':USER_AGENT,'Authorization':'Bearer '+key})
     advisor.last_usage=None
     meta['question_attempts']+=1
     entry={'time':sim.time,'status':'started'};meta['question_log'].append(entry)
@@ -308,6 +302,15 @@ def ask_operator(sim,question,advisor,connection_test=False,causal_directive=Non
                 'Yalnız BAĞLANTI TAMAM yaz.' if connection_test else json.dumps(user_payload,ensure_ascii=False))
             data={'usage':advisor.last_usage or {}}
         else:
+            # Yerel Gemini adaptörü native generateContent kullanır; OpenAI
+            # `messages`/Bearer isteği yalnızca OpenAI-uyumlu sağlayıcıda kurulur.
+            payload={'model':advisor.model,'messages':[
+                {'role':'system','content':PHILOSOPHY_SYSTEM_PROMPT},
+                {'role':'user','content':user_text}],
+                'max_completion_tokens':64 if connection_test else max(advisor.max_output_tokens,1400)}
+            request=Request(advisor.endpoint,data=json.dumps(payload).encode(),headers={
+                'Content-Type':'application/json','Accept':'application/json','User-Agent':USER_AGENT,
+                'Authorization':'Bearer '+key})
             advisor.pace()
             try:
                 with urlopen(request,timeout=advisor.timeout) as response:data=json.loads(response.read(2_000_000))
@@ -323,7 +326,8 @@ def ask_operator(sim,question,advisor,connection_test=False,causal_directive=Non
             ch=meta['scenario_chain']
             ch['day']=causal_directive['day']
             ch['history'].append({'day':causal_directive['day'],'event':causal_directive['event_of_day'],
-                'allowed_extremes':causal_directive['allowed_extremes'],'summary':answer[:600]})
+                'allowed_extremes':causal_directive['allowed_extremes'],'summary':answer[:600],
+                'full_text':answer})
         return answer
     except Exception as exc:
         entry['status']='failed'
@@ -346,11 +350,14 @@ def advance_scenario_day(sim,advisor,custom_event=None):
         out=_offline_scenario_day(chain,directive)
         chain['day']=next_day
         chain['history'].append({'day':next_day,'event':directive['event_of_day'],
-            'allowed_extremes':directive['allowed_extremes'],'summary':out[:600]})
+            'allowed_extremes':directive['allowed_extremes'],'summary':out[:600],
+            'full_text':out})
         return out
+    # Tam metin kayitta durur; modele yalnizca kisa ozet gider (kota/token siniri).
+    gecmis=[{k:h.get(k) for k in ('day','event','summary')} for h in chain['history'][-3:]]
     prompt_q=(f"Başlangıç olayı: {chain['initial_event']}\n"
               f"Şimdi {next_day}. GÜN gelişmesi: {directive['event_of_day']}\n"
-              f"Önceki günlerin özeti: {json.dumps(chain['history'][-3:],ensure_ascii=False)}\n"
+              f"Önceki günlerin özeti: {json.dumps(gecmis,ensure_ascii=False)}\n"
               f"Bu günün nedensel sınırlarına ({directive['allowed_extremes']}) uyarak {next_day}. günü 6 kitle için ayrı ayrı (Zenginleri A yanlısı, B yanlısı ve Tarafsız sosyal medya olarak 3 alt kanatta; Gözlemcileri ise oyunu dışarıdan okuyan uyanık karakteriyle) Türkçe açıkla ve özetle.")
     if meta['question_attempts']>=meta['question_limit']:
         meta['question_limit']=meta['question_attempts']+1
@@ -435,7 +442,8 @@ def main():
     if 'termux_pilot' not in sim.protocol:parser.error('Bu kayıt terminal pilotuna ait değil; farklı --state seç.')
     sim.save(args.state)
     provider=AgendaProvider(advisor);session=Session(sim,provider)
-    print('ÇEVRİMDIŞI — API ücreti yok.' if args.offline else 'CANLI API — gun/ilerle/sor/devam/baglanti ücretli istek oluşturabilir.')
+    print('ÇEVRİMDIŞI — API isteği yok.' if args.offline else
+          'CANLI API — gun/ilerle/sor/devam/baglanti istek oluşturabilir; ücretsiz katmanda kota, ücretli planda bütçe kullanılır.')
     print(json.dumps(settings(advisor),ensure_ascii=False,indent=2))
     print(f'Kayıt: {args.state}\nAtama → açıklama → 4. simülasyon gününde yeterlilik belgesi.\n'+HELP)
     print(json.dumps(report(sim),ensure_ascii=False,indent=2))
@@ -504,6 +512,8 @@ def main():
                     print('API üretim yanıtı bekleniyor… Otomatik tekrar yok.',flush=True)
                     try:print(ask_operator(sim,'Kısa bağlantı testi.',advisor,connection_test=True))
                     finally:sim.save(args.state)
+            elif cmd=='modeller':
+                print('modeller yalnızca yerel Gemini adaptöründe çalışır; ayar komutuyla sağlayıcıyı kontrol et.')
             elif cmd.startswith('bekleme '):
                 if not isinstance(advisor,OpenAICompatibleAdvisor):
                     print('Çevrimdışı modda API bekleme süresi kullanılmaz.')

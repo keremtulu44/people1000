@@ -2,7 +2,11 @@
 
 Sınırlı bilgi ve iletişim altında 100–1000 kişinin zaman içinde değişimini
 inceleyen **kapalı toplum simülasyonu**. Gerçek toplumları tahmin ettiği iddiası
-yoktur. Gerçek AI API bağlantısı ve web paneli bu sürümde yoktur.
+yoktur. Gerçek AI API bağlantısı isteğe bağlı ortam değişkenleriyle açılır
+(Gemini `gemini-3.5-flash-lite` sabit modeli: [.env.example](.env.example) ve
+[Termux/Gemini kılavuzu](docs/termux-pilot.md)); arabirim olarak terminal pilotu
+ve sıfır bağımlılıklı **yerel web arayüzü** (`python -m society.web_ui`) vardır.
+Herkese açık barındırılan bir web paneli bu sürümde yoktur.
 
 ## Güncel davranış: v3.3 — normal gündem ve API karar katmanı
 
@@ -13,7 +17,7 @@ kontrol noktaları eklendi. **Gerçek ücretli API koşulmadı**; çevrimdışı
 ve kontrollü HTTP yanıtlarıyla doğrulandı.
 
 **808 ana koşu + 24 uygulama kontrolü + 4 müdahalesiz kontrol** tamamlandı.
-150 test: 149 başarılı, 1 eski ham dosya eksikliği nedeniyle atlanan.
+216 test: 215 başarılı, 1 eski ham dosya eksikliği nedeniyle atlanan.
 
 [Genel sonuç raporu](reports/character-v33-report.md) ·
 [Uygulama ve kullanım](docs/agenda-api-implementation.md) ·
@@ -107,10 +111,12 @@ konusunda claim gerekmiyor. Mesajlar sıradan okuma, yetki ve bütçe kuralları
 
 ## Başlangıç
 
-Python 3.11+; çekirdek ve deneyler yalnızca standart kütüphaneyi kullanır.
+Python 3.11+; çekirdek, deneyler ve web arayüzü yalnızca standart kütüphaneyi
+kullanır. Canlı API anahtarı olmadan aşağıdaki komutların hiçbiri ağ isteği göndermez.
 
 ```bash
 python -m unittest discover -s tests -v
+python -m society.web_ui --offline --state runs/offline-pilot.json  # http://127.0.0.1:8501
 python -m society.cli --demo --days 3 --output runs/demo.json
 python -m society.cli --resume runs/demo.json --days 2 --output runs/continued.json
 python -m society.cli --population 1000 --demo --days 3 --output runs/scale.json
