@@ -114,9 +114,14 @@ echo
 echo "Kurulum tamam. Anahtari degistirmek istersen: bash tools/termux_setup.sh --new-key"
 echo "Sonraki komutlar:"
 echo "  source .venv/bin/activate && source \"$CONF\""
-echo "  python -m society.termux --offline --state runs/offline-pilot.json   # ucretsiz deneme"
-echo "  python -m society.termux --state runs/gemini-pilot.json                # canli"
-read -r -p "Simdi canli pilotu baslatayim mi? [e/H] " RUN || true
-if [ "${RUN:-}" = "e" ] || [ "${RUN:-}" = "E" ]; then
-  exec python -m society.termux --state runs/gemini-pilot.json
-fi
+echo "  python -m society.web_ui --state runs/gemini-pilot.json --open       # KARTLI WEB ARAYUZU"
+echo "  python -m society.termux --state runs/gemini-pilot.json              # terminal pilotu"
+echo "  python -m society.termux --offline --state runs/offline-pilot.json    # ucretsiz deneme"
+echo "NOT: Ayni --state dosyasini web arayuzu ve terminal AYNI ANDA acmayin."
+# w = kartli web arayuzu (oncelikli), t/e = eski terminal pilotu, H = hicbiri.
+read -r -p "Simdi neyi baslatayim? [w=web arayuzu / t=terminal / H=hicbiri] " RUN || true
+case "${RUN:-}" in
+  w|W) exec python -m society.web_ui --state runs/gemini-pilot.json --open ;;
+  t|T|e|E) exec python -m society.termux --state runs/gemini-pilot.json ;;
+  *) echo "Baslatilmadi. Yukaridaki komutlardan birini calistir." ;;
+esac

@@ -389,6 +389,11 @@ def execute_command(pilot, payload):
         elif cmd == 'uretim-test':
             if not confirm:
                 raise ValueError('Bu komut 1 uretim istegi atar; once onay verin.')
+            # Acik onay verilmis tek uretim denemesi, eski kayitta dolmus olan
+            # soru/senaryo sayacina takilmasin (sor/devam'daki gibi 1 artir).
+            if isinstance(advisor, OpenAICompatibleAdvisor) and \
+                    meta['question_attempts'] >= meta['question_limit']:
+                meta['question_limit'] = meta['question_attempts'] + 1
             try:
                 out = termux.ask_operator(sim, 'Kisa baglanti testi.', advisor, connection_test=True)
             finally:

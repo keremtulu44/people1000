@@ -559,6 +559,12 @@ def main():
                         print('Bu yalnız metadata kontrolü; metin üretiminin çalıştığını veya ücretsiz kotayı doğrulamaz.')
                     finally:sim.save(args.state)
             elif cmd in ('baglanti','uretim-test'):
+                # Acik onayli uretim testi, eski kayittaki dolu soru sayacina
+                # takilmasin; kullanicinin "Soru limiti" girmesi gerekmesin.
+                if isinstance(advisor,OpenAICompatibleAdvisor):
+                    meta=sim.protocol['termux_pilot']
+                    if meta['question_attempts']>=meta['question_limit']:
+                        meta['question_limit']=meta['question_attempts']+1
                 if input('1 metin üretimi isteği; token/kota kullanabilir. Devam? [e/H] ').strip().lower()=='e':
                     print('API üretim yanıtı bekleniyor… Otomatik tekrar yok.',flush=True)
                     try:print(ask_operator(sim,'Kısa bağlantı testi.',advisor,connection_test=True))

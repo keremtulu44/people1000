@@ -30,8 +30,12 @@ Termux'ta pip'i `pip install --upgrade pip` ile güncellemeyin; paket yöneticis
 
 Paketler yüklüyse aşağıdaki üç komut sanal ortamı, `.env.example` ayarını ve
 anahtar girişini halleder; eski Groq/`gemini-flash-latest` satırlarını temizler.
-Script ağ isteği göndermez, yalnızca yüklü adaptörü/modeli yazdırır ve isterseniz
-canlı pilotu başlatır.
+Script ağ isteği göndermez, yalnızca yüklü adaptörü/modeli yazdırır. Sonda
+`[w=web arayüzü / t=terminal / H=hiçbiri]` sorar: **kartlı arayüz için `w`**
+(`python -m society.web_ui`), düz metin raporlar için `t` (veya eski `e`,
+`python -m society.termux`) seçilir. `e` seçeneği geçmişte olduğu gibi terminal
+pilotunu açar; bu yüzden ekrana kart yerine uzun JSON raporu gelir — bu bir hata
+değildir. İkisini aynı `--state` dosyasıyla aynı anda çalıştırmayın.
 
 ```bash
 cd "$HOME/people1000"
@@ -203,7 +207,10 @@ python -m society.web_ui --state runs/gemini-pilot.json --open
 ```
 
 `--open` Termux tarayıcısını açmayı dener; açılmazsa adresi elle yaz:
-**`http://127.0.0.1:8501`**. Ücretsiz denemek için `--offline` ekle (API
+**`http://127.0.0.1:8501`**. `bash tools/termux_setup.sh` sonundaki soruya `w`
+yazmak da aynı komutu çalıştırır. Terminal pilotu (`python -m society.termux`)
+açıksa önce `cik` ile kapat, sonra web arayüzünü başlat; ikisi aynı kaydı
+ezmesin. Ücretsiz denemek için `--offline` ekle (API
 kullanmaz), yeni bir kayıt için `--new --state runs/baska.json`, port değiştirmek
 için `--port 9000`. Sunucuyu arka planda bırakmak istersen:
 

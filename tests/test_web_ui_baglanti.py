@@ -9,8 +9,10 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from society import termux, web_ui
+from society.agenda_api import GEMINI_ENDPOINT, GEMINI_MODEL, GeminiAdvisor
 from society.agenda import ReferenceAdvisor
 from society.scenario_text import GROUPS, analyze_scenario, parse_kitle_sections
 
@@ -306,6 +308,46 @@ class StateConnectionTests(unittest.TestCase):
         self.assertIn('KİTLE', again.last_output)
         self.assertEqual(again.last_command, 'ozet')
         self.assertEqual(web_ui.build_state(again)['son_komut'], 'ozet')
+
+
+class PilotGecisTests(unittest.TestCase):
+    """Termux kurulum scripti + dolu soru kotasi ile uretim testi."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory(dir=str(Path(__file__).resolve().parents[1]))
+        self.state = Path(self.tmp.name) / 'pilot.json'
+        sim = termux.create_pilot()
+        sim.save(self.state)
+        self.pilot = web_ui.WebPilot(sim, ReferenceAdvisor(), self.state)
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def test_setup_script_offers_web_ui_and_keeps_terminal_option(self):
+        from subprocess import run
+        script = Path(__file__).resolve().parents[1] / 'tools' / 'termux_setup.sh'
+        text = script.read_text(encoding='utf-8')
+        self.assertIn('python -m society.web_ui --state runs/gemini-pilot.json --open', text)
+        self.assertIn('w=web arayuzu', text)
+        self.assertIn('python -m society.termux --state runs/gemini-pilot.json', text)
+        checked = run(['bash', '-n', str(script)], capture_output=True, text=True)
+        self.assertEqual(checked.returncode, 0, checked.stderr)
+
+    def test_production_test_is_not_blocked_by_full_question_quota(self):
+        advisor = GeminiAdvisor(GEMINI_ENDPOINT, GEMINI_MODEL, min_interval=0)
+        pilot = web_ui.WebPilot(self.pilot.sim, advisor, self.state)
+        meta = self.pilot.sim.protocol['termux_pilot']
+        meta['question_attempts'] = meta['question_limit'] = 5
+        with patch.object(termux, 'ask_operator', return_value='BAGLANTI TAMAM') as spy:
+            message, _ = web_ui.execute_command(
+                pilot, {'cmd': 'uretim-test', 'confirm': True})
+        self.assertEqual(message, 'BAGLANTI TAMAM')
+        self.assertEqual(meta['question_limit'], 6)
+        self.assertTrue(spy.called)
+
+    def test_production_test_still_requires_confirmation(self):
+        with self.assertRaises(ValueError):
+            web_ui.execute_command(self.pilot, {'cmd': 'uretim-test'})
 
 
 class HealthAndPageTests(unittest.TestCase):
