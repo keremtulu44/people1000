@@ -3,7 +3,7 @@
 # Sadece docs/termux-pilot.md icindeki adimlari otomatiklestirir; yeni ozellik eklemez.
 #
 #   cd "$HOME/people1000"
-#   git pull --ff-only origin arena/2869026b-people1000
+#   git pull --ff-only origin arena/5fb8114f-people1000
 #   bash tools/termux_setup.sh            # anahtari sorar / degistirme imkani verir
 #   bash tools/termux_setup.sh --new-key  # anahtari zorla yeniden sorar
 #
@@ -19,7 +19,7 @@ EXAMPLE="$REPO/.env.example"
 
 command -v python3 >/dev/null 2>&1 || { echo "Python yok. Termux'ta: pkg install python git nano -y"; exit 1; }
 python3 -c 'import sys; sys.exit(0 if sys.version_info >= (3,11) else 1)' || { echo "Python 3.11+ gerekli."; exit 1; }
-[ -f "$EXAMPLE" ] || { echo ".env.example yok. once: git pull --ff-only origin arena/2869026b-people1000"; exit 1; }
+[ -f "$EXAMPLE" ] || { echo ".env.example yok. once: git pull --ff-only origin arena/5fb8114f-people1000"; exit 1; }
 
 # 1) Sanal ortam: varsa yeniden kurma, paket zaten yukluyse tekrar kurma.
 if [ ! -d .venv ]; then python3 -m venv .venv; fi
@@ -114,9 +114,14 @@ echo
 echo "Kurulum tamam. Anahtari degistirmek istersen: bash tools/termux_setup.sh --new-key"
 echo "Sonraki komutlar:"
 echo "  source .venv/bin/activate && source \"$CONF\""
-echo "  python -m society.termux --offline --state runs/offline-pilot.json   # ucretsiz deneme"
-echo "  python -m society.termux --state runs/gemini-pilot.json                # canli"
-read -r -p "Simdi canli pilotu baslatayim mi? [e/H] " RUN || true
-if [ "${RUN:-}" = "e" ] || [ "${RUN:-}" = "E" ]; then
-  exec python -m society.termux --state runs/gemini-pilot.json
-fi
+echo "  python -m society.web_ui --state runs/gemini-pilot.json --open       # KARTLI WEB ARAYUZU"
+echo "  python -m society.termux --state runs/gemini-pilot.json              # terminal pilotu"
+echo "  python -m society.termux --offline --state runs/offline-pilot.json    # ucretsiz deneme"
+echo "NOT: Ayni --state dosyasini web arayuzu ve terminal AYNI ANDA acmayin."
+# w = kartli web arayuzu (oncelikli), t/e = eski terminal pilotu, H = hicbiri.
+read -r -p "Simdi neyi baslatayim? [w=web arayuzu / t=terminal / H=hicbiri] " RUN || true
+case "${RUN:-}" in
+  w|W) exec python -m society.web_ui --state runs/gemini-pilot.json --open ;;
+  t|T|e|E) exec python -m society.termux --state runs/gemini-pilot.json ;;
+  *) echo "Baslatilmadi. Yukaridaki komutlardan birini calistir." ;;
+esac

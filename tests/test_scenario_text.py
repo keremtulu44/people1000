@@ -100,7 +100,12 @@ class FullTextTests(unittest.TestCase):
         last = chain['history'][-1]
         self.assertIn('full_text', last)
         self.assertGreater(len(last['full_text']), 600)
-        self.assertEqual(len(last['summary']), 600)
+        # Ozet artik cumle sinirinda kesilir; kelime ortasi veya 600. karakterde
+        # zorunlu yarim cumle yoktur. Tam metin ayri saklanir.
+        self.assertLessEqual(len(last['summary']), 601)
+        self.assertTrue(last['summary'].endswith(('.', '!', '?', '…', ':', ')')))
+        self.assertNotIn('full_text', json.dumps(
+            {k: last.get(k) for k in ('day', 'event', 'summary')}))
 
     def test_cards_receive_six_ai_texts(self):
         web_ui.execute_command(self.pilot, {'cmd': 'devam', 'count': 2})

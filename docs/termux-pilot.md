@@ -14,7 +14,7 @@ telefonun kendi terminalinde çalışır; bu işlem Arena sunucusunda API çalı
 pkg update && pkg upgrade -y
 pkg install python python-pip git nano -y
 cd "$HOME"
-git clone --branch arena/2869026b-people1000 --single-branch https://github.com/keremtulu44/people1000.git
+git clone --branch arena/5fb8114f-people1000 --single-branch https://github.com/keremtulu44/people1000.git
 cd people1000
 python -m venv .venv
 source .venv/bin/activate
@@ -30,12 +30,16 @@ Termux'ta pip'i `pip install --upgrade pip` ile güncellemeyin; paket yöneticis
 
 Paketler yüklüyse aşağıdaki üç komut sanal ortamı, `.env.example` ayarını ve
 anahtar girişini halleder; eski Groq/`gemini-flash-latest` satırlarını temizler.
-Script ağ isteği göndermez, yalnızca yüklü adaptörü/modeli yazdırır ve isterseniz
-canlı pilotu başlatır.
+Script ağ isteği göndermez, yalnızca yüklü adaptörü/modeli yazdırır. Sonda
+`[w=web arayüzü / t=terminal / H=hiçbiri]` sorar: **kartlı arayüz için `w`**
+(`python -m society.web_ui`), düz metin raporlar için `t` (veya eski `e`,
+`python -m society.termux`) seçilir. `e` seçeneği geçmişte olduğu gibi terminal
+pilotunu açar; bu yüzden ekrana kart yerine uzun JSON raporu gelir — bu bir hata
+değildir. İkisini aynı `--state` dosyasıyla aynı anda çalıştırmayın.
 
 ```bash
 cd "$HOME/people1000"
-git pull --ff-only origin arena/2869026b-people1000
+git pull --ff-only origin arena/5fb8114f-people1000
 bash tools/termux_setup.sh
 ```
 
@@ -203,7 +207,10 @@ python -m society.web_ui --state runs/gemini-pilot.json --open
 ```
 
 `--open` Termux tarayıcısını açmayı dener; açılmazsa adresi elle yaz:
-**`http://127.0.0.1:8501`**. Ücretsiz denemek için `--offline` ekle (API
+**`http://127.0.0.1:8501`**. `bash tools/termux_setup.sh` sonundaki soruya `w`
+yazmak da aynı komutu çalıştırır. Terminal pilotu (`python -m society.termux`)
+açıksa önce `cik` ile kapat, sonra web arayüzünü başlat; ikisi aynı kaydı
+ezmesin. Ücretsiz denemek için `--offline` ekle (API
 kullanmaz), yeni bir kayıt için `--new --state runs/baska.json`, port değiştirmek
 için `--port 9000`. Sunucuyu arka planda bırakmak istersen:
 
@@ -214,33 +221,51 @@ nohup python -m society.web_ui --state runs/gemini-pilot.json > runs/web.log 2>&
 
 Ekranda neler var:
 
-- Üstte gün, mod (CANLI / ÇEVRİMDIŞI), model, bekleme süresi, taraf/ideoloji
-  değişimi, API deneme/kabul ve soru/sınır sayaçları.
-- **6 kitle kartı** — her birinde tek cümlelik eylem, Yeterlilik/Usul yüzdesi
-  (görsel çubuk), **düne göre fark oku** (`▲ +7 puan`), Türkçe özet. Statik rol
-  tanımı ve model notu daraltılabilir "Detay" içinde; artık her seferinde ekranı
-  doldurmuyor.
-- **AI anlatımı her kartın kendi boşluğunda.** `sor`, `devam`, `olay` ile Gemini'den
-  gelen "**1. İktidar Yanlıları** … **6. Gözlemciler**" biçimli metin
-  `society/scenario_text.py` ile 6 bölüme ayrılır; her bölüm **kendi kartındaki**
-  mavi "AI ANLATIMI · GÜN N" kutusuna yazılır (Zenginler kartında 3 alt kanat da
-  aynı kutuda kalır). Motorun sayısal özeti hemen altında gri satırda durur.
-  "Anlatım günü" seçicisiyle zincirin önceki günlerine dönüp o günün 6 kartlık
-  metnini görebilirsin. AI metni yoksa kutu bunu açıkça belirtir.
-- Tam metin artık kayıtta saklanır; eski sürüm yalnızca ilk 600 karakteri
-  tutuyordu. Eski kayıtlarda kartlar "ESKİ KAYIT" etiketiyle kırpılmış metni
-  gösterir; yeni bir `sor`/`devam` çalıştırınca tam metin gelir. Sonraki günlerin
-  prompt'una yine yalnızca kısa özet gider, kotayı şişirmez.
+- Üstte **sunucu bağlantı göstergesi** (`/api/health` ile 20 saniyede bir nabız),
+  gün, mod (CANLI / ÇEVRİMDIŞI), model, bekleme süresi, taraf/ideoloji değişimi,
+  API deneme/kabul ve soru/sınır sayaçları.
+- **Bağlantı bandı ve "Anlatım → kitle bağlantıları" haritası.** Seçili gün için
+  `N / 6` kartın kendi AI metnine bağlı olduğu, kaynağın tam metin mi eski özet
+  mi olduğu ve kaç karakter aktarıldığı açıkça yazılır. Altı düğümlü hat, her
+  kartın durumunu renkle gösterir (yeşil tam / sarı eski / mor ortak / gri
+  bekliyor); düğüme dokununca ilgili karta kaydırır.
+- **6 kitle kartı** — her birinde durum etiketi (`AI BAĞLI`, `ESKİ KAYIT`,
+  `ORTAK METİN`, `BEKLİYOR`), eylem, Yeterlilik/Usul yüzdesi (görsel çubuk),
+  **düne göre fark oku** (`▲ +7 puan`), AI anlatım kutusu, kopyalama düğmesi ve
+  Türkçe motor özeti. Statik rol tanımı ve model notu daraltılabilir detaydadır.
+  **Kart metninin tamamı DOM'dadır**; uzun metinler isteğe bağlı görsel
+  kısaltmayla gösterilir, "Tamamını göster" ile açılır — veri kesilmez.
+- **AI anlatımı her kartın kendi boşluğunda.** `sor`, `devam`, `olay` ile gelen
+  metin `society/scenario_text.py` ile 6 bölüme ayrılır. Ayrıştırıcı numaralı
+  (`1.`, `1)`, `4 -`), markdown (`###`), numarasız kalın başlıklar, başlıkla aynı
+  satırda başlayan gövde, sırası değişmiş başlıklar ve parentez içindeki açık
+  kitle kimliklerini tanır; `Genel Özet`, `Sonuç`, `Genel Değerlendirme` gibi
+  farklı özet başlıklarını **son karttan ayırır**; Zenginlerin 3 alt kanadını
+  ayrı kart sanmaz. Bir kitleye özel bölüm yoksa kart, uydurma metin yerine
+  "günün ortak anlatımı"nı açık etiketle gösterir.
+- **Karakter sınırıyla kesme yoktur.** Eski sürüm yalnızca ilk 600 karakteri
+  saklıyor, bölümleri de 6000. karakterde kesiyordu. Şimdi tam metin kayıtta
+  (`full_text`) durur ve kartlara bölümün tamamı aktarılır. Yalnızca **eski**
+  kayıtlarda 600 karakterlik özet vardır; bunlar sarı `ESKİ KAYIT` etiketiyle ve
+  "metin burada yarım kalabilir" uyarısıyla gösterilir, tam metinmiş gibi
+  sunulmaz. Sonraki günlerin prompt'una yine cümle sınırında kısaltılmış özet
+  gider; kelime ortası kesilmez ve kota şişmez. Modele gönderilen kullanıcı
+  tarafı `output_format` talimatı, altı sabit başlığı ve `Günün Genel Özeti`ni
+  ister; **kitle karakter tanımları/felsefesi değiştirilmez**.
 - Komut paneli: `Gün ilerlet`, `İlerle 3`, `Özet`, `Rapor`, `Ayar`, `Kaydet`,
   senaryo başlatma (`Başlat`), `Devam 1/3`, `Olay ekle`. Tanılama ve sınırlar
   açılır panelinde `Bağlantı`, `Modeller`, `Üretim testi` (onay ister), `Bekleme`,
-  `Limit`, `Soru limiti`, JSON indirme.
+  `Limit`, `Soru limiti`, JSON indirme. Bütün düğmeler aynı `/api/command`
+  yoluna bağlıdır; hata/meşgul durumları durum satırında ve toast'ta görünür.
 - **Senaryo zinciri zaman çizelgesi**: başlangıç olayı + her günün gelişmesi,
-  nedensel sınırı ve özeti.
-- **Son çıktı** alanı: terminalde göreceğin metnin aynısı, kaydırılabilir.
+  genel özeti, nedensel sınırı, `Kartlar: N / 6` bağlantı sayacı ve günün tam
+  metni (karakter sayısıyla birlikte daraltılabilir).
+- **Son çıktı** alanı: terminalde göreceğin metnin aynısı, kopyalanabilir ve
+  kaydırılabilir.
 
-"Düne göre" farkları `runs/<kayıt>.history.json` dosyasında tutulur (kayıtla
-birlikte, repo dışında). Sayfa yenilenince son komutun çıktısı geri gelir.
+"Düne göre" farklar `runs/<kayıt>.history.json`, son komut/çıktı
+`runs/<kayıt>.last.json` dosyasında tutulur (ikisi de repo dışında). Sayfa
+yenilendiğinde veya sunucu yeniden başladığında son komutun çıktısı geri gelir.
 
 **Dikkat edilmesi gerekenler:**
 
@@ -352,7 +377,7 @@ Güncelleme için:
 
 ```bash
 cd "$HOME/people1000"
-git pull --ff-only origin arena/2869026b-people1000
+git pull --ff-only origin arena/5fb8114f-people1000
 source .venv/bin/activate
 # Ayar dosyası zaten varsa ÜZERİNE YAZMAYIN (anahtar silinir).
 # nano ile yalnızca model/adres/aralık satırlarını .env.example ile eşitleyin.
