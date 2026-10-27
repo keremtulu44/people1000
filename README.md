@@ -8,6 +8,20 @@ yoktur. Gerçek AI API bağlantısı isteğe bağlı ortam değişkenleriyle aç
 ve sıfır bağımlılıklı **yerel web arayüzü** (`python -m society.web_ui`) vardır.
 Herkese açık barındırılan bir web paneli bu sürümde yoktur.
 
+## Web arayüzü — kart bağlantıları (27 Ekim 2026)
+
+`python -m society.web_ui` arayüzünde AI anlatımının 6 kitle kartına ayrılması
+yeniden yazıldı. Numarasız/markdown/sırası değişmiş başlıklar, farklı genel özet
+adları ve Zenginlerin 3 alt kanadı artık doğru ayrıştırılır; genel özet son karta
+sızmaz, gövde cümleleri başlık sanılmaz. **Bölüm metni karakter sınırıyla
+kesilmez**; eski 600 karakterlik kayıtlar `ESKİ KAYIT` olarak açıkça işaretlenir.
+Arayüzde `N / 6` bağlantı bandı, altı düğümlü bağlantı haritası, her kartta
+durum etiketi, sunucu bağlantı nabzı (`/api/health`) ve günün tam metni paneli
+vardır. Kitlelerin kimlikleri, rol tanımları, karakter felsefesi ve davranış
+katsayıları **değiştirilmedi**; yalnızca çıktı biçimi tarifi, ayrıştırma ve
+sunum güncellendi. Ayrıntı: [Termux kılavuzu §6](docs/termux-pilot.md),
+[bağlantı teshisleri](tests/test_web_ui_baglanti.py).
+
 ## Güncel davranış: v3.3 — normal gündem ve API karar katmanı
 
 Sıradan atama/açıklama/kanıt gündemi, taraf ve ideoloji hesabından ayrıldı.

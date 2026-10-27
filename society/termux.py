@@ -8,6 +8,7 @@ import argparse
 from collections import defaultdict
 import json
 import os
+import re
 from pathlib import Path
 from urllib.request import Request
 
@@ -136,6 +137,50 @@ def turkce_ozet(sim):
     lines.append('  • Sonuç: Sıradan gündem tartışması ve yeterlilik belgesi yalnız olaya dair kanaatleri değiştirdi; hiçbir kitle taraf veya ideoloji değiştirmedi.')
     lines.append('================================================================')
     return '\n'.join(lines)
+
+
+# Karakter felsefesi/tanımları yukarıdaki sistem promptunda sabittir. Burada
+# yalnızca ÇIKTI BİÇİMİ tarif edilir: modelin başlıkları atması, kartların
+# "bağlanmaması" sorununun kaynağıdır. Altı kitle kimliği değiştirilmez.
+CIKTI_BICIMI=(
+    'ÇIKTI BİÇİMİ (kartların doğru bağlanması için zorunlu): Günün gelişmesini '
+    'kısa bir giriş paragrafıyla başlat. Ardından her kitle için AYRI bir başlık '
+    'kullan ve başlıkları tam olarak şu sırayla yaz: '
+    '"**1. İktidar Yanlıları (power_aligned)**", "**2. Muhalifler (opposition)**", '
+    '"**3. Yöneticiler / Otorite (authority)**", '
+    '"**4. Zenginler ve Sosyal Medya Etki Ekibi (wealthy)**", '
+    '"**5. Hoşnutsuz Kesim (discontented)**", "**6. Gözlemciler (observer)**". '
+    'Her başlığın ALTINA yalnızca o kitleye ait 1-2 kısa paragraf yaz; Zenginler '
+    'bölümünde 3 alt kanadı madde madde yaz. En sonda "**Günün Genel Özeti:**" '
+    'başlığıyla 1-2 cümlelik genel özet ver. Başka numaralı liste veya başlık '
+    'ekleme; her bölümü ve son cümleyi TAM cümlelerle bitir, yarım bırakma.')
+
+
+def kisa_ozet(text, limit=600):
+    """Prompt/legacy için ÖZET: karakter sınırında KELİME ORTASINDA KESMEZ.
+
+    Tam metin ayrıca `full_text` olarak saklanır; bu fonksiyon yalnızca sonraki
+    günün prompt'una giden kısa bağlamı üretir. Cümle sınırlarında keser.
+    """
+    s = (text or '').strip()
+    if len(s) <= limit:
+        return s
+    parts = re.split(r'(?<=[.!?])\s+|\n+', s)
+    out = ''
+    for part in parts:
+        part = part.strip()
+        if not part:
+            continue
+        candidate = (out + ' ' + part).strip()
+        if len(candidate) > limit:
+            break
+        out = candidate
+    if not out:
+        out = s[:limit]
+        space = out.rfind(' ')
+        if space > limit // 2:
+            out = out[:space]
+    return (out.rstrip() + ('…' if len(out) < len(s) else ''))[:limit + 1]
 
 
 PHILOSOPHY_SYSTEM_PROMPT=(
@@ -279,7 +324,9 @@ def _offline_scenario_day(chain,directive):
 
 def ask_operator(sim,question,advisor,connection_test=False,causal_directive=None):
     """One explicitly requested paid call, no mutation/action proposal capability."""
-    if not isinstance(question,str) or not 0<len(question)<=2000:raise ValueError('Soru 1–2000 karakter olmalı.')
+    # `sor` kullanıcı metni web_ui tarafında 2000 karakterle sınırlıdır; zincir
+    # prompt'u ise biçim talimatını da taşıdığı için daha geniş iç sınıra sahiptir.
+    if not isinstance(question,str) or not 0<len(question)<=4000:raise ValueError('Soru 1–4000 karakter olmalı.')
     meta=sim.protocol['termux_pilot']
     if meta['question_attempts']>=meta['question_limit']:
         raise RuntimeError('Soru istek sınırı doldu. (sor-limit 30 komutuyla sınırı artırabilirsin.)')
@@ -290,7 +337,8 @@ def ask_operator(sim,question,advisor,connection_test=False,causal_directive=Non
     if not connection_test and causal_directive is None:
         chain=init_scenario_chain(sim,question)
         causal_directive=causal_day_directive(chain,1)
-    user_payload={'question_or_scenario':question,'causal_directive':causal_directive,'operator_report':context}
+    user_payload={'question_or_scenario':question,'causal_directive':causal_directive,
+                  'operator_report':context,'output_format':CIKTI_BICIMI}
     user_text='Yalnız BAĞLANTI TAMAM yaz.' if connection_test else json.dumps(user_payload,ensure_ascii=False)
     advisor.last_usage=None
     meta['question_attempts']+=1
@@ -326,7 +374,7 @@ def ask_operator(sim,question,advisor,connection_test=False,causal_directive=Non
             ch=meta['scenario_chain']
             ch['day']=causal_directive['day']
             ch['history'].append({'day':causal_directive['day'],'event':causal_directive['event_of_day'],
-                'allowed_extremes':causal_directive['allowed_extremes'],'summary':answer[:600],
+                'allowed_extremes':causal_directive['allowed_extremes'],'summary':kisa_ozet(answer),
                 'full_text':answer})
         return answer
     except Exception as exc:
@@ -350,18 +398,21 @@ def advance_scenario_day(sim,advisor,custom_event=None):
         out=_offline_scenario_day(chain,directive)
         chain['day']=next_day
         chain['history'].append({'day':next_day,'event':directive['event_of_day'],
-            'allowed_extremes':directive['allowed_extremes'],'summary':out[:600],
+            'allowed_extremes':directive['allowed_extremes'],'summary':kisa_ozet(out),
             'full_text':out})
         return out
     # Tam metin kayitta durur; modele yalnizca kisa ozet gider (kota/token siniri).
-    gecmis=[{k:h.get(k) for k in ('day','event','summary')} for h in chain['history'][-3:]]
+    # Ozet de cumle sinirinda kisaltilir; kelime ortasi kesilmez.
+    gecmis=[{'day':h.get('day'),'event':h.get('event'),
+             'summary':kisa_ozet(h.get('summary',''),240)} for h in chain['history'][-3:]]
     prompt_q=(f"Başlangıç olayı: {chain['initial_event']}\n"
               f"Şimdi {next_day}. GÜN gelişmesi: {directive['event_of_day']}\n"
               f"Önceki günlerin özeti: {json.dumps(gecmis,ensure_ascii=False)}\n"
-              f"Bu günün nedensel sınırlarına ({directive['allowed_extremes']}) uyarak {next_day}. günü 6 kitle için ayrı ayrı (Zenginleri A yanlısı, B yanlısı ve Tarafsız sosyal medya olarak 3 alt kanatta; Gözlemcileri ise oyunu dışarıdan okuyan uyanık karakteriyle) Türkçe açıkla ve özetle.")
+              f"Bu günün nedensel sınırlarına ({directive['allowed_extremes']}) uyarak {next_day}. günü 6 kitle için ayrı ayrı (Zenginleri A yanlısı, B yanlısı ve Tarafsız sosyal medya olarak 3 alt kanatta; Gözlemcileri ise oyunu dışarıdan okuyan uyanık karakteriyle) Türkçe açıkla ve özetle.\n"
+              f"{CIKTI_BICIMI}")
     if meta['question_attempts']>=meta['question_limit']:
         meta['question_limit']=meta['question_attempts']+1
-    ans=ask_operator(sim,prompt_q[:2000],advisor,connection_test=False,causal_directive=directive)
+    ans=ask_operator(sim,prompt_q[:4000],advisor,connection_test=False,causal_directive=directive)
     return f"\n================ SENARYO ZİNCİRİ — GÜN {next_day} ================\n{ans}"
 
 

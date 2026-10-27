@@ -3,7 +3,7 @@
 # Sadece docs/termux-pilot.md icindeki adimlari otomatiklestirir; yeni ozellik eklemez.
 #
 #   cd "$HOME/people1000"
-#   git pull --ff-only origin arena/2869026b-people1000
+#   git pull --ff-only origin arena/5fb8114f-people1000
 #   bash tools/termux_setup.sh            # anahtari sorar / degistirme imkani verir
 #   bash tools/termux_setup.sh --new-key  # anahtari zorla yeniden sorar
 #
@@ -19,7 +19,7 @@ EXAMPLE="$REPO/.env.example"
 
 command -v python3 >/dev/null 2>&1 || { echo "Python yok. Termux'ta: pkg install python git nano -y"; exit 1; }
 python3 -c 'import sys; sys.exit(0 if sys.version_info >= (3,11) else 1)' || { echo "Python 3.11+ gerekli."; exit 1; }
-[ -f "$EXAMPLE" ] || { echo ".env.example yok. once: git pull --ff-only origin arena/2869026b-people1000"; exit 1; }
+[ -f "$EXAMPLE" ] || { echo ".env.example yok. once: git pull --ff-only origin arena/5fb8114f-people1000"; exit 1; }
 
 # 1) Sanal ortam: varsa yeniden kurma, paket zaten yukluyse tekrar kurma.
 if [ ! -d .venv ]; then python3 -m venv .venv; fi

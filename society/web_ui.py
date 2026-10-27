@@ -27,11 +27,12 @@ from .agenda_api import (AgendaProvider, GeminiAdvisor, OpenAICompatibleAdvisor,
 from .engine import Simulation
 from .session import Session
 from . import termux
-from .scenario_text import parse_kitle_sections
+from .scenario_text import GROUPS, analyze_scenario, parse_kitle_sections  # noqa: F401
 
 MAX_TEXT = 2000
 MAX_DAYS = 30
 HISTORY_LIMIT = 400
+OUTPUT_LIMIT = 60000  # yalnızca terminal çıktısı paneli; AI kart metni kesilmez
 COMMANDS = frozenset({
     'gun', 'ilerle', 'ozet', 'rapor', 'sor', 'devam', 'olay', 'ayar', 'kaydet',
     'yardim', 'baglanti', 'modeller', 'uretim-test', 'bekleme', 'limit', 'sor-limit'})
@@ -103,13 +104,16 @@ class WebPilot:
         self.session = Session(sim, AgendaProvider(advisor))
         self.lock = threading.RLock()
         self.history_path = self.state_path.with_suffix('.history.json')
+        self.last_path = self.state_path.parent / (self.state_path.stem + '.last.json')
         self.history = self._load_history()
         if not self.history:
             # Baslangic anlik goruntusu: ilk gunun "dune gore" farki hesaplansin.
             self.history = [{'day': _day(sim), 'kitleler': _metrics_snapshot(termux.report(sim))}]
             self._save_history()
-        self.last_output = ''
-        self.last_command = ''
+        # Son cikti, sunucu yeniden baslasa da geri gelsin (kucuk yan dosya).
+        last = self._load_last()
+        self.last_output = last.get('output', '')
+        self.last_command = last.get('command', '')
 
     def _load_history(self):
         try:
@@ -126,6 +130,25 @@ class WebPilot:
         except OSError:
             pass  # gecmis olmasa da arayuz calisir
 
+    def _load_last(self):
+        try:
+            data = json.loads(self.last_path.read_text(encoding='utf-8'))
+            if not isinstance(data, dict):
+                return {}
+            return {'output': data.get('output', '') if isinstance(data.get('output', ''), str) else '',
+                    'command': data.get('command', '') if isinstance(data.get('command', ''), str) else ''}
+        except (OSError, ValueError):
+            return {}
+
+    def _save_last(self):
+        try:
+            self.last_path.parent.mkdir(parents=True, exist_ok=True)
+            self.last_path.write_text(json.dumps(
+                {'output': self.last_output, 'command': self.last_command},
+                ensure_ascii=False), encoding='utf-8')
+        except OSError:
+            pass  # son cikti kaybolabilir; arayuz calismaya devam eder
+
     def redact(self, text):
         key = os.environ.get(getattr(self.advisor, 'key_env', ''), '') or \
               os.environ.get('PEOPLE1000_API_KEY', '')
@@ -133,6 +156,46 @@ class WebPilot:
 
     def save(self):
         self.sim.save(self.state_path)
+
+
+def _bos_baglanti():
+    """Secili gun yokken kart baglanti ozeti."""
+    return {'bagli': 0, 'toplam': len(GROUPS), 'eksik': list(GROUPS),
+            'kesik': False, 'yarim': False, 'karakter': 0, 'baslik': 0,
+            'kaynak': 'yok', 'durum': 'yok', 'aciklama': 'Henüz AI anlatımı yok.'}
+
+
+def _baglanti_ozeti(gun):
+    """Bir senaryo gununun 6 kartla baglanti teshisi (arayuz + denetim)."""
+    if not gun:
+        return _bos_baglanti()
+    bagli = gun.get('bagli', 0)
+    eksik = gun.get('eksik', list(GROUPS))
+    eski = gun.get('kaynak') == 'eski-ozet'
+    metin_var = bool(gun.get('metin'))
+    if not metin_var:
+        durum = 'yok'
+    elif eski:
+        durum = 'eski'
+    elif bagli == len(GROUPS):
+        durum = 'tam'
+    else:
+        durum = 'kismi'
+    if durum == 'tam':
+        aciklama = '6 kartın tamamı kendi AI metnine bağlı; tam metin gösteriliyor.'
+    elif durum == 'eski':
+        aciklama = ('Eski kayıt: yalnızca 600 karakterlik özet var, tam metin '
+                    'yok. Yeni bir Devam/Olay ile tam metin üretilebilir.')
+    elif durum == 'kismi':
+        aciklama = (f'{bagli}/6 kartta kitleye özel bölüm bulundu; '
+                    f'{len(eksik)} kart günün ortak metnine bağlı.')
+    else:
+        aciklama = 'Bu gün için AI metni kayıtta yok.'
+    return {'bagli': bagli, 'toplam': len(GROUPS), 'eksik': eksik,
+            'kesik': bool(gun.get('kesik')), 'yarim': bool(gun.get('yarim')),
+            'karakter': gun.get('karakter', 0), 'baslik': gun.get('baslik', 0),
+            'kaynak': gun.get('kaynak', 'yok'), 'durum': durum,
+            'aciklama': aciklama}
 
 
 def build_state(pilot, secili_gun=None):
@@ -160,21 +223,28 @@ def build_state(pilot, secili_gun=None):
         q = r.get('operator_questions', {})
         chain = meta.get('scenario_chain')
         scenario = {'var': bool(chain), 'ilk_olay': '', 'gun': 0, 'gecmis': [],
-                    'gunler': {}, 'secili_gun': None, 'ai_var': False}
+                    'gunler': {}, 'secili_gun': None, 'ai_var': False,
+                    'baglanti': _bos_baglanti()}
         if chain:
             gunler = {}
             gecmis = []
             for h in chain.get('history', []):
-                # Eski kayitlarda full_text yoksa 600 karakterlik ozet kullanilir.
+                # Yeni kayitlarda TAM metin; eski kayitlarda yalnizca 600
+                # karakterlik ozet vardir ve bu acikca isaretlenir. Kartlara
+                # giden metin hicbir karakter siniriyla kesilmez.
+                eski = 'full_text' not in h
                 tam = h.get('full_text') or h.get('summary') or ''
-                parsed = parse_kitle_sections(tam)
+                parsed = analyze_scenario(tam, legacy=eski)
                 d = h.get('day')
                 gunler[str(d)] = {
                     'day': d, 'event': h.get('event', ''),
                     'sinir': h.get('allowed_extremes', ''),
                     'metin': tam, 'genel': parsed['genel'],
-                    'kitleler': parsed['kitleler'],
-                    'kesik': 'full_text' not in h,
+                    'ortak': parsed['ortak'], 'kitleler': parsed['kitleler'],
+                    'kesik': parsed['kesik'], 'yarim': parsed['yarim'],
+                    'bagli': parsed['bagli'], 'eksik': parsed['eksik'],
+                    'baslik': parsed['baslik'], 'karakter': parsed['karakter'],
+                    'kaynak': 'eski-ozet' if eski else 'tam-metin',
                 }
                 gecmis.append(gunler[str(d)])
             son_gun = str(chain.get('day', 0)) if gunler else None
@@ -185,19 +255,30 @@ def build_state(pilot, secili_gun=None):
             scenario = {'var': True, 'ilk_olay': chain.get('initial_event', ''),
                         'gun': chain.get('day', 0), 'gecmis': gecmis,
                         'gunler': gunler, 'secili_gun': son_gun,
-                        'ai_var': any(g['kitleler'] for g in gunler.values())}
+                        'ai_var': any(g['kitleler'] or g['metin'] for g in gunler.values()),
+                        'baglanti': _baglanti_ozeti(gunler.get(son_gun))}
         # Kartlara atanacak AI metni: secili gunun 6 kitlesi.
         secili = scenario['gunler'].get(scenario['secili_gun'], {}) if scenario['var'] else {}
         ai_kitleler = secili.get('kitleler', {}) if isinstance(secili, dict) else {}
+        ortak_metin = '\n\n'.join(
+            x for x in (secili.get('ortak', ''), secili.get('genel', '')) if x)
+        eski_kayit = secili.get('kaynak') == 'eski-ozet'
         events = [{'time': e.get('time'), 'kind': e.get('kind', '')}
                   for e in pilot.sim.log[-12:]]
         settings = termux.settings(pilot.advisor)
         cards = kitle_cards(r, previous)
         for c in cards:
-            c['ai_metni'] = ai_kitleler.get(c['id'], '')
-            c['ai_gun'] = secili.get('day') if c['ai_metni'] else None
-            c['ai_kesik'] = bool(secili.get('kesik')) if c['ai_metni'] else False
+            metin = ai_kitleler.get(c['id'], '')
+            c['ai_metni'] = metin
+            c['ai_gun'] = secili.get('day') if metin else None
+            c['ai_kesik'] = bool(eski_kayit) if metin else False
+            c['ai_durum'] = ('eski' if eski_kayit else 'tam') if metin else (
+                'ortak' if ortak_metin else 'yok')
+            c['ai_ortak'] = '' if metin else ortak_metin
+            c['ai_karakter'] = len(metin)
+            c['ai_kaynak'] = secili.get('kaynak', 'yok')
         return _json_safe({
+            'baglanti': scenario['baglanti'],
             'day': day,
             'mode': 'offline' if settings.get('mode') == 'offline' else 'live',
             'settings': settings,
@@ -333,8 +414,9 @@ def execute_command(pilot, payload):
             meta['question_limit'] = qlim
             pilot.save(); out = f'Soru/senaryo deneme siniri {qlim} olarak guncellendi.'
 
-        pilot.last_output = pilot.redact(str(out))[:20000]
+        pilot.last_output = pilot.redact(str(out))[:OUTPUT_LIMIT]
         pilot.last_command = cmd
+        pilot._save_last()
         # Yeni bir senaryo gunu uretildiyse kartlar otomatik o gune gecer;
         # diger komutlarda kullanicinin sectigi gun korunur.
         secili = None if cmd in ('sor', 'devam', 'olay') else payload.get('gun')
@@ -378,6 +460,17 @@ class Handler(BaseHTTPRequestHandler):
                 return self._json(200, {'ok': True, 'state': build_state(self.server.pilot, gun)})
             except Exception as exc:
                 return self._json(500, {'ok': False, 'error': self.server.pilot.redact(str(exc))})
+        if path == '/api/health':
+            # Hafif baglanti nabzi: kart durumunu/ozeti yeniden uretmez.
+            try:
+                with self.server.pilot.lock:
+                    day = _day(self.server.pilot.sim)
+                return self._json(200, {'ok': True, 'day': day,
+                                        'kart': len(termux.ROLE_INFO),
+                                        'server': self.server_version})
+            except Exception as exc:
+                return self._json(500, {'ok': False,
+                                        'error': self.server.pilot.redact(str(exc))})
         if path == '/api/export':
             with self.server.pilot.lock:
                 data = termux.report(self.server.pilot.sim)
@@ -471,131 +564,255 @@ PAGE = r'''<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0d1117">
-<title>People1000 — Pilot</title>
+<meta name="theme-color" content="#060911">
+<meta name="color-scheme" content="dark">
+<title>People1000 — Anlatım Konsolu</title>
 <style>
-:root{--bg:#0d1117;--panel:#161b22;--card:#1b2230;--line:#2b3546;--txt:#e6edf3;
---muted:#8b98a9;--accent:#58a6ff;--good:#3fb950;--bad:#f85149;--warn:#d29922;
---radius:14px}
+:root{--bg:#060911;--panel:rgba(17,25,43,.78);--panel2:rgba(12,19,34,.94);
+--line:rgba(126,156,214,.16);--line2:rgba(126,156,214,.32);
+--txt:#eaf1ff;--muted:#8b9cb9;--dim:#66768f;
+--cyan:#5ee7f0;--blue:#7aa2ff;--violet:#b391ff;--gold:#ffce7a;
+--green:#63e6a9;--red:#ff7d90;--radius:18px;--shadow:0 20px 55px rgba(0,0,0,.42)}
 *{box-sizing:border-box}
-html,body{margin:0;padding:0;background:var(--bg);color:var(--txt);
-font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-font-size:15px;line-height:1.45;-webkit-text-size-adjust:100%}
-body{padding-bottom:max(28px,env(safe-area-inset-bottom))}
-.topbar{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;
-gap:10px;padding:12px 16px;background:rgba(13,17,23,.94);backdrop-filter:blur(8px);
-border-bottom:1px solid var(--line)}
-.brand{font-weight:800;letter-spacing:.06em;font-size:17px}
-.brand span{color:var(--accent)}
-.badges{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.badge{font-size:12px;padding:5px 10px;border-radius:999px;background:var(--card);
-border:1px solid var(--line);color:var(--muted);white-space:nowrap}
-.badge.strong{color:var(--txt);font-weight:700}
-.badge.live{color:var(--good);border-color:#1d4429}
-.badge.offline{color:var(--warn);border-color:#4a3a12}
-button,input,summary,a.btn{font:inherit}
+html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;color:var(--txt);font-size:15px;line-height:1.5;
+font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%;
+background:radial-gradient(1100px 620px at 12% -8%,rgba(93,124,255,.17),transparent 62%),
+radial-gradient(900px 520px at 97% -4%,rgba(94,231,240,.10),transparent 58%),
+radial-gradient(700px 500px at 50% 108%,rgba(179,145,255,.09),transparent 60%),var(--bg);
+background-attachment:fixed}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.4;z-index:0;
+background-image:linear-gradient(rgba(126,156,214,.045) 1px,transparent 1px),
+linear-gradient(90deg,rgba(126,156,214,.045) 1px,transparent 1px);background-size:46px 46px;
+-webkit-mask-image:linear-gradient(to bottom,black,transparent 78%);
+mask-image:linear-gradient(to bottom,black,transparent 78%)}
+button,input,select,a.btn{font:inherit}
 button{cursor:pointer;touch-action:manipulation}
-.icon{background:var(--card);border:1px solid var(--line);color:var(--txt);
-width:38px;height:38px;border-radius:10px;font-size:18px}
-main{max-width:1180px;margin:0 auto;padding:16px}
-.section{margin-top:22px}
-.section-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:10px}
-h2{font-size:16px;margin:0;letter-spacing:.02em}
-.muted{color:var(--muted);font-size:12px}
-.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
-.stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
-.stat .k{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
-.stat .v{font-size:18px;font-weight:700;margin-top:3px;word-break:break-word}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-padding:14px;display:flex;flex-direction:column;gap:9px;min-height:210px}
-.card.empty{opacity:.68;border-style:dashed}
-.card-head{display:flex;align-items:center;gap:9px}
-.num{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;
-border-radius:8px;background:#22304a;color:var(--accent);font-weight:800;font-size:13px;flex:none}
-.card h3{margin:0;font-size:15px}
-.action{font-weight:700;font-size:14px;color:var(--accent)}
-.expr{font-size:12px;color:var(--muted);margin-top:-6px}
-.metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.metric-label{font-size:11px;color:var(--muted);margin-bottom:4px}
-.bar{height:7px;border-radius:99px;background:#0d1117;border:1px solid var(--line);overflow:hidden}
-.fill{height:100%;background:linear-gradient(90deg,#1f6feb,#58a6ff);border-radius:99px}
-.delta{font-size:11px;margin-top:4px}
-.delta.up{color:var(--good)}.delta.down{color:var(--bad)}
-.summary-line{font-size:13px;color:#cdd7e3;margin:0;flex:1}
-.detail{border-top:1px solid var(--line);padding-top:8px;font-size:12px;color:var(--muted)}
-.detail summary{cursor:pointer;color:var(--accent);font-weight:600;padding:4px 0}
-.detail p{margin:7px 0}
-.note{background:#11161f;border-left:3px solid var(--warn);padding:7px 9px;border-radius:6px;
-white-space:pre-wrap;word-break:break-word}
-.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:12px}
-.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:9px}
+button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{
+outline:2px solid var(--cyan);outline-offset:2px}
+.topbar{position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:14px;
+justify-content:space-between;padding:11px clamp(14px,3vw,32px);
+background:rgba(6,9,17,.84);backdrop-filter:blur(20px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:.15em;font-size:14px;white-space:nowrap}
+.brand-mark{width:25px;height:25px;border-radius:9px;position:relative;flex:none;
+background:conic-gradient(from 210deg,var(--cyan),var(--blue),var(--violet),var(--cyan));
+box-shadow:0 0 24px rgba(94,231,240,.32)}
+.brand-mark::after{content:"";position:absolute;inset:6px;border-radius:50%;background:#070c17}
+.brand b{color:var(--cyan)}
+.brand small{display:block;font-size:9px;letter-spacing:.19em;color:var(--dim);font-weight:700;margin-top:1px}
+.badges{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.badge{font-size:11px;padding:6px 11px;border-radius:999px;background:rgba(23,33,55,.8);
+border:1px solid var(--line);color:var(--muted);white-space:nowrap;font-weight:600;letter-spacing:.02em}
+.badge.strong{color:var(--txt)}
+.badge.live{color:var(--green);border-color:rgba(99,230,169,.34);background:rgba(99,230,169,.07)}
+.badge.offline{color:var(--gold);border-color:rgba(255,206,122,.3);background:rgba(255,206,122,.07)}
+.conn{font-size:10.5px;font-weight:800;letter-spacing:.08em;padding:6px 11px;border-radius:999px;
+border:1px solid var(--line);white-space:nowrap}
+.conn.ok{color:var(--green);border-color:rgba(99,230,169,.3);background:rgba(99,230,169,.06)}
+.conn.off{color:var(--red);border-color:rgba(255,125,144,.35);background:rgba(255,125,144,.08)}
+.icon{background:rgba(23,33,55,.8);border:1px solid var(--line);color:var(--txt);
+width:36px;height:36px;border-radius:11px;font-size:17px;display:inline-flex;align-items:center;justify-content:center}
+.icon:hover{border-color:var(--cyan);color:var(--cyan)}
+main{position:relative;z-index:1;max-width:1220px;margin:0 auto;padding:22px clamp(14px,3vw,32px) 60px}
+.section{margin-top:26px}
+.section-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+flex-wrap:wrap;margin-bottom:12px}
+h2{font-size:13px;margin:0;letter-spacing:.13em;text-transform:uppercase;color:#dce7fb;font-weight:800}
+h2::before{content:"";display:inline-block;width:6px;height:6px;border-radius:2px;
+background:linear-gradient(135deg,var(--cyan),var(--violet));margin-right:9px;vertical-align:2px}
+.muted{color:var(--muted);font-size:11.5px}
+.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(138px,1fr));gap:10px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 13px;
+backdrop-filter:blur(12px);transition:border-color .2s,transform .2s}
+.stat:hover{border-color:var(--line2);transform:translateY(-2px)}
+.stat .k{font-size:9.5px;color:var(--dim);text-transform:uppercase;letter-spacing:.11em;font-weight:800}
+.stat .v{font-size:17px;font-weight:750;margin-top:5px;word-break:break-word;
+font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.link-banner{display:flex;align-items:center;gap:14px;margin-top:12px;padding:13px 16px;
+border-radius:14px;border:1px solid var(--line);background:var(--panel);backdrop-filter:blur(12px)}
+.link-banner.tam{border-color:rgba(99,230,169,.34);background:linear-gradient(90deg,rgba(99,230,169,.09),rgba(17,25,43,.7))}
+.link-banner.eski{border-color:rgba(255,206,122,.38);background:linear-gradient(90deg,rgba(255,206,122,.09),rgba(17,25,43,.7))}
+.link-banner.kismi{border-color:rgba(179,145,255,.36);background:linear-gradient(90deg,rgba(179,145,255,.09),rgba(17,25,43,.7))}
+.lb-icon{width:32px;height:32px;flex:none;border-radius:10px;display:grid;place-items:center;
+font-weight:900;background:rgba(126,156,214,.12);border:1px solid var(--line)}
+.link-banner.tam .lb-icon{color:var(--green);background:rgba(99,230,169,.12)}
+.link-banner.eski .lb-icon{color:var(--gold);background:rgba(255,206,122,.12)}
+.link-banner.kismi .lb-icon{color:var(--violet);background:rgba(179,145,255,.12)}
+.lb-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.lb-text strong{font-size:13px;letter-spacing:.01em}
+.lb-text span{font-size:11.5px;color:var(--muted)}
+.lb-count{font-size:20px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.02em;white-space:nowrap}
+.rail{position:relative;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;
+padding:18px 12px 12px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+backdrop-filter:blur(12px);overflow:hidden}
+.rail::before{content:"";position:absolute;left:9%;right:9%;top:34px;height:2px;border-radius:2px;
+background:linear-gradient(90deg,rgba(94,231,240,.1),rgba(122,162,255,.55),rgba(94,231,240,.1))}
+.rail-node{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:7px;
+background:none;border:0;padding:0;color:var(--muted);min-width:0}
+.rail-node:hover .rail-name{color:var(--txt)}
+.rail-dot{width:15px;height:15px;border-radius:50%;border:2px solid var(--line2);
+background:#0b1120;box-shadow:0 0 0 5px #0d1526;transition:.2s}
+.rail-node.tam .rail-dot{background:var(--green);border-color:var(--green);box-shadow:0 0 0 5px #0d1526,0 0 16px rgba(99,230,169,.55)}
+.rail-node.eski .rail-dot{background:var(--gold);border-color:var(--gold);box-shadow:0 0 0 5px #0d1526,0 0 16px rgba(255,206,122,.45)}
+.rail-node.ortak .rail-dot{background:var(--violet);border-color:var(--violet);box-shadow:0 0 0 5px #0d1526,0 0 16px rgba(179,145,255,.4)}
+.rail-name{font-size:11px;font-weight:700;text-align:center;line-height:1.25;
+overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;transition:color .2s}
+.rail-day{font-size:9.5px;color:var(--dim);font-variant-numeric:tabular-nums}
+.rail-help{margin:9px 2px 0}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;vertical-align:1px;margin:0 3px}
+.dot.ok{background:var(--green)}.dot.warn{background:var(--gold)}.dot.mid{background:var(--violet)}.dot.off{background:#3d4b63}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(325px,1fr));gap:14px}
+.card{position:relative;background:linear-gradient(165deg,rgba(25,36,59,.93),rgba(12,19,33,.96));
+border:1px solid var(--line);border-radius:var(--radius);padding:16px;display:flex;flex-direction:column;
+gap:11px;box-shadow:var(--shadow);overflow:hidden;transition:border-color .25s,transform .25s,box-shadow .25s}
+.card::before{content:"";position:absolute;top:0;left:14px;right:14px;height:1px;
+background:linear-gradient(90deg,transparent,rgba(94,231,240,.5),transparent)}
+.card:hover{border-color:var(--line2);transform:translateY(-3px)}
+.card.flash{animation:flash 1.15s ease}
+@keyframes flash{0%,100%{box-shadow:var(--shadow)}35%{box-shadow:0 0 0 2px var(--cyan),0 20px 60px rgba(94,231,240,.25)}}
+.card.empty{opacity:.9}
+.card-head{display:flex;align-items:flex-start;gap:10px}
+.num{display:inline-grid;place-items:center;width:29px;height:29px;flex:none;border-radius:10px;
+background:linear-gradient(140deg,rgba(94,231,240,.18),rgba(122,162,255,.12));
+border:1px solid rgba(94,231,240,.22);color:var(--cyan);font-weight:800;font-size:12px}
+.card h3{margin:0;font-size:14.5px;line-height:1.3;font-weight:750;flex:1;min-width:0}
+.pill{font-size:8.5px;font-weight:800;letter-spacing:.06em;padding:5px 8px;border-radius:999px;
+white-space:nowrap;border:1px solid var(--line2);color:var(--muted);flex:none}
+.pill.tam{color:var(--green);border-color:rgba(99,230,169,.4);background:rgba(99,230,169,.08)}
+.pill.eski{color:var(--gold);border-color:rgba(255,206,122,.4);background:rgba(255,206,122,.08)}
+.pill.ortak{color:var(--violet);border-color:rgba(179,145,255,.4);background:rgba(179,145,255,.08)}
+.pill.yok{border-style:dashed}
+.role-short{font-size:11px;color:var(--dim);margin:-4px 0 0;line-height:1.4;
+display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.action{font-weight:750;font-size:13.5px;color:#dfeaff}
+.expr{font-size:11px;color:var(--muted);margin-top:-7px}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:2px 0}
+.metric-label{font-size:10px;color:var(--muted);margin-bottom:6px;display:flex;justify-content:space-between;gap:4px}
+.metric-label b{color:var(--txt);font-variant-numeric:tabular-nums}
+.bar{height:6px;border-radius:99px;background:rgba(4,8,16,.85);border:1px solid var(--line);overflow:hidden}
+.fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--blue),var(--cyan));transition:width .55s cubic-bezier(.2,.8,.2,1)}
+.delta{font-size:10px;margin-top:5px;color:var(--dim)}
+.delta.up{color:var(--green)}.delta.down{color:var(--red)}
+.ai-box{border:1px solid rgba(122,162,255,.26);border-radius:13px;overflow:hidden;
+background:linear-gradient(150deg,rgba(20,34,60,.9),rgba(10,17,31,.9))}
+.ai-box.eski{border-color:rgba(255,206,122,.4);background:linear-gradient(150deg,rgba(52,40,22,.75),rgba(15,18,26,.9))}
+.ai-box.ortak{border-color:rgba(179,145,255,.36);background:linear-gradient(150deg,rgba(36,27,59,.8),rgba(12,17,29,.9))}
+.ai-box.yok{border:1px dashed var(--line2);background:rgba(10,16,28,.6)}
+.ai-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 11px;
+border-bottom:1px solid rgba(126,156,214,.14);font-size:9px;letter-spacing:.09em;font-weight:800;
+color:var(--cyan);text-transform:uppercase}
+.ai-box.eski .ai-head{color:var(--gold)}.ai-box.ortak .ai-head{color:var(--violet)}
+.ai-tools{display:flex;align-items:center;gap:7px}
+.ai-tag{font-size:8.5px;color:var(--muted);letter-spacing:.06em;border:1px solid var(--line);
+padding:3px 6px;border-radius:6px;white-space:nowrap}
+.mini{background:rgba(126,156,214,.09);border:1px solid var(--line);color:var(--muted);
+border-radius:7px;padding:3px 7px;font-size:9.5px;font-weight:700;letter-spacing:.02em}
+.mini:hover{color:var(--cyan);border-color:var(--cyan)}
+.ai-body{padding:11px 12px;font-size:12.5px;line-height:1.65;white-space:pre-wrap;
+word-break:break-word;color:#dce7fb;max-height:none}
+.ai-body.clamped{max-height:230px;overflow:hidden;
+-webkit-mask-image:linear-gradient(to bottom,black 72%,transparent);
+mask-image:linear-gradient(to bottom,black 72%,transparent)}
+.ai-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;
+padding:7px 11px;border-top:1px solid rgba(126,156,214,.14);flex-wrap:wrap}
+.ai-foot .note{font-size:10px;color:var(--muted)}
+.ai-yok{padding:13px;font-size:11.5px;color:var(--muted);line-height:1.5}
+.ai-yok b{color:#c9d7ef;display:block;margin-bottom:3px;font-size:11.5px}
+.motor{font-size:11.5px;color:var(--muted);border-top:1px dashed var(--line);padding-top:9px;line-height:1.5}
+.motor b{color:#cdd9ee}
+.detail{border-top:1px solid var(--line);padding-top:9px;font-size:11.5px;color:var(--muted)}
+.detail summary{cursor:pointer;color:var(--cyan);font-weight:700;padding:2px 0;font-size:11.5px}
+.detail p{margin:8px 0;line-height:1.55}
+.note{background:rgba(8,12,20,.7);border-left:3px solid var(--gold);padding:8px 10px;
+border-radius:7px;white-space:pre-wrap;word-break:break-word;color:#d8c9a8}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+padding:15px;backdrop-filter:blur(12px)}
+.row{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin-bottom:10px}
 .row:last-child{margin-bottom:0}
-.btn{background:#21283a;color:var(--txt);border:1px solid var(--line);border-radius:10px;
-padding:10px 14px;min-height:42px;font-weight:600;text-decoration:none;display:inline-flex;
-align-items:center;justify-content:center}
-.btn:hover{border-color:var(--accent)}
-.btn:disabled{opacity:.45;cursor:wait}
-.btn.primary{background:#1f6feb;border-color:#1f6feb;color:#fff}
-.btn.accent{background:#173a5e;border-color:#2b6cb0}
-.btn.warn{border-color:#5a4415;color:#e3b341}
-input{flex:1 1 190px;min-width:0;min-height:42px;background:#0d1117;color:var(--txt);
-border:1px solid var(--line);border-radius:10px;padding:9px 11px}
-input[type=number]{flex:0 0 92px;min-width:80px}
-.advanced summary{cursor:pointer;color:var(--muted);font-size:13px;padding:6px 0}
-.timeline{display:flex;flex-direction:column;gap:9px}
-.day{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:11px 13px}
-.day-no{font-size:11px;color:var(--accent);font-weight:800;letter-spacing:.06em}
-.day-event{font-weight:600;margin:3px 0 6px}
-.day-sum{font-size:13px;color:#cdd7e3;white-space:pre-wrap;word-break:break-word}
-.day-limit{font-size:11px;color:var(--warn);margin-top:6px}
-.day-pick{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
-.day-pick label{font-size:12px;color:var(--muted)}
-.day-pick select{background:#0d1117;color:var(--txt);border:1px solid var(--line);
-border-radius:9px;min-height:36px;padding:6px 9px;font:inherit;font-size:13px}
-.ai{background:#101a2b;border:1px solid #24406b;border-left:3px solid var(--accent);
-border-radius:10px;padding:10px 11px;white-space:pre-wrap;word-break:break-word;
-font-size:13px;line-height:1.55;max-height:340px;overflow:auto}
-.ai-head{display:flex;justify-content:space-between;gap:8px;align-items:center;
-font-size:10.5px;letter-spacing:.05em;color:var(--accent);font-weight:800;
-text-transform:uppercase;margin-bottom:5px}
-.ai-yok{background:#151a22;border:1px dashed var(--line);border-radius:10px;
-padding:10px 11px;font-size:12px;color:var(--muted)}
-.ai-kesik{color:var(--warn)}
-.motor{font-size:12px;color:var(--muted);border-top:1px dashed var(--line);padding-top:7px}
-.motor b{color:#c6d0dc;font-weight:700}
-.output{background:#080b10;border:1px solid var(--line);border-radius:12px;padding:13px;
-font-size:12.5px;line-height:1.55;white-space:pre-wrap;word-break:break-word;
-overflow:auto;max-height:460px;margin:0;color:#cdd7e3}
-.events{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.chip{font-size:11px;background:#11161f;border:1px solid var(--line);border-radius:999px;
+.btn{background:rgba(31,44,71,.75);color:var(--txt);border:1px solid var(--line2);border-radius:11px;
+padding:10px 15px;min-height:42px;font-weight:650;font-size:13px;text-decoration:none;
+display:inline-flex;align-items:center;justify-content:center;gap:7px;transition:.18s}
+.btn:hover{border-color:var(--cyan);background:rgba(39,58,91,.85);transform:translateY(-1px)}
+.btn:disabled{opacity:.4;cursor:wait;transform:none}
+.btn.primary{background:linear-gradient(120deg,#2f6fe0,#4f8bff);border-color:#5b94ff;color:#fff;
+box-shadow:0 8px 24px rgba(58,120,240,.28)}
+.btn.accent{background:linear-gradient(120deg,rgba(94,231,240,.16),rgba(122,162,255,.16));border-color:rgba(94,231,240,.4);color:#dffaff}
+.btn.warn{border-color:rgba(255,206,122,.4);color:var(--gold)}
+input,select{background:rgba(6,10,19,.82);color:var(--txt);border:1px solid var(--line2);
+border-radius:11px;min-height:42px;padding:9px 12px;min-width:0}
+input{flex:1 1 220px}
+input::placeholder{color:var(--dim)}
+input[type=number]{flex:0 0 96px;min-width:84px}
+.day-pick{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.day-pick label{font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.04em}
+.day-pick select{min-height:36px;padding:6px 10px;font-size:12px;border-radius:9px}
+.advanced summary{cursor:pointer;color:var(--muted);font-size:12px;padding:8px 0;font-weight:650}
+.timeline{position:relative;display:flex;flex-direction:column;gap:11px;padding-left:20px}
+.timeline::before{content:"";position:absolute;left:5px;top:8px;bottom:8px;width:1px;
+background:linear-gradient(to bottom,var(--cyan),rgba(122,162,255,.25),transparent)}
+.day{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:13px 15px;
+backdrop-filter:blur(10px)}
+.day::before{content:"";position:absolute;left:-19px;top:19px;width:9px;height:9px;border-radius:50%;
+background:var(--blue);border:2px solid #0a1120;box-shadow:0 0 12px rgba(122,162,255,.6)}
+.day-no{font-size:9.5px;color:var(--cyan);font-weight:800;letter-spacing:.13em;text-transform:uppercase}
+.day-event{font-weight:650;margin:5px 0 8px;font-size:13px;line-height:1.5}
+.day-genel{font-size:12px;color:#cddbf2;background:rgba(94,231,240,.055);
+border-left:2px solid rgba(94,231,240,.5);padding:9px 11px;border-radius:8px;
+white-space:pre-wrap;word-break:break-word;margin:8px 0}
+.day-sum{font-size:12px;color:#cdd7e3;white-space:pre-wrap;word-break:break-word;
+max-height:420px;overflow:auto;padding:10px;background:rgba(5,9,17,.7);border-radius:8px}
+.day-limit{font-size:10.5px;color:var(--gold);margin-top:8px;line-height:1.5}
+.day-meta{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+.day-meta .badge{font-size:9.5px;padding:4px 8px}
+.output-wrap{background:rgba(6,10,18,.85);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.output-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 13px;
+border-bottom:1px solid var(--line);font-size:10.5px;color:var(--muted)}
+.output{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;padding:14px;
+font-size:11.5px;line-height:1.6;white-space:pre-wrap;word-break:break-word;
+overflow:auto;max-height:460px;margin:0;color:#cbd8ee}
+.events{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.chip{font-size:10px;background:rgba(17,26,44,.9);border:1px solid var(--line);border-radius:999px;
 padding:4px 9px;color:var(--muted)}
-footer{margin-top:26px;padding:14px 4px;color:var(--muted);font-size:11.5px;
-border-top:1px solid var(--line)}
-#status{font-size:12px;color:var(--warn);min-height:17px;margin-top:9px}
-.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);
-background:#21283a;border:1px solid var(--line);color:var(--txt);padding:10px 16px;
-border-radius:10px;font-size:13px;opacity:0;pointer-events:none;transition:.2s;z-index:20;
-max-width:90vw;text-align:center}
+footer{margin-top:34px;padding:16px 2px;color:var(--dim);font-size:11px;
+border-top:1px solid var(--line);line-height:1.7}
+#status{font-size:11.5px;color:var(--gold);min-height:18px;margin-top:11px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(18px);
+background:rgba(25,37,61,.97);border:1px solid var(--line2);color:var(--txt);padding:11px 18px;
+border-radius:12px;font-size:12.5px;opacity:0;pointer-events:none;transition:.22s;z-index:60;
+max-width:90vw;text-align:center;box-shadow:var(--shadow)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.toast.err{border-color:var(--bad)}
-@media(max-width:600px){
- main{padding:12px}.cards{grid-template-columns:1fr}.card{min-height:0}
- .metrics{grid-template-columns:1fr 1fr}.btn{flex:1 1 auto}.row{gap:7px}
- .topbar{padding:10px 12px}}
+.toast.err{border-color:var(--red)}
+@media(max-width:880px){.rail{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:16px}
+.rail::before{display:none}}
+@media(max-width:620px){main{padding:18px 13px 46px}.cards{grid-template-columns:1fr}
+.rail{grid-template-columns:repeat(2,minmax(0,1fr))}.summary{grid-template-columns:repeat(2,minmax(0,1fr))}
+.btn{flex:1 1 auto}.topbar{padding:10px 13px}.brand small{display:none}
+.badge.hide-sm{display:none}.link-banner{padding:11px 12px;gap:10px}.lb-count{font-size:16px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
 </style>
 </head>
 <body>
 <header class="topbar">
-  <div class="brand">PEOPLE<span>1000</span></div>
+  <div class="brand"><span class="brand-mark"></span><span>PEOPLE<b>1000</b><small>ANLATIM KONSOLU</small></span></div>
   <div class="badges">
+    <span id="conn" class="conn off">○ BAĞLANIYOR</span>
     <span id="modeBadge" class="badge">—</span>
     <span id="dayBadge" class="badge strong">Gün —</span>
-    <button id="refreshBtn" class="icon" title="Yenile" aria-label="Yenile">↻</button>
+    <button id="refreshBtn" class="icon" title="Durumu yenile" aria-label="Durumu yenile">↻</button>
   </div>
 </header>
 <main>
   <section class="summary" id="summary"></section>
+  <div id="linkBanner" class="link-banner"></div>
+
+  <section class="section">
+    <div class="section-head"><h2>Anlatım → kitle bağlantıları</h2><span id="railInfo" class="muted"></span></div>
+    <div id="rail" class="rail"></div>
+    <p class="rail-help muted">Düğüme dokun = ilgili karta git.
+      <span class="dot ok"></span>kendi tam metni <span class="dot warn"></span>eski özet
+      <span class="dot mid"></span>ortak metin <span class="dot off"></span>bekliyor</p>
+  </section>
 
   <section class="section">
     <div class="section-head">
@@ -610,10 +827,10 @@ max-width:90vw;text-align:center}
   </section>
 
   <section class="section">
-    <div class="section-head"><h2>Komutlar</h2><span class="muted">Canlı istekler kotadan düşer; otomatik tekrar yok</span></div>
+    <div class="section-head"><h2>Komutlar</h2><span class="muted hide-sm">Canlı istekler kotadan düşer; otomatik tekrar yok</span></div>
     <div class="panel">
       <div class="row">
-        <button data-cmd="gun" class="btn primary">Gün ilerlet</button>
+        <button data-cmd="gun" class="btn primary">▸ Gün ilerlet</button>
         <button data-cmd="ilerle" data-count="3" class="btn">İlerle 3</button>
         <button data-cmd="ozet" class="btn">Özet</button>
         <button data-cmd="rapor" class="btn">Rapor</button>
@@ -622,7 +839,7 @@ max-width:90vw;text-align:center}
       </div>
       <div class="row">
         <input id="sorText" maxlength="2000" placeholder="Yeni olay / senaryo (Gün 1)">
-        <button data-cmd="sor" class="btn accent">Başlat</button>
+        <button data-cmd="sor" class="btn accent">✦ Başlat</button>
       </div>
       <div class="row">
         <button data-cmd="devam" data-count="1" class="btn">Devam 1</button>
@@ -655,20 +872,26 @@ max-width:90vw;text-align:center}
     </div>
   </section>
 
-  <section class="section">
+  <section class="section" id="scenarioSection">
     <div class="section-head"><h2>Senaryo zinciri</h2><span id="scenarioBadge" class="muted"></span></div>
     <div class="timeline" id="timeline"></div>
   </section>
 
   <section class="section">
     <div class="section-head"><h2>Son çıktı</h2><span id="lastCmd" class="muted"></span></div>
-    <pre id="output" class="output">Henüz komut çalıştırılmadı.</pre>
+    <div class="output-wrap">
+      <div class="output-head"><span>Sunucunun döndürdüğü ham çıktı</span>
+        <button type="button" class="mini" data-copy="output">Kopyala</button></div>
+      <pre id="output" class="output">Henüz komut çalıştırılmadı.</pre>
+    </div>
     <div class="events" id="events"></div>
   </section>
 
   <footer>
-    Bu arayüz yalnızca bu cihazdaki sunucuya bağlanır. API anahtarı sayfaya gelmez;
-    tüm istekler sunucudan Gemini'ye gider. Web adresine taşırken anahtarı sunucuda tutmaya devam et.
+    Bu arayüz yalnızca bu sunucuya bağlanır. API anahtarı sayfaya gelmez; tüm istekler
+    sunucudan sağlayıcıya gider. AI anlatımı motorun gerçekleşmiş sonucu değildir;
+    "Motor özeti" satırı simülasyonun sayısal durumudur. Kitle karakterleri ve
+    davranış kuralları bu arayüzde değiştirilmez.
   </footer>
 </main>
 <div id="toast" class="toast"></div>
@@ -676,50 +899,143 @@ max-width:90vw;text-align:center}
 "use strict";
 const $=s=>document.querySelector(s);
 let state=null,busy=false,firstLoad=true;
+const DURUM={tam:"AI BAĞLI",eski:"ESKİ KAYIT",ortak:"ORTAK METİN",yok:"BEKLİYOR"};
 function node(tag,cls,text){const e=document.createElement(tag);
-  if(cls)e.className=cls; if(text!==undefined&&text!==null)e.textContent=String(text);return e;}
-function toast(msg,err){const t=$("#toast");t.textContent=msg;t.className="toast show"+(err?" err":"");
-  setTimeout(()=>{t.className="toast";},2600);}
+  if(cls)e.className=cls;if(text!==undefined&&text!==null)e.textContent=String(text);return e;}
+function toast(msg,err){const t=$("#toast");t.textContent=msg;
+  t.className="toast show"+(err?" err":"");setTimeout(()=>{t.className="toast";},2700);}
+function setConn(ok){const e=$("#conn");e.className="conn "+(ok?"ok":"off");
+  e.textContent=ok?"● SUNUCU BAĞLI":"○ BAĞLANTI YOK";}
 function showOutput(t){$("#output").textContent=t||"(çıktı yok)";}
 function setBusy(v,msg){busy=v;document.querySelectorAll("[data-cmd]").forEach(b=>b.disabled=v);
   $("#status").textContent=v?(msg||"Çalışıyor…"):"";}
-function stat(k,v){const d=node("div","stat");d.append(node("div","k",k),node("div","v",v));return d;}
-function metric(label,val,delta){
-  const w=node("div","metric");
-  w.append(node("div","metric-label",label+"  "+(val===null||val===undefined?"—":val+"%")));
+function stat(k,v){const d=node("div","stat");
+  d.append(node("div","k",k),node("div","v",v));return d;}
+function metric(label,val,delta){const w=node("div","metric");
+  const lab=node("div","metric-label");lab.append(node("span","",label),
+    node("b","",val===null||val===undefined?"—":val+"%"));w.append(lab);
   const bar=node("div","bar"),fill=node("div","fill");
   fill.style.width=(val===null||val===undefined?0:Math.max(0,Math.min(100,val)))+"%";
   bar.append(fill);w.append(bar);
-  if(delta!==null&&delta!==undefined&&delta!==0)
-    w.append(node("div","delta "+(delta>0?"up":"down"),
-      (delta>0?"▲ +":"▼ ")+delta+" puan (düne göre)"));
+  w.append(node("div","delta "+(delta>0?"up":delta<0?"down":""),
+    delta===null||delta===undefined||delta===0?"Düne göre değişim yok":
+    (delta>0?"▲ +":"▼ ")+delta+" puan (düne göre)"));
   return w;}
+function copyText(text,label){
+  if(!text){toast("Kopyalanacak metin yok",true);return;}
+  const done=()=>toast((label||"Metin")+" kopyalandı");
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done).catch(()=>legacyCopy(text,done));
+  }else legacyCopy(text,done);}
+function legacyCopy(text,done){const ta=document.createElement("textarea");
+  ta.value=text;ta.style.position="fixed";ta.style.opacity="0";document.body.append(ta);
+  ta.select();try{document.execCommand("copy");done();}catch(e){toast("Kopyalanamadı",true);}ta.remove();}
+function aiBox(c){
+  const box=node("div","ai-box "+c.ai_durum);
+  if(c.ai_durum==="yok"){
+    box.className="ai-box yok";
+    const p=node("div","ai-yok");p.append(node("b","","AI anlatımı bekleniyor"),
+      document.createTextNode("Bu kart, “Başlat”, “Devam” veya “Olay ekle” ile üretilen "+
+        "o güne ait kitleye özel metne otomatik bağlanır."));
+    box.append(p);return box;}
+  const ortak=c.ai_durum==="ortak";
+  const metin=ortak?c.ai_ortak:c.ai_metni;
+  const head=node("div","ai-head");
+  head.append(node("span","",ortak?"GÜNÜN ORTAK ANLATIMI":"KİTLEYE ÖZEL ANLATIM"));
+  const tools=node("div","ai-tools");
+  tools.append(node("span","ai-tag",c.ai_gun?"GÜN "+c.ai_gun:"—"));
+  if(!ortak)tools.append(node("span","ai-tag",
+    c.ai_kaynak==="eski-ozet"?"600 KR. ÖZET":"TAM METİN"));
+  const cp=node("button","mini","Kopyala");cp.type="button";
+  cp.addEventListener("click",()=>copyText(metin,"Anlatım"));
+  tools.append(cp);head.append(tools);box.append(head);
+  const body=node("div","ai-body",metin||"(boş)");
+  let toggle=null;
+  if((metin||"").length>620){body.classList.add("clamped");
+    toggle=node("button","mini","Tamamını göster ↓");toggle.type="button";
+    toggle.addEventListener("click",()=>{const cl=body.classList.toggle("clamped");
+      toggle.textContent=cl?"Tamamını göster ↓":"Kısalt ↑";});}
+  box.append(body);
+  const foot=node("div","ai-foot");
+  const note=node("span","note");
+  if(c.ai_durum==="eski")note.textContent="Bu kayıtta tam metin yok; eski 600 karakterlik özet var. "+
+    "Cümle burada yarım kalabilir — yeni bir Devam/Olay tam metin üretir.";
+  else if(ortak)note.textContent="AI yanıtında bu kitleye özel başlık bulunamadı; "+
+    "günün ortak metni gösteriliyor. Kitleye ait uydurma metin eklenmez.";
+  else note.textContent=(metin||"").length+" karakter · metnin tamamı kartta, kısaltma yok.";
+  foot.append(note);if(toggle)foot.append(toggle);box.append(foot);
+  return box;}
 function card(c){
-  const d=node("article","card"+(c.var?"":" empty"));
+  const d=node("article","card"+(c.var?"":" empty"));d.id="card-"+c.id;
   const head=node("div","card-head");
-  head.append(node("span","num",c.sira),node("h3","",c.ad));d.append(head);
+  head.append(node("span","num",c.sira),node("h3","",c.ad),
+    node("span","pill "+c.ai_durum,DURUM[c.ai_durum]||"BEKLİYOR"));d.append(head);
+  d.append(node("div","role-short",c.tanim));
   d.append(node("div","action",c.eylem));
   if(c.ifade)d.append(node("div","expr",c.ifade));
   const m=node("div","metrics");
   m.append(metric("Yeterlilik",c.yeterlilik,c.fark_yeterlilik),
-           metric("Usul",c.usul,c.fark_usul));d.append(m);
-  // Yapay zekanin bu kitleye ait metni — asil bosluk burasi.
-  const ai=node("div",c.ai_metni?"ai":"ai-yok");
-  if(c.ai_metni){
-    const h=node("div","ai-head");
-    h.append(node("span","","AI ANLATIMI · GÜN "+(c.ai_gun??"—")),
-      node("span",c.ai_kesik?"ai-kesik":"",c.ai_kesik?"ESKİ KAYIT":"TAM METİN"));
-    ai.append(h,node("div","",c.ai_metni));
-  }else{
-    ai.textContent="AI anlatımı yok. Bu alan ‘Başlat’, ‘Devam’ veya ‘Olay ekle’ ile üretilen metinle dolar.";
-  }
-  d.append(ai);
-  d.append(node("div","motor","Motor özeti: "+c.ozet));
+    metric("Usul",c.usul,c.fark_usul));d.append(m);
+  d.append(aiBox(c));
+  const motor=node("div","motor");motor.append(node("b","","Motor özeti · "),
+    document.createTextNode(c.ozet));d.append(motor);
   const det=node("details","detail");
   det.append(node("summary","",c.model_notu?"Rol tanımı + model notu":"Rol tanımı"));
   det.append(node("p","",c.tanim));
   if(c.model_notu)det.append(node("p","note","Model notu: "+c.model_notu));
   d.append(det);return d;}
+function renderBanner(s){
+  const b=s.baglanti||{},el=$("#linkBanner");
+  el.className="link-banner "+(b.durum||"yok");el.replaceChildren();
+  el.append(node("div","lb-icon",b.durum==="tam"?"✓":b.durum==="eski"?"!":b.durum==="kismi"?"◐":"·"));
+  const txt=node("div","lb-text");
+  const title={tam:"Tüm kartlar bağlı",eski:"Eski kayıt — eksik metin",
+    kismi:"Kısmi bağlantı",yok:"Anlatım bekleniyor"}[b.durum]||"Bağlantı durumu";
+  txt.append(node("strong","",title),node("span","",b.aciklama||""));
+  if(b.yarim)txt.append(node("span","","Uyarı: yanıt cümle ortasında bitmiş olabilir; kayıttaki metnin tamamı gösteriliyor."));
+  el.append(txt,node("div","lb-count",(b.bagli||0)+" / "+(b.toplam||6)));}
+function renderRail(s){
+  const rail=$("#rail");rail.replaceChildren();
+  s.kitleler.forEach(c=>{const b=node("button","rail-node "+c.ai_durum);
+    b.type="button";b.title=c.ad+" — "+(DURUM[c.ai_durum]||"");
+    b.append(node("span","rail-dot"),node("span","rail-name",c.ad),
+      node("span","rail-day",c.ai_gun?"GÜN "+c.ai_gun:"—"));
+    b.addEventListener("click",()=>{const el=$("#card-"+c.id);if(!el)return;
+      el.scrollIntoView({behavior:"smooth",block:"center"});
+      el.classList.remove("flash");void el.offsetWidth;el.classList.add("flash");
+      setTimeout(()=>el.classList.remove("flash"),1250);});
+    rail.append(b);});
+  const b=s.baglanti||{};
+  $("#railInfo").textContent=(b.bagli||0)+"/"+(b.toplam||6)+" kitle · "+
+    (b.kaynak==="tam-metin"?"tam metin":b.kaynak==="eski-ozet"?"eski özet":"kayıt yok")+
+    " · "+(b.karakter||0)+" karakter";}
+function renderTimeline(s){
+  const tl=$("#timeline");tl.replaceChildren();
+  $("#scenarioBadge").textContent=s.senaryo.var?
+    ("Gün "+s.senaryo.gun+" · "+s.senaryo.gecmis.length+" adım · "+
+     s.senaryo.gecmis.length+" günün tam metni kayıtlı"):"Henüz zincir yok";
+  if(!s.senaryo.var){
+    tl.append(node("p","muted","Yukarıya bir olay yazıp “Başlat” de; sonra “Devam” ile zinciri ilerlet."));
+    return;}
+  const ilk=node("div","day");
+  ilk.append(node("div","day-no","BAŞLANGIÇ"),node("div","day-event",s.senaryo.ilk_olay));
+  tl.append(ilk);
+  s.senaryo.gecmis.forEach(h=>{
+    const e=node("div","day");
+    e.append(node("div","day-no","GÜN "+h.day),node("div","day-event",h.event||"(gelişme yok)"));
+    if(h.genel)e.append(node("div","day-genel",h.genel));
+    const det=node("details","detail");
+    det.append(node("summary","","Günün tam metni"+
+      (h.kaynak==="eski-ozet"?" (eski kayıt: 600 kr. özet)":" ("+(h.karakter||0)+" karakter)")));
+    det.append(node("div","day-sum",h.metin||"(metin yok)"));
+    e.append(det);
+    if(h.sinir)e.append(node("div","day-limit","Nedensel sınır: "+h.sinir));
+    const meta=node("div","day-meta");
+    meta.append(node("span","badge","Kartlar: "+(h.bagli||0)+" / 6"),
+      node("span","badge",h.kaynak==="eski-ozet"?"ESKİ ÖZET":"TAM METİN"));
+    if(h.eksik&&h.eksik.length)meta.append(node("span","badge","Ayrı bölüm yok: "+h.eksik.length+" kitle"));
+    if(h.kesik)meta.append(node("span","badge","KIRPILMIŞ"));
+    e.append(meta);tl.append(e);});}
 function render(s){
   state=s;
   $("#modeBadge").textContent=s.mode==="offline"?"ÇEVRİMDIŞI":"CANLI API";
@@ -732,36 +1048,18 @@ function render(s){
     stat("Soru / sınır",s.api.soru+" / "+s.api.soru_limiti),
     stat("Model",s.settings.model||"çevrimdışı"),
     stat("Bekleme",(s.settings.min_interval_seconds||0)+" sn"));
+  renderBanner(s);renderRail(s);
   const cards=$("#cards");cards.replaceChildren();
   s.kitleler.forEach(c=>cards.append(card(c)));
-  // Anlatim gunu secici: ayni zincirin her gunu icin 6 karti yeniden doldurur.
   const sel=$("#aiGun");sel.replaceChildren();
   const gunler=Object.keys(s.senaryo.gunler||{});
   gunler.forEach(g=>{const o=node("option","","Gün "+g);o.value=g;sel.append(o);});
   sel.disabled=!gunler.length;
   if(s.senaryo.secili_gun)sel.value=String(s.senaryo.secili_gun);
-  const sec=s.senaryo.gunler?.[s.senaryo.secili_gun];
-  $("#aiKaynak").textContent=!s.senaryo.ai_var?"AI metni bekleniyor":
-    (sec&&sec.kesik?"(eski kayıt: kırpılmış)":"(tam metin)");
-  const tl=$("#timeline");tl.replaceChildren();
-  $("#scenarioBadge").textContent=s.senaryo.var?
-    ("Gün "+s.senaryo.gun+" · "+s.senaryo.gecmis.length+" adım"):"Henüz zincir yok";
-  if(!s.senaryo.var){
-    tl.append(node("p","muted","Yukarıya bir olay yazıp “Başlat” de; sonra “Devam” ile zinciri ilerlet."));
-  }else{
-    const ilk=node("div","day");
-    ilk.append(node("div","day-no","BAŞLANGIÇ"),node("div","day-event",s.senaryo.ilk_olay));tl.append(ilk);
-    s.senaryo.gecmis.forEach(h=>{
-      const e=node("div","day");
-      e.append(node("div","day-no","Gün "+h.day),node("div","day-event",h.event));
-      const det=node("details","detail");
-      det.append(node("summary","","Günün tam metni"+(h.kesik?" (eski kayıt: kırpılmış)":"")));
-      det.append(node("div","day-sum",h.metin||h.summary||""));
-      if(h.genel)det.append(node("div","day-limit","Genel özet: "+h.genel));
-      e.append(det);
-      if(h.sinir)e.append(node("div","day-limit","Sınır: "+h.sinir));
-      tl.append(e);});
-  }
+  const b=s.baglanti||{};
+  $("#aiKaynak").textContent=(b.bagli||0)+"/"+(b.toplam||6)+" bağlı · "+
+    (b.kaynak==="tam-metin"?"tam metin":b.kaynak==="eski-ozet"?"eski özet":"metin yok");
+  renderTimeline(s);
   const ev=$("#events");ev.replaceChildren();
   (s.olaylar||[]).slice(-10).reverse().forEach(x=>ev.append(node("span","chip",x.kind)));
   if(Number(s.limitler.toplam))$("#limitTotal").value=s.limitler.toplam;
@@ -769,33 +1067,31 @@ function render(s){
   if(s.settings.min_interval_seconds!==undefined&&s.settings.min_interval_seconds!==null)
     $("#beklemeVal").value=s.settings.min_interval_seconds;
   if(Number(s.api.soru_limiti))$("#sorLimitVal").value=s.api.soru_limiti;
-  if(firstLoad){
-    firstLoad=false;
+  if(firstLoad){firstLoad=false;
     if(s.son_cikti)showOutput(s.son_cikti);
-    if(s.son_komut)$("#lastCmd").textContent="Son komut: "+s.son_komut;
-  }
-}
+    if(s.son_komut)$("#lastCmd").textContent="Son komut: "+s.son_komut;}}
 async function load(){
   const cur=$("#aiGun").value;
   try{const r=await fetch("/api/state"+(cur?"?gun="+encodeURIComponent(cur):""),
     {cache:"no-store"});const j=await r.json();
-    if(j.ok)render(j.state);else toast(j.error||"Durum alınamadı",true);
-  }catch(e){toast("Sunucuya ulaşılamadı",true);}}
+    if(j.ok){render(j.state);setConn(true);}else{toast(j.error||"Durum alınamadı",true);setConn(false);}
+  }catch(e){setConn(false);toast("Sunucuya ulaşılamadı",true);}}
+async function ping(){if(busy)return;
+  try{const r=await fetch("/api/health?t="+Date.now(),{cache:"no-store"});
+    const j=await r.json();setConn(!!j.ok);}catch(e){setConn(false);}}
 async function run(cmd,opts){
   if(busy)return;
   const payload=Object.assign({cmd:cmd},opts||{});
-  const cur=$("#aiGun").value;
-  if(cur)payload.gun=cur;
+  const cur=$("#aiGun").value;if(cur)payload.gun=cur;
   if(payload.confirm&&!window.confirm("Bu işlem 1 API isteği / kota kullanabilir. Devam?"))return;
   setBusy(true,cmd+" çalışıyor…");
-  try{
-    const r=await fetch("/api/command",{method:"POST",
-      headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
-    const j=await r.json();
+  try{const r=await fetch("/api/command",{method:"POST",
+    headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+    const j=await r.json();setConn(true);
     if(!j.ok){showOutput("HATA: "+(j.error||"Komut başarısız."));toast(j.error||"Hata",true);return;}
     render(j.state);showOutput(j.message);$("#lastCmd").textContent="Son komut: "+cmd;
     toast("Tamam",false);
-  }catch(e){showOutput("Bağlantı hatası: "+e);toast("Sunucuya ulaşılamadı",true);}
+  }catch(e){setConn(false);showOutput("Bağlantı hatası: "+e);toast("Sunucuya ulaşılamadı",true);}
   finally{setBusy(false);}}
 document.querySelectorAll("[data-cmd]").forEach(b=>b.addEventListener("click",()=>{
   const cmd=b.dataset.cmd,o={};
@@ -812,15 +1108,17 @@ document.querySelectorAll("[data-cmd]").forEach(b=>b.addEventListener("click",()
   if(e.key==="Enter"){e.preventDefault();
     document.querySelector('[data-cmd="'+(id==="sorText"?"sor":"olay")+'"]').click();}}));
 $("#aiGun").addEventListener("change",e=>{
-  if(busy)return;
-  const gun=e.target.value;
+  if(busy)return;const gun=e.target.value;
   setBusy(true,"Gün "+gun+" yükleniyor…");
   fetch("/api/state?gun="+encodeURIComponent(gun)+"&t="+Date.now(),{cache:"no-store"})
-    .then(r=>r.json()).then(j=>{if(j.ok){render(j.state);toast("Gün "+gun+" gösteriliyor",false);}
+    .then(r=>r.json()).then(j=>{if(j.ok){render(j.state);toast("Gün "+gun+" gösteriliyor",false);setConn(true);}
       else toast(j.error||"Gün açılamadı",true);})
-    .catch(()=>toast("Sunucuya ulaşılamadı",true))
+    .catch(()=>{setConn(false);toast("Sunucuya ulaşılamadı",true);})
     .finally(()=>setBusy(false));});
 $("#refreshBtn").addEventListener("click",()=>{if(!busy)load();});
+document.querySelectorAll("[data-copy]").forEach(b=>b.addEventListener("click",()=>{
+  copyText($("#"+b.dataset.copy).textContent,"Çıktı");}));
+setInterval(ping,20000);
 load();
 </script>
 </body>
