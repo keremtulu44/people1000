@@ -6,9 +6,9 @@ import tempfile
 import unittest
 from unittest.mock import patch,MagicMock
 
-from society import agenda
+from society import agenda, psychology
 from society.engine import Simulation,BaselineProvider,Config
-from society.behavior import load_profile,load_v32_profile
+from society.behavior import load_profile,load_v32_profile,load_v33_profile
 from society.agenda_api import AgendaProvider,OpenAICompatibleAdvisor
 from society.session import Session
 
@@ -44,10 +44,17 @@ class AgendaContracts(unittest.TestCase):
         p.update(extra);return self.sim.apply(self.sim.propose(a.id,p))
 
     def test_frozen_v32_and_same_coefficients(self):
-        old,new=load_v32_profile(),load_profile()
-        self.assertEqual(old['behavior_version'],'3.2.0');self.assertEqual(new['behavior_version'],'3.3.0')
-        for k in ('groups','dynamics','belief_step','character_dynamics'):self.assertEqual(old[k],new[k])
+        from society.behavior import load_v34_profile
+        old,v33,v34,current=load_v32_profile(),load_v33_profile(),load_v34_profile(),load_profile()
+        self.assertEqual(old['behavior_version'],'3.2.0')
+        self.assertEqual(v33['behavior_version'],'3.3.0')
+        self.assertEqual(v34['behavior_version'],'3.4.0')
+        self.assertEqual(current['behavior_version'],'3.5.0')
+        for k in ('groups','dynamics','belief_step','character_dynamics'):self.assertEqual(old[k],v33[k])
         self.assertFalse(agenda.enabled(Simulation(behavior_profile=old)))
+        self.assertFalse(psychology.enabled(Simulation(behavior_profile=v33)))
+        self.assertTrue(psychology.enabled(Simulation(behavior_profile=v34)))
+        self.assertTrue(psychology.v2_enabled(Simulation(behavior_profile=current)))
 
     def test_world_registration_not_agent_knowledge(self):
         a=self.person('observer');self.assertEqual(agenda.state(a),{})

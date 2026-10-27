@@ -251,12 +251,10 @@ def validate(sim,a,p):
 
 
 def apply(sim,a,p,cause):
-    e=state(a)[p['issue']];approach=p['approach'];group=a.initial_group
-    # Individual risk affects expression, not the common role-level summary.
-    expression=approach
-    if group in ('authority','wealthy'):expression='private_interest_assessment'
-    elif group=='observer':expression='reserved_observation'
-    elif a.traits['risk_tolerance']<1-a.traits['pressure_response']:expression='private_'+approach
+    from . import psychology
+    e=state(a)[p['issue']];approach=p['approach']
+    # Individual risk, fear and exhaustion shape expression, not the role-level summary.
+    expression=psychology.expression_for_agenda(sim,a,approach)
     e['response']={'approach':approach,'expression':expression,'qualification':e['qualification'],
         'procedure':e['procedure'],'reason':e['suggestion']['reason'],'time':sim.time}
     e['responded_revision']=e['revision']

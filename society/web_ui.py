@@ -26,7 +26,7 @@ from .agenda_api import (AgendaProvider, GeminiAdvisor, OpenAICompatibleAdvisor,
                          advisor_from_environment)
 from .engine import Simulation
 from .session import Session
-from . import termux
+from . import psychology, termux
 from .scenario_text import GROUPS, analyze_scenario, parse_kitle_sections  # noqa: F401
 
 MAX_TEXT = 2000
@@ -35,7 +35,8 @@ HISTORY_LIMIT = 400
 OUTPUT_LIMIT = 60000  # yalnızca terminal çıktısı paneli; AI kart metni kesilmez
 COMMANDS = frozenset({
     'gun', 'ilerle', 'ozet', 'rapor', 'sor', 'devam', 'olay', 'ayar', 'kaydet',
-    'yardim', 'baglanti', 'modeller', 'uretim-test', 'bekleme', 'limit', 'sor-limit'})
+    'yardim', 'baglanti', 'modeller', 'uretim-test', 'bekleme', 'limit',
+    'sor-limit', 'token-limit'})
 
 
 def _short_name(title):
@@ -103,17 +104,29 @@ class WebPilot:
         self.state_path = Path(state_path)
         self.session = Session(sim, AgendaProvider(advisor))
         self.lock = threading.RLock()
+        self.cached_day = _day(sim)
         self.history_path = self.state_path.with_suffix('.history.json')
         self.last_path = self.state_path.parent / (self.state_path.stem + '.last.json')
         self.history = self._load_history()
         if not self.history:
             # Baslangic anlik goruntusu: ilk gunun "dune gore" farki hesaplansin.
-            self.history = [{'day': _day(sim), 'kitleler': _metrics_snapshot(termux.report(sim))}]
+            self.history = [{'day': self.cached_day, 'kitleler': _metrics_snapshot(termux.report(sim))}]
             self._save_history()
         # Son cikti, sunucu yeniden baslasa da geri gelsin (kucuk yan dosya).
         last = self._load_last()
         self.last_output = last.get('output', '')
         self.last_command = last.get('command', '')
+
+    def record_history_snapshot(self):
+        day = _day(self.sim)
+        self.cached_day = day
+        current = {'day': day, 'kitleler': _metrics_snapshot(termux.report(self.sim))}
+        if self.history and self.history[-1]['day'] == day:
+            self.history[-1] = current
+        else:
+            self.history.append(current)
+        self.history = self.history[-HISTORY_LIMIT:]
+        self._save_history()
 
     def _load_history(self):
         try:
@@ -155,6 +168,7 @@ class WebPilot:
         return text.replace(key, '[REDACTED]') if key and isinstance(text, str) else text
 
     def save(self):
+        self.cached_day = _day(self.sim)
         self.sim.save(self.state_path)
 
 
@@ -199,19 +213,19 @@ def _baglanti_ozeti(gun):
 
 
 def build_state(pilot, secili_gun=None):
-    """GET /api/state icin tum ekran verisi. Anahtar icermez.
+    """GET /api/state icin tum ekran verisi. Anahtar icermez, diske yazmaz.
 
     secili_gun: kartlarda gosterilecek senaryo gunu; verilmezse en son gun.
     """
     with pilot.lock:
         r = termux.report(pilot.sim)
         day = _day(pilot.sim)
+        pilot.cached_day = day
         current = {'day': day, 'kitleler': _metrics_snapshot(r)}
         if pilot.history and pilot.history[-1]['day'] == day:
             pilot.history[-1] = current
         else:
             pilot.history.append(current)
-            pilot._save_history()
         pilot.history = pilot.history[-HISTORY_LIMIT:]
         previous = pilot.history[-2]['kitleler'] if len(pilot.history) > 1 else {}
 
@@ -222,9 +236,9 @@ def build_state(pilot, secili_gun=None):
         diag = r.get('diagnostics', {})
         q = r.get('operator_questions', {})
         chain = meta.get('scenario_chain')
-        scenario = {'var': bool(chain), 'ilk_olay': '', 'gun': 0, 'gecmis': [],
-                    'gunler': {}, 'secili_gun': None, 'ai_var': False,
-                    'baglanti': _bos_baglanti()}
+        scenario = {'var': bool(chain), 'ilk_olay': '', 'gun': 0, 'seviye': 'ordinary',
+                    'alan': 'ordinary', 'gecmis': [], 'gunler': {}, 'secili_gun': None,
+                    'ai_var': False, 'baglanti': _bos_baglanti()}
         if chain:
             gunler = {}
             gecmis = []
@@ -238,6 +252,8 @@ def build_state(pilot, secili_gun=None):
                 d = h.get('day')
                 gunler[str(d)] = {
                     'day': d, 'event': h.get('event', ''),
+                    'dal': h.get('branch', ''),
+                    'motor_etkisi': h.get('engine_effects') or {},
                     'sinir': h.get('allowed_extremes', ''),
                     'metin': tam, 'genel': parsed['genel'],
                     'ortak': parsed['ortak'], 'kitleler': parsed['kitleler'],
@@ -253,16 +269,24 @@ def build_state(pilot, secili_gun=None):
             elif son_gun not in gunler and gecmis:
                 son_gun = str(gecmis[-1]['day'])
             scenario = {'var': True, 'ilk_olay': chain.get('initial_event', ''),
-                        'gun': chain.get('day', 0), 'gecmis': gecmis,
+                        'gun': chain.get('day', 0),
+                        'seviye': chain.get('tier', 'ordinary'),
+                        'alan': chain.get('domain') or termux.classify_domain(chain.get('initial_event', '')),
+                        'gecmis': gecmis,
                         'gunler': gunler, 'secili_gun': son_gun,
                         'ai_var': any(g['kitleler'] or g['metin'] for g in gunler.values()),
                         'baglanti': _baglanti_ozeti(gunler.get(son_gun))}
-        # Kartlara atanacak AI metni: secili gunun 6 kitlesi.
+        # Kartlara atanacak AI metni ve psikolojik durum: secili gunun 6 kitlesi.
         secili = scenario['gunler'].get(scenario['secili_gun'], {}) if scenario['var'] else {}
         ai_kitleler = secili.get('kitleler', {}) if isinstance(secili, dict) else {}
         ortak_metin = '\n\n'.join(
             x for x in (secili.get('ortak', ''), secili.get('genel', '')) if x)
         eski_kayit = secili.get('kaynak') == 'eski-ozet'
+        upto_day = (int(scenario['secili_gun'])
+                    if scenario['var'] and scenario['secili_gun'] and str(scenario['secili_gun']).isdigit()
+                    else None)
+        psych_map = psychology.group_summary(
+            pilot.sim, chain if scenario['var'] else None, upto_day=upto_day)
         events = [{'time': e.get('time'), 'kind': e.get('kind', '')}
                   for e in pilot.sim.log[-12:]]
         settings = termux.settings(pilot.advisor)
@@ -277,6 +301,7 @@ def build_state(pilot, secili_gun=None):
             c['ai_ortak'] = '' if metin else ortak_metin
             c['ai_karakter'] = len(metin)
             c['ai_kaynak'] = secili.get('kaynak', 'yok')
+            c['psikoloji'] = psych_map.get(c['id'], {})
         return _json_safe({
             'baglanti': scenario['baglanti'],
             'day': day,
@@ -302,6 +327,8 @@ def build_state(pilot, secili_gun=None):
                 'gunluk': pilot.sim.behavior_profile['agenda_dynamics'].get('daily_review_limit'),
             },
             'senaryo': scenario,
+            'sosyal_zihin': psychology.social_mind_overview(psych_map),
+            'hafiza': r.get('institutional_memory', {}),
             'olaylar': events,
             'ozet_metni': termux.turkce_ozet(pilot.sim),
             'son_cikti': pilot.last_output,
@@ -342,6 +369,7 @@ def execute_command(pilot, payload):
             count = 1 if cmd == 'gun' else _int(payload, 'count', 1, MAX_DAYS, 1)
             for _ in range(count):
                 pilot.session.day(checkpoint=pilot.state_path)
+                pilot.record_history_snapshot()
             out = f'{count} gun ilerletildi. Simulasyon zamani: {sim.time} dk.'
         elif cmd == 'ozet':
             out = termux.turkce_ozet(sim)
@@ -352,13 +380,12 @@ def execute_command(pilot, payload):
         elif cmd == 'yardim':
             out = termux.HELP
         elif cmd == 'kaydet':
-            pilot.save(); out = 'Kaydedildi.'
+            pilot.save(); pilot.record_history_snapshot(); out = 'Kaydedildi.'
         elif cmd == 'sor':
             question = _text(payload)
-            if isinstance(advisor, OpenAICompatibleAdvisor) and meta['question_attempts'] >= meta['question_limit']:
-                meta['question_limit'] = meta['question_attempts'] + 1
             try:
-                out = termux.ask_operator(sim, question, advisor)
+                out = termux.start_scenario(sim, question, advisor)
+                pilot.record_history_snapshot()
             finally:
                 pilot.save()
         elif cmd == 'devam':
@@ -366,6 +393,7 @@ def execute_command(pilot, payload):
             try:
                 out = '\n\n'.join(termux.advance_scenario_days(
                     sim, advisor, count, checkpoint=pilot.state_path))
+                pilot.record_history_snapshot()
             finally:
                 pilot.save()
         elif cmd == 'olay':
@@ -373,6 +401,7 @@ def execute_command(pilot, payload):
             try:
                 out = '\n\n'.join(termux.advance_scenario_days(
                     sim, advisor, 1, checkpoint=pilot.state_path, custom_event=custom))
+                pilot.record_history_snapshot()
             finally:
                 pilot.save()
         elif cmd in ('baglanti', 'modeller'):
@@ -418,6 +447,14 @@ def execute_command(pilot, payload):
             qlim = _int(payload, 'count', 1, 200, 5)
             meta['question_limit'] = qlim
             pilot.save(); out = f'Soru/senaryo deneme siniri {qlim} olarak guncellendi.'
+        elif cmd == 'token-limit':
+            if not isinstance(advisor, OpenAICompatibleAdvisor):
+                raise ValueError('Cevrimdisi modda cikti token siniri kullanilmaz.')
+            tok = _int(payload, 'tokens', 256, 8192, 2048)
+            advisor.max_output_tokens = tok
+            if 'timeout' in payload:
+                advisor.timeout = _int(payload, 'timeout', 5, 120, advisor.timeout)
+            out = f'Cikti token siniri {tok} (zaman asimi: {advisor.timeout} sn) olarak guncellendi.'
 
         pilot.last_output = pilot.redact(str(out))[:OUTPUT_LIMIT]
         pilot.last_command = cmd
@@ -466,10 +503,9 @@ class Handler(BaseHTTPRequestHandler):
             except Exception as exc:
                 return self._json(500, {'ok': False, 'error': self.server.pilot.redact(str(exc))})
         if path == '/api/health':
-            # Hafif baglanti nabzi: kart durumunu/ozeti yeniden uretmez.
+            # Hafif baglanti nabzi: kilit beklemeden anlik gun sayisini dondurur.
             try:
-                with self.server.pilot.lock:
-                    day = _day(self.server.pilot.sim)
+                day = getattr(self.server.pilot, 'cached_day', 0)
                 return self._json(200, {'ok': True, 'day': day,
                                         'kart': len(termux.ROLE_INFO),
                                         'server': self.server_version})
@@ -500,8 +536,21 @@ class Handler(BaseHTTPRequestHandler):
             message, state = execute_command(self.server.pilot, payload)
             return self._json(200, {'ok': True, 'message': message, 'state': state})
         except (ValueError, RuntimeError, OSError, KeyError, TypeError) as exc:
-            return self._json(400, {
-                'ok': False, 'error': self.server.pilot.redact(str(exc)) or 'Komut basarisiz.'})
+            err_body = {
+                'ok': False,
+                'error': self.server.pilot.redact(str(exc)) or 'Komut basarisiz.',
+            }
+            if getattr(exc, 'kind', None):
+                err_body['error_kind'] = exc.kind
+            if getattr(exc, 'http_status', None) is not None:
+                err_body['http_status'] = exc.http_status
+            if getattr(exc, 'retry_after', None) is not None:
+                err_body['retry_after'] = exc.retry_after
+            try:
+                err_body['state'] = build_state(self.server.pilot)
+            except Exception:
+                pass
+            return self._json(400, err_body)
 
     def log_message(self, fmt, *args):
         pass  # anahtar/istek govdesi icerebilecek ham erisim gunlukleri yazilmaz
@@ -699,6 +748,49 @@ display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hi
 .fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--blue),var(--cyan));transition:width .55s cubic-bezier(.2,.8,.2,1)}
 .delta{font-size:10px;margin-top:5px;color:var(--dim)}
 .delta.up{color:var(--green)}.delta.down{color:var(--red)}
+.agenda-muted{font-size:10.5px;color:var(--dim);padding:6px 10px;border-radius:9px;
+background:rgba(10,16,28,.55);border:1px dashed var(--line)}
+.psych-panel{background:rgba(10,17,31,.78);border:1px solid rgba(126,156,214,.18);
+border-radius:12px;padding:10px 11px;display:flex;flex-direction:column;gap:8px}
+.psych-head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.psych-mode{font-size:10.5px;font-weight:750;color:var(--cyan);letter-spacing:.02em}
+.psych-expr{font-size:9.5px;color:var(--muted);padding:3px 7px;border-radius:999px;
+border:1px solid var(--line);background:rgba(17,26,44,.75)}
+.psych-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 10px}
+.pitem-label{font-size:9.5px;color:var(--muted);display:flex;justify-content:space-between;gap:4px;margin-bottom:3px}
+.pitem-label b{color:var(--txt);font-variant-numeric:tabular-nums}
+.pbar{height:5px;border-radius:99px;background:rgba(4,8,16,.85);border:1px solid var(--line);overflow:hidden}
+.pfill{height:100%;border-radius:99px;transition:width .45s ease}
+.pfill.comfort{background:linear-gradient(90deg,#3da88e,var(--green))}
+.pfill.fear{background:linear-gradient(90deg,#d99a4e,var(--gold))}
+.pfill.anger{background:linear-gradient(90deg,#d95c68,var(--red))}
+.pfill.defense{background:linear-gradient(90deg,var(--blue),var(--violet))}
+.psych-note{font-size:10.5px;color:#b8c7df;line-height:1.42}
+.subwings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding-top:4px;
+border-top:1px solid rgba(126,156,214,.12)}
+.sw-chip{background:rgba(15,24,42,.85);border:1px solid var(--line);border-radius:8px;padding:5px 7px;
+font-size:9.5px;line-height:1.35;color:var(--muted)}
+.sw-chip strong{display:block;color:var(--txt);font-size:9.5px;margin-bottom:1px}
+.deep-tags{display:flex;flex-wrap:wrap;gap:5px;padding-top:4px;border-top:1px dashed rgba(126,156,214,.14)}
+.dtag{font-size:9.5px;padding:3px 7px;border-radius:999px;background:rgba(16,25,44,.9);
+border:1px solid var(--line);color:#b9c9e4;font-variant-numeric:tabular-nums}
+.dtag.alert{color:var(--red);border-color:rgba(255,125,144,.38);background:rgba(255,125,144,.09)}
+.dtag.warn{color:var(--gold);border-color:rgba(255,206,122,.36);background:rgba(255,206,122,.08)}
+.dtag.ok{color:var(--green);border-color:rgba(99,230,169,.34);background:rgba(99,230,169,.07)}
+.radar-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:10px}
+.rcard{background:linear-gradient(155deg,rgba(20,31,52,.88),rgba(11,17,30,.95));
+border:1px solid var(--line);border-radius:14px;padding:11px 12px;display:flex;flex-direction:column;gap:6px}
+.rcard .rk{font-size:9.5px;color:var(--dim);text-transform:uppercase;letter-spacing:.09em;font-weight:800}
+.rcard .rv{font-size:16px;font-weight:800;font-variant-numeric:tabular-nums;display:flex;align-items:baseline;justify-content:space-between;gap:6px}
+.rcard .rs{font-size:10px;color:var(--muted);line-height:1.35}
+.mem-strip{margin-top:10px;padding:11px 14px;border-radius:13px;border:1px solid var(--line);
+background:rgba(13,20,36,.82);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+.mem-strip .mtxt{font-size:11.5px;color:#c9d7ef;flex:1 1 280px}
+.mem-pills{display:flex;flex-wrap:wrap;gap:6px}
+.presets{display:flex;flex-wrap:wrap;gap:6px;margin:-3px 0 10px}
+.preset{background:rgba(18,28,48,.78);border:1px dashed var(--line2);color:var(--muted);
+border-radius:999px;padding:4px 10px;font-size:10.5px;transition:.16s}
+.preset:hover{color:var(--cyan);border-color:var(--cyan);border-style:solid}
 .ai-box{border:1px solid rgba(122,162,255,.26);border-radius:13px;overflow:hidden;
 background:linear-gradient(150deg,rgba(20,34,60,.9),rgba(10,17,31,.9))}
 .ai-box.eski{border-color:rgba(255,206,122,.4);background:linear-gradient(150deg,rgba(52,40,22,.75),rgba(15,18,26,.9))}
@@ -812,6 +904,15 @@ max-width:90vw;text-align:center;box-shadow:var(--shadow)}
   <div id="linkBanner" class="link-banner"></div>
 
   <section class="section">
+    <div class="section-head">
+      <h2>Toplumsal zihin ve kırılganlık radarı</h2>
+      <span class="muted">v3.5 derin sosyal psikoloji göstergeleri (0 ek API isteği)</span>
+    </div>
+    <div id="mindRadar" class="radar-grid"></div>
+    <div id="memoryStrip" class="mem-strip"></div>
+  </section>
+
+  <section class="section">
     <div class="section-head"><h2>Anlatım → kitle bağlantıları</h2><span id="railInfo" class="muted"></span></div>
     <div id="rail" class="rail"></div>
     <p class="rail-help muted">Düğüme dokun = ilgili karta git.
@@ -832,7 +933,7 @@ max-width:90vw;text-align:center;box-shadow:var(--shadow)}
   </section>
 
   <section class="section">
-    <div class="section-head"><h2>Komutlar</h2><span class="muted hide-sm">Canlı istekler kotadan düşer; otomatik tekrar yok</span></div>
+    <div class="section-head"><h2>Komutlar</h2><span class="muted hide-sm">1 Başlat/Devam = 1 API isteği · Motor hesabı = 0 ek API isteği</span></div>
     <div class="panel">
       <div class="row">
         <button data-cmd="gun" class="btn primary">▸ Gün ilerlet</button>
@@ -846,11 +947,28 @@ max-width:90vw;text-align:center;box-shadow:var(--shadow)}
         <input id="sorText" maxlength="2000" placeholder="Yeni olay / senaryo (Gün 1)">
         <button data-cmd="sor" class="btn accent">✦ Başlat</button>
       </div>
+      <div class="presets">
+        <button type="button" class="preset" data-fill="sorText" data-val="Büyük maden faciası yaşandı, denetim ihmali iddiası var">⚡ Maden faciası &amp; ihmal</button>
+        <button type="button" class="preset" data-fill="sorText" data-val="Büyük ihale yolsuzluğu ortaya çıktı ve sert fiyat artışı başladı">⚡ İhale yolsuzluğu &amp; fiyat şoku</button>
+        <button type="button" class="preset" data-fill="sorText" data-val="Organize sanayi fabrikasında büyük yangın çıktı, güvenlik açığı tartışılıyor">⚡ Fabrika yangını</button>
+      </div>
       <div class="row">
         <button data-cmd="devam" data-count="1" class="btn">Devam 1</button>
         <button data-cmd="devam" data-count="3" class="btn">Devam 3</button>
-        <input id="olayText" maxlength="2000" placeholder="Zincire yeni gelişme ekle">
+        <input id="devamCount" type="number" min="1" max="30" value="10" aria-label="Çoklu devam gün sayısı" style="max-width:78px">
+        <button data-cmd="devam" data-custom-count="1" class="btn accent">Devam (Gün)</button>
+        <button id="stopBtn" type="button" class="btn warn" hidden>■ Durdur</button>
+      </div>
+      <div class="row">
+        <input id="olayText" maxlength="2000" placeholder="Zincire yeni gelişme ekle (ör. içeriden belge sızdı / sıkı önlem alındı)">
         <button data-cmd="olay" class="btn">Olay ekle</button>
+      </div>
+      <div class="presets">
+        <button type="button" class="preset" data-fill="olayText" data-val="Bağımsız denetim başlatıldı, sorumlu üst yönetici istifa etti ve güvenlik önlem alındı">✓ Şeffaf denetim &amp; istifa</button>
+        <button type="button" class="preset" data-fill="olayText" data-val="İçeriden daha önce sümenaltı edilmiş resmi denetim uyarısı belgesi sızdı">📄 İçeriden belge sızdı</button>
+        <button type="button" class="preset" data-fill="olayText" data-val="Bağımsız gözlemci ve uzmanlar kanıta dayalı teknik uyarı raporu yayınladı">🔬 Gözlemci teknik uyarısı</button>
+        <button type="button" class="preset" data-fill="olayText" data-val="Yayın yasağı getirildi ve sert eleştiri yapan yorumculara gözaltı işlemi yapıldı">⚠ Yayın yasağı &amp; gözaltı</button>
+        <button type="button" class="preset" data-fill="olayText" data-val="Halk güvenlik ve geçim tepkisiyle günlük hayat boykotu başlattı">✊ Toplumsal boykot</button>
       </div>
       <details class="advanced">
         <summary>Tanılama ve sınırlar — aç</summary>
@@ -867,8 +985,13 @@ max-width:90vw;text-align:center;box-shadow:var(--shadow)}
           <button data-cmd="limit" class="btn">Limit</button>
         </div>
         <div class="row">
-          <input id="sorLimitVal" type="number" min="1" max="200" value="5" aria-label="Soru limiti">
+          <input id="sorLimitVal" type="number" min="1" max="200" value="20" aria-label="Soru limiti">
           <button data-cmd="sor-limit" class="btn">Soru limiti</button>
+          <input id="tokenLimitVal" type="number" min="256" max="8192" step="128" value="2048" aria-label="Çıktı token sınırı">
+          <input id="timeoutVal" type="number" min="5" max="120" step="5" value="20" aria-label="Zaman aşımı saniyesi">
+          <button data-cmd="token-limit" class="btn">Token / Süre</button>
+        </div>
+        <div class="row">
           <a class="btn" href="/api/export" download>Raporu indir (JSON)</a>
           <button data-cmd="yardim" class="btn">Yardım</button>
         </div>
@@ -903,19 +1026,110 @@ max-width:90vw;text-align:center;box-shadow:var(--shadow)}
 <script>
 "use strict";
 const $=s=>document.querySelector(s);
-let state=null,busy=false,firstLoad=true;
+let state=null,busy=false,firstLoad=true,stopRequested=false;
 const DURUM={tam:"AI BAĞLI",eski:"ESKİ KAYIT",ortak:"ORTAK METİN",yok:"BEKLİYOR"};
 function node(tag,cls,text){const e=document.createElement(tag);
   if(cls)e.className=cls;if(text!==undefined&&text!==null)e.textContent=String(text);return e;}
 function toast(msg,err){const t=$("#toast");t.textContent=msg;
-  t.className="toast show"+(err?" err":"");setTimeout(()=>{t.className="toast";},2700);}
+  t.className="toast show"+(err?" err":"");setTimeout(()=>{t.className="toast";},2900);}
 function setConn(ok){const e=$("#conn");e.className="conn "+(ok?"ok":"off");
   e.textContent=ok?"● SUNUCU BAĞLI":"○ BAĞLANTI YOK";}
 function showOutput(t){$("#output").textContent=t||"(çıktı yok)";}
-function setBusy(v,msg){busy=v;document.querySelectorAll("[data-cmd]").forEach(b=>b.disabled=v);
+function setBusy(v,msg,cancellable){busy=v;document.querySelectorAll("[data-cmd]").forEach(b=>b.disabled=v);
+  const sb=$("#stopBtn");if(sb)sb.hidden=!(v&&cancellable);
   $("#status").textContent=v?(msg||"Çalışıyor…"):"";}
 function stat(k,v){const d=node("div","stat");
   d.append(node("div","k",k),node("div","v",v));return d;}
+function pbar(label,val,tone,extraText){
+  const w=node("div","pitem"),lab=node("div","pitem-label");
+  lab.append(node("span","",label),node("b","",extraText||(val===null||val===undefined?"—":"%"+val)));
+  const bar=node("div","pbar"),fill=node("div","pfill "+(tone||"comfort"));
+  fill.style.width=(val===null||val===undefined?0:Math.max(0,Math.min(100,val)))+"%";
+  bar.append(fill);w.append(lab,bar);return w;}
+function dtag(text,tone){return node("span","dtag"+(tone?" "+tone:""),text);}
+function psychBox(c){
+  const ps=c.psikoloji;
+  if(!ps||!ps.baskin_etiket)return null;
+  const p=node("div","psych-panel");
+  const head=node("div","psych-head");
+  head.append(node("span","psych-mode","Psikoloji · "+ps.baskin_etiket),
+    node("span","psych-expr",ps.ifade_etiketi||"Açık ifade"));
+  p.append(head);
+  const g=node("div","psych-grid");
+  g.append(
+    pbar("Konfor / Huzur",ps.konfor,"comfort"),
+    pbar("Korku / Otosansür",ps.korku,"fear"),
+    pbar("Öfke / Bastırılmış",ps.ofke,"anger","%"+(ps.ofke||0)+" (İç: %"+(ps.bastirilmis_ofke||0)+")"),
+    pbar("Savunma / Eşik",ps.savunma,"defense","Sav %"+(ps.savunma||0)+" · Aşan %"+(ps.esik_asan_oran||0))
+  );
+  if((ps.tukenmislik||0)>=8){
+    g.append(pbar("Tükenmişlik",ps.tukenmislik,"fear"),
+             pbar("Tahammül Eşiği",ps.tahammul_esigi,"defense"));
+  }
+  p.append(g);
+  const tags=node("div","deep-tags");
+  if(c.id==="power_aligned"){
+    tags.append(dtag("Aracı Güveni %"+(ps.araci_guveni??75),(ps.araci_guveni??75)<45?"warn":""));
+    if((ps.suc_kaydirma_oran||0)>0)tags.append(dtag("Suç Kaydırma %"+ps.suc_kaydirma_oran,"warn"));
+    if((ps.kuskun_oran||0)>0)tags.append(dtag("Küskün / Sessiz Kopuş %"+ps.kuskun_oran,"alert"));
+  }else if(c.id==="opposition"){
+    if((ps.cogulcu_cehalet||0)>=10)tags.append(dtag("Çoğulcu Cehalet %"+ps.cogulcu_cehalet,"warn"));
+    if((ps.kuskun_oran||0)>0)tags.append(dtag("Küskün Kopuş %"+ps.kuskun_oran,"alert"));
+    tags.append(dtag("Eylem İtkisi %"+(ps.eylem_itkisi||0)));
+  }else if(c.id==="authority"){
+    tags.append(dtag("İç Çatlak: "+(ps.ic_catlak_sayisi||0)+" yönetici"));
+    tags.append(dtag("Sızıntı Eğilimi %"+(ps.ic_sizinti_egilimi||0),(ps.ic_sizinti_egilimi||0)>=45?"alert":""));
+  }else if(c.id==="discontented"){
+    if((ps.goreli_yoksunluk||0)>=8)tags.append(dtag("Göreli Yoksunluk %"+ps.goreli_yoksunluk,"alert"));
+    tags.append(dtag("Dayanışma Gücü %"+(ps.dayanisma_kapasitesi??100),(ps.dayanisma_kapasitesi??100)<55?"warn":"ok"));
+  }else if(c.id==="observer"){
+    tags.append(dtag("Epistemik Alarm %"+(ps.epistemik_alarm||0),(ps.epistemik_alarm||0)>=60?"alert":""));
+    if((ps.uyari_hazir_oran||0)>0)tags.append(dtag("TEKNİK UYARI EŞİĞİ AŞILDI","alert"));
+  }
+  if(tags.childNodes.length)p.append(tags);
+  if(ps.alt_kanatlar){
+    const sw=node("div","subwings");
+    const names={pro_A:"A Yanlısı Medya",pro_B:"B Yanlısı Medya",neutral_commercial:"Tarafsız / Ticari"};
+    ["pro_A","pro_B","neutral_commercial"].forEach(k=>{
+      const x=ps.alt_kanatlar[k];if(!x)return;
+      const chip=node("div","sw-chip");
+      chip.append(node("strong","",names[k]||k),
+        document.createTextNode((x.ifade_etiketi||x.baskin_etiket||"")+" · Korku %"+(x.korku||0)));
+      sw.append(chip);
+    });
+    p.append(sw);
+  }
+  if(ps.yorum)p.append(node("div","psych-note",ps.yorum));
+  return p;}
+function renderMindRadar(s){
+  const el=$("#mindRadar"),ms=$("#memoryStrip");
+  if(!el||!ms)return;
+  el.replaceChildren();ms.replaceChildren();
+  const z=s.sosyal_zihin||{};
+  const items=[
+    {k:"Sahte Uyum Riski",v:z.sahte_uyum_riski??0,tone:"fear",sub:"Görünür uyum ile içsel tepki/otosansür makası"},
+    {k:"Yay Boşalma Gerilimi",v:z.yay_bosalma_potansiyeli??0,tone:"anger",sub:"Bastırılmış öfke + adaletsizlik birikimi"},
+    {k:"Küskün / Gri Seçmen",v:z.kuskun_secmen_orani??0,tone:"defense",sub:"Taraf değiştirmeden sessizce çekilen taban"},
+    {k:"İktidar Aracı Güveni",v:z.iktidar_araci_guveni??75,tone:"comfort",sub:"Bürokrasiye suç kaydırma tamponu (düşerse duvar çatlar)"},
+    {k:"Göreli Yoksunluk",v:z.goreli_yoksunluk??0,tone:"anger",sub:"İmtiyaz uçurumu · Dayanışma gücü %"+(z.dayanisma_kapasitesi??100)},
+    {k:"Gözlemci Alarmı",v:z.gozlemci_epistemik_alarm??0,tone:"defense",sub:z.gozlemci_uyari_hazir?"Teknik uyarı eşiğinde (Cassandra)":"6 kanallı çapraz izleme"}
+  ];
+  items.forEach(it=>{
+    const c=node("div","rcard"),bar=node("div","pbar"),fill=node("div","pfill "+it.tone);
+    fill.style.width=Math.max(0,Math.min(100,it.v))+"%";bar.append(fill);
+    c.append(node("div","rk",it.k),node("div","rv","%"+it.v),bar,node("div","rs",it.sub));
+    el.append(c);
+  });
+  const h=s.hafiza||{};
+  ms.append(node("div","mtxt","Toplumsal Hafıza: "+(h.yorum||"Henüz kapanmış geçmiş kriz yok.")));
+  const pills=node("div","mem-pills");
+  pills.append(
+    dtag("Geçmiş Kriz: "+(h.gecmis_kriz_sayisi||0)),
+    dtag("Örtbas İzi %"+(h.ortbas_izi||0),(h.ortbas_izi||0)>=20?"alert":""),
+    dtag("Günah Keçisi İzi %"+(h.gunah_kecisi_izi||0),(h.gunah_kecisi_izi||0)>=20?"warn":""),
+    dtag("Onarım Kredisi %"+(h.onarim_kredisi||0),(h.onarim_kredisi||0)>0?"ok":"")
+  );
+  ms.append(pills);}
 function metric(label,val,delta){const w=node("div","metric");
   const lab=node("div","metric-label");lab.append(node("span","",label),
     node("b","",val===null||val===undefined?"—":val+"%"));w.append(lab);
@@ -976,11 +1190,16 @@ function card(c){
   head.append(node("span","num",c.sira),node("h3","",c.ad),
     node("span","pill "+c.ai_durum,DURUM[c.ai_durum]||"BEKLİYOR"));d.append(head);
   d.append(node("div","role-short",c.tanim));
-  d.append(node("div","action",c.eylem));
-  if(c.ifade)d.append(node("div","expr",c.ifade));
-  const m=node("div","metrics");
-  m.append(metric("Yeterlilik",c.yeterlilik,c.fark_yeterlilik),
-    metric("Usul",c.usul,c.fark_usul));d.append(m);
+  const pb=psychBox(c);if(pb)d.append(pb);
+  if(c.var){
+    d.append(node("div","action",c.eylem));
+    if(c.ifade)d.append(node("div","expr",c.ifade));
+    const m=node("div","metrics");
+    m.append(metric("Yeterlilik",c.yeterlilik,c.fark_yeterlilik),
+      metric("Usul",c.usul,c.fark_usul));d.append(m);
+  }else{
+    d.append(node("div","agenda-muted","Sıradan atama gündemi: henüz gün ilerletilmedi (“Gün ilerlet” ile çalışır)."));
+  }
   d.append(aiBox(c));
   const motor=node("div","motor");motor.append(node("b","","Motor özeti · "),
     document.createTextNode(c.ozet));d.append(motor);
@@ -1024,10 +1243,13 @@ function renderTimeline(s){
     return;}
   const ilk=node("div","day");
   ilk.append(node("div","day-no","BAŞLANGIÇ"),node("div","day-event",s.senaryo.ilk_olay));
+  if(s.hafiza&&s.hafiza.gecmis_kriz_sayisi>0){
+    ilk.append(node("div","day-limit","Toplumsal hafıza: "+s.hafiza.yorum));
+  }
   tl.append(ilk);
   s.senaryo.gecmis.forEach(h=>{
     const e=node("div","day");
-    e.append(node("div","day-no","GÜN "+h.day),node("div","day-event",h.event||"(gelişme yok)"));
+    e.append(node("div","day-no","GÜN "+h.day+(h.dal?" · DAL: "+h.dal:"")),node("div","day-event",h.event||"(gelişme yok)"));
     if(h.genel)e.append(node("div","day-genel",h.genel));
     const det=node("details","detail");
     det.append(node("summary","","Günün tam metni"+
@@ -1038,6 +1260,14 @@ function renderTimeline(s){
     const meta=node("div","day-meta");
     meta.append(node("span","badge","Kartlar: "+(h.bagli||0)+" / 6"),
       node("span","badge",h.kaynak==="eski-ozet"?"ESKİ ÖZET":"TAM METİN"));
+    if(h.motor_etkisi&&h.motor_etkisi.sim_day){
+      const me=h.motor_etkisi;
+      meta.append(node("span","badge","Motor Gün "+me.sim_day+" · Güven %"+(me.mean_trust??"—")+" · Fiyat x"+(me.price??1)));
+      if(me.employer_cut_workers>0)meta.append(node("span","badge","İşveren kesintisi: "+me.employer_cut_workers+" çalışan"));
+      if(me.self_censored_blocks>0)meta.append(node("span","badge","Otosansür engeli: "+me.self_censored_blocks));
+      if(me.disengaged_citizens>0)meta.append(node("span","badge","Küskün kopuş: "+me.disengaged_citizens+" kişi"));
+      if(me.observer_warnings>0)meta.append(node("span","badge","Gözlemci teknik uyarısı: "+me.observer_warnings));
+    }
     if(h.eksik&&h.eksik.length)meta.append(node("span","badge","Ayrı bölüm yok: "+h.eksik.length+" kitle"));
     if(h.kesik)meta.append(node("span","badge","KIRPILMIŞ"));
     e.append(meta);tl.append(e);});}
@@ -1053,7 +1283,7 @@ function render(s){
     stat("Soru / sınır",s.api.soru+" / "+s.api.soru_limiti),
     stat("Model",s.settings.model||"çevrimdışı"),
     stat("Bekleme",(s.settings.min_interval_seconds||0)+" sn"));
-  renderBanner(s);renderRail(s);
+  renderBanner(s);renderMindRadar(s);renderRail(s);
   const cards=$("#cards");cards.replaceChildren();
   s.kitleler.forEach(c=>cards.append(card(c)));
   const sel=$("#aiGun");sel.replaceChildren();
@@ -1071,6 +1301,8 @@ function render(s){
   if(Number(s.limitler.gunluk))$("#limitDaily").value=s.limitler.gunluk;
   if(s.settings.min_interval_seconds!==undefined&&s.settings.min_interval_seconds!==null)
     $("#beklemeVal").value=s.settings.min_interval_seconds;
+  if(Number(s.settings.max_output_tokens))$("#tokenLimitVal").value=s.settings.max_output_tokens;
+  if(Number(s.settings.timeout_seconds))$("#timeoutVal").value=s.settings.timeout_seconds;
   if(Number(s.api.soru_limiti))$("#sorLimitVal").value=s.api.soru_limiti;
   if(firstLoad){firstLoad=false;
     if(s.son_cikti)showOutput(s.son_cikti);
@@ -1084,23 +1316,65 @@ async function load(){
 async function ping(){if(busy)return;
   try{const r=await fetch("/api/health?t="+Date.now(),{cache:"no-store"});
     const j=await r.json();setConn(!!j.ok);}catch(e){setConn(false);}}
+function explainError(j){
+  let msg=j.error||"Komut başarısız.";
+  if(j.http_status===429){
+    const wait=j.retry_after?(" (Önerilen bekleme: "+j.retry_after+" sn)"):"";
+    msg+=" — İpucu: Bekleme süresini (sn) artırıp tekrar deneyin"+wait+".";
+  }else if(/token sınırında kesildi|MAX_TOKENS/i.test(msg)){
+    msg+=" — İpucu: 'Tanılama ve sınırlar' altından Çıktı Token sınırını artırabilirsiniz.";
+  }
+  return msg;}
 async function run(cmd,opts){
   if(busy)return;
   const payload=Object.assign({cmd:cmd},opts||{});
   const cur=$("#aiGun").value;if(cur)payload.gun=cur;
   if(payload.confirm&&!window.confirm("Bu işlem 1 API isteği / kota kullanabilir. Devam?"))return;
-  setBusy(true,cmd+" çalışıyor…");
-  try{const r=await fetch("/api/command",{method:"POST",
-    headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+  const totalSteps=((cmd==="devam"||cmd==="ilerle")&&Number(payload.count)>1)?Number(payload.count):1;
+  stopRequested=false;
+  setBusy(true,totalSteps>1?(cmd+" (1 / "+totalSteps+") çalışıyor…"):(cmd+" çalışıyor…"),totalSteps>1);
+  try{
+    if(totalSteps>1){
+      const logs=[];let completed=0;
+      for(let i=1;i<=totalSteps;i++){
+        if(stopRequested){toast(completed+" gün tamamlandıktan sonra durduruldu",false);break;}
+        setBusy(true,cmd+" ("+i+" / "+totalSteps+". gün) çalışıyor…",true);
+        const stepPayload=Object.assign({},payload,{count:1});
+        delete stepPayload.gun;
+        const r=await fetch("/api/command",{method:"POST",
+          headers:{"Content-Type":"application/json"},body:JSON.stringify(stepPayload)});
+        const j=await r.json();setConn(true);
+        if(!j.ok){
+          if(j.state)render(j.state);
+          const em=explainError(j);
+          showOutput((logs.length?logs.join("\n\n")+"\n\n":"")+"HATA ("+i+". adım): "+em);
+          toast(em,true);return;
+        }
+        completed=i;logs.push(j.message);render(j.state);showOutput(logs.join("\n\n"));
+        $("#lastCmd").textContent="Son komut: "+cmd+" ("+completed+"/"+totalSteps+")";
+      }
+      if(!stopRequested)toast(completed+" gün tamamlandı",false);
+      return;
+    }
+    const r=await fetch("/api/command",{method:"POST",
+      headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
     const j=await r.json();setConn(true);
-    if(!j.ok){showOutput("HATA: "+(j.error||"Komut başarısız."));toast(j.error||"Hata",true);return;}
+    if(!j.ok){
+      if(j.state)render(j.state);
+      const em=explainError(j);
+      showOutput("HATA: "+em);toast(em,true);return;
+    }
     render(j.state);showOutput(j.message);$("#lastCmd").textContent="Son komut: "+cmd;
     toast("Tamam",false);
   }catch(e){setConn(false);showOutput("Bağlantı hatası: "+e);toast("Sunucuya ulaşılamadı",true);}
-  finally{setBusy(false);}}
+  finally{setBusy(false,"",false);}}
+const stopBtnEl=$("#stopBtn");
+if(stopBtnEl)stopBtnEl.addEventListener("click",()=>{stopRequested=true;stopBtnEl.disabled=true;
+  $("#status").textContent="Mevcut gün bitince durdurulacak…";setTimeout(()=>{stopBtnEl.disabled=false;},600);});
 document.querySelectorAll("[data-cmd]").forEach(b=>b.addEventListener("click",()=>{
   const cmd=b.dataset.cmd,o={};
   if(b.dataset.count)o.count=Number(b.dataset.count);
+  if(b.dataset.customCount)o.count=Number($("#devamCount").value||10);
   if(b.dataset.confirm)o.confirm=true;
   if(cmd==="sor"||cmd==="olay"){
     const t=(cmd==="sor"?$("#sorText"):$("#olayText")).value.trim();
@@ -1108,6 +1382,7 @@ document.querySelectorAll("[data-cmd]").forEach(b=>b.addEventListener("click",()
   if(cmd==="bekleme")o.seconds=Number($("#beklemeVal").value);
   if(cmd==="limit"){o.total=Number($("#limitTotal").value);o.daily=Number($("#limitDaily").value);}
   if(cmd==="sor-limit")o.count=Number($("#sorLimitVal").value);
+  if(cmd==="token-limit"){o.tokens=Number($("#tokenLimitVal").value);o.timeout=Number($("#timeoutVal").value);}
   run(cmd,o);}));
 ["sorText","olayText"].forEach(id=>$("#"+id).addEventListener("keydown",e=>{
   if(e.key==="Enter"){e.preventDefault();
@@ -1121,6 +1396,10 @@ $("#aiGun").addEventListener("change",e=>{
     .catch(()=>{setConn(false);toast("Sunucuya ulaşılamadı",true);})
     .finally(()=>setBusy(false));});
 $("#refreshBtn").addEventListener("click",()=>{if(!busy)load();});
+document.querySelectorAll("[data-fill]").forEach(b=>b.addEventListener("click",()=>{
+  const inp=$("#"+b.dataset.fill);if(!inp)return;
+  inp.value=b.dataset.val||"";inp.focus();
+  toast("Şablon metin kutusuna yazıldı (istek göndermek için düğmeye basın)");}));
 document.querySelectorAll("[data-copy]").forEach(b=>b.addEventListener("click",()=>{
   copyText($("#"+b.dataset.copy).textContent,"Çıktı");}));
 setInterval(ping,20000);
