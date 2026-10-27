@@ -17,7 +17,7 @@ kontrol noktaları eklendi. **Gerçek ücretli API koşulmadı**; çevrimdışı
 ve kontrollü HTTP yanıtlarıyla doğrulandı.
 
 **808 ana koşu + 24 uygulama kontrolü + 4 müdahalesiz kontrol** tamamlandı.
-203 test: 202 başarılı, 1 eski ham dosya eksikliği nedeniyle atlanan.
+216 test: 215 başarılı, 1 eski ham dosya eksikliği nedeniyle atlanan.
 
 [Genel sonuç raporu](reports/character-v33-report.md) ·
 [Uygulama ve kullanım](docs/agenda-api-implementation.md) ·

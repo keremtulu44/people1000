@@ -27,6 +27,7 @@ from .agenda_api import (AgendaProvider, GeminiAdvisor, OpenAICompatibleAdvisor,
 from .engine import Simulation
 from .session import Session
 from . import termux
+from .scenario_text import parse_kitle_sections
 
 MAX_TEXT = 2000
 MAX_DAYS = 30
@@ -134,8 +135,11 @@ class WebPilot:
         self.sim.save(self.state_path)
 
 
-def build_state(pilot):
-    """GET /api/state icin tum ekran verisi. Anahtar icermez."""
+def build_state(pilot, secili_gun=None):
+    """GET /api/state icin tum ekran verisi. Anahtar icermez.
+
+    secili_gun: kartlarda gosterilecek senaryo gunu; verilmezse en son gun.
+    """
     with pilot.lock:
         r = termux.report(pilot.sim)
         day = _day(pilot.sim)
@@ -155,22 +159,49 @@ def build_state(pilot):
         diag = r.get('diagnostics', {})
         q = r.get('operator_questions', {})
         chain = meta.get('scenario_chain')
-        scenario = {'var': bool(chain), 'ilk_olay': '', 'gun': 0, 'gecmis': []}
+        scenario = {'var': bool(chain), 'ilk_olay': '', 'gun': 0, 'gecmis': [],
+                    'gunler': {}, 'secili_gun': None, 'ai_var': False}
         if chain:
+            gunler = {}
+            gecmis = []
+            for h in chain.get('history', []):
+                # Eski kayitlarda full_text yoksa 600 karakterlik ozet kullanilir.
+                tam = h.get('full_text') or h.get('summary') or ''
+                parsed = parse_kitle_sections(tam)
+                d = h.get('day')
+                gunler[str(d)] = {
+                    'day': d, 'event': h.get('event', ''),
+                    'sinir': h.get('allowed_extremes', ''),
+                    'metin': tam, 'genel': parsed['genel'],
+                    'kitleler': parsed['kitleler'],
+                    'kesik': 'full_text' not in h,
+                }
+                gecmis.append(gunler[str(d)])
+            son_gun = str(chain.get('day', 0)) if gunler else None
+            if secili_gun is not None and str(secili_gun) in gunler:
+                son_gun = str(secili_gun)
+            elif son_gun not in gunler and gecmis:
+                son_gun = str(gecmis[-1]['day'])
             scenario = {'var': True, 'ilk_olay': chain.get('initial_event', ''),
-                        'gun': chain.get('day', 0),
-                        'gecmis': [{'day': h.get('day'), 'event': h.get('event', ''),
-                                    'sinir': h.get('allowed_extremes', ''),
-                                    'summary': h.get('summary', '')}
-                                   for h in chain.get('history', [])]}
+                        'gun': chain.get('day', 0), 'gecmis': gecmis,
+                        'gunler': gunler, 'secili_gun': son_gun,
+                        'ai_var': any(g['kitleler'] for g in gunler.values())}
+        # Kartlara atanacak AI metni: secili gunun 6 kitlesi.
+        secili = scenario['gunler'].get(scenario['secili_gun'], {}) if scenario['var'] else {}
+        ai_kitleler = secili.get('kitleler', {}) if isinstance(secili, dict) else {}
         events = [{'time': e.get('time'), 'kind': e.get('kind', '')}
                   for e in pilot.sim.log[-12:]]
         settings = termux.settings(pilot.advisor)
+        cards = kitle_cards(r, previous)
+        for c in cards:
+            c['ai_metni'] = ai_kitleler.get(c['id'], '')
+            c['ai_gun'] = secili.get('day') if c['ai_metni'] else None
+            c['ai_kesik'] = bool(secili.get('kesik')) if c['ai_metni'] else False
         return _json_safe({
             'day': day,
             'mode': 'offline' if settings.get('mode') == 'offline' else 'live',
             'settings': settings,
-            'kitleler': kitle_cards(r, previous),
+            'kitleler': cards,
             'dunya': {
                 'taraf_degisimi': wm.get('alignment_changes', 0),
                 'ideoloji_degisimi': wm.get('core_changes', 0),
@@ -304,7 +335,10 @@ def execute_command(pilot, payload):
 
         pilot.last_output = pilot.redact(str(out))[:20000]
         pilot.last_command = cmd
-        return pilot.last_output, build_state(pilot)
+        # Yeni bir senaryo gunu uretildiyse kartlar otomatik o gune gecer;
+        # diger komutlarda kullanicinin sectigi gun korunur.
+        secili = None if cmd in ('sor', 'devam', 'olay') else payload.get('gun')
+        return pilot.last_output, build_state(pilot, secili_gun=secili)
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -335,7 +369,13 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(200, PAGE, 'text/html; charset=utf-8')
         if path == '/api/state':
             try:
-                return self._json(200, {'ok': True, 'state': build_state(self.server.pilot)})
+                query = urlsplit(self.path).query
+                gun = None
+                for part in query.split('&'):
+                    if part.startswith('gun='):
+                        gun = part[4:]
+                        break
+                return self._json(200, {'ok': True, 'state': build_state(self.server.pilot, gun)})
             except Exception as exc:
                 return self._json(500, {'ok': False, 'error': self.server.pilot.redact(str(exc))})
         if path == '/api/export':
@@ -509,6 +549,21 @@ input[type=number]{flex:0 0 92px;min-width:80px}
 .day-event{font-weight:600;margin:3px 0 6px}
 .day-sum{font-size:13px;color:#cdd7e3;white-space:pre-wrap;word-break:break-word}
 .day-limit{font-size:11px;color:var(--warn);margin-top:6px}
+.day-pick{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.day-pick label{font-size:12px;color:var(--muted)}
+.day-pick select{background:#0d1117;color:var(--txt);border:1px solid var(--line);
+border-radius:9px;min-height:36px;padding:6px 9px;font:inherit;font-size:13px}
+.ai{background:#101a2b;border:1px solid #24406b;border-left:3px solid var(--accent);
+border-radius:10px;padding:10px 11px;white-space:pre-wrap;word-break:break-word;
+font-size:13px;line-height:1.55;max-height:340px;overflow:auto}
+.ai-head{display:flex;justify-content:space-between;gap:8px;align-items:center;
+font-size:10.5px;letter-spacing:.05em;color:var(--accent);font-weight:800;
+text-transform:uppercase;margin-bottom:5px}
+.ai-yok{background:#151a22;border:1px dashed var(--line);border-radius:10px;
+padding:10px 11px;font-size:12px;color:var(--muted)}
+.ai-kesik{color:var(--warn)}
+.motor{font-size:12px;color:var(--muted);border-top:1px dashed var(--line);padding-top:7px}
+.motor b{color:#c6d0dc;font-weight:700}
 .output{background:#080b10;border:1px solid var(--line);border-radius:12px;padding:13px;
 font-size:12.5px;line-height:1.55;white-space:pre-wrap;word-break:break-word;
 overflow:auto;max-height:460px;margin:0;color:#cdd7e3}
@@ -543,7 +598,14 @@ max-width:90vw;text-align:center}
   <section class="summary" id="summary"></section>
 
   <section class="section">
-    <div class="section-head"><h2>6 Kitle</h2><span class="muted">Yüzdeler kanaat; taraf/ideoloji değişimi değil</span></div>
+    <div class="section-head">
+      <h2>6 Kitle</h2>
+      <div class="day-pick">
+        <label for="aiGun">Anlatım günü</label>
+        <select id="aiGun"></select>
+        <span id="aiKaynak" class="muted"></span>
+      </div>
+    </div>
     <div class="cards" id="cards"></div>
   </section>
 
@@ -641,9 +703,20 @@ function card(c){
   const m=node("div","metrics");
   m.append(metric("Yeterlilik",c.yeterlilik,c.fark_yeterlilik),
            metric("Usul",c.usul,c.fark_usul));d.append(m);
-  d.append(node("p","summary-line",c.ozet));
+  // Yapay zekanin bu kitleye ait metni — asil bosluk burasi.
+  const ai=node("div",c.ai_metni?"ai":"ai-yok");
+  if(c.ai_metni){
+    const h=node("div","ai-head");
+    h.append(node("span","","AI ANLATIMI · GÜN "+(c.ai_gun??"—")),
+      node("span",c.ai_kesik?"ai-kesik":"",c.ai_kesik?"ESKİ KAYIT":"TAM METİN"));
+    ai.append(h,node("div","",c.ai_metni));
+  }else{
+    ai.textContent="AI anlatımı yok. Bu alan ‘Başlat’, ‘Devam’ veya ‘Olay ekle’ ile üretilen metinle dolar.";
+  }
+  d.append(ai);
+  d.append(node("div","motor","Motor özeti: "+c.ozet));
   const det=node("details","detail");
-  det.append(node("summary","",c.model_notu?"Detay + model notu":"Detay"));
+  det.append(node("summary","",c.model_notu?"Rol tanımı + model notu":"Rol tanımı"));
   det.append(node("p","",c.tanim));
   if(c.model_notu)det.append(node("p","note","Model notu: "+c.model_notu));
   d.append(det);return d;}
@@ -661,6 +734,15 @@ function render(s){
     stat("Bekleme",(s.settings.min_interval_seconds||0)+" sn"));
   const cards=$("#cards");cards.replaceChildren();
   s.kitleler.forEach(c=>cards.append(card(c)));
+  // Anlatim gunu secici: ayni zincirin her gunu icin 6 karti yeniden doldurur.
+  const sel=$("#aiGun");sel.replaceChildren();
+  const gunler=Object.keys(s.senaryo.gunler||{});
+  gunler.forEach(g=>{const o=node("option","","Gün "+g);o.value=g;sel.append(o);});
+  sel.disabled=!gunler.length;
+  if(s.senaryo.secili_gun)sel.value=String(s.senaryo.secili_gun);
+  const sec=s.senaryo.gunler?.[s.senaryo.secili_gun];
+  $("#aiKaynak").textContent=!s.senaryo.ai_var?"AI metni bekleniyor":
+    (sec&&sec.kesik?"(eski kayıt: kırpılmış)":"(tam metin)");
   const tl=$("#timeline");tl.replaceChildren();
   $("#scenarioBadge").textContent=s.senaryo.var?
     ("Gün "+s.senaryo.gun+" · "+s.senaryo.gecmis.length+" adım"):"Henüz zincir yok";
@@ -671,8 +753,12 @@ function render(s){
     ilk.append(node("div","day-no","BAŞLANGIÇ"),node("div","day-event",s.senaryo.ilk_olay));tl.append(ilk);
     s.senaryo.gecmis.forEach(h=>{
       const e=node("div","day");
-      e.append(node("div","day-no","Gün "+h.day),node("div","day-event",h.event),
-        node("div","day-sum",h.summary));
+      e.append(node("div","day-no","Gün "+h.day),node("div","day-event",h.event));
+      const det=node("details","detail");
+      det.append(node("summary","","Günün tam metni"+(h.kesik?" (eski kayıt: kırpılmış)":"")));
+      det.append(node("div","day-sum",h.metin||h.summary||""));
+      if(h.genel)det.append(node("div","day-limit","Genel özet: "+h.genel));
+      e.append(det);
       if(h.sinir)e.append(node("div","day-limit","Sınır: "+h.sinir));
       tl.append(e);});
   }
@@ -690,12 +776,16 @@ function render(s){
   }
 }
 async function load(){
-  try{const r=await fetch("/api/state",{cache:"no-store"});const j=await r.json();
+  const cur=$("#aiGun").value;
+  try{const r=await fetch("/api/state"+(cur?"?gun="+encodeURIComponent(cur):""),
+    {cache:"no-store"});const j=await r.json();
     if(j.ok)render(j.state);else toast(j.error||"Durum alınamadı",true);
   }catch(e){toast("Sunucuya ulaşılamadı",true);}}
 async function run(cmd,opts){
   if(busy)return;
   const payload=Object.assign({cmd:cmd},opts||{});
+  const cur=$("#aiGun").value;
+  if(cur)payload.gun=cur;
   if(payload.confirm&&!window.confirm("Bu işlem 1 API isteği / kota kullanabilir. Devam?"))return;
   setBusy(true,cmd+" çalışıyor…");
   try{
@@ -721,6 +811,15 @@ document.querySelectorAll("[data-cmd]").forEach(b=>b.addEventListener("click",()
 ["sorText","olayText"].forEach(id=>$("#"+id).addEventListener("keydown",e=>{
   if(e.key==="Enter"){e.preventDefault();
     document.querySelector('[data-cmd="'+(id==="sorText"?"sor":"olay")+'"]').click();}}));
+$("#aiGun").addEventListener("change",e=>{
+  if(busy)return;
+  const gun=e.target.value;
+  setBusy(true,"Gün "+gun+" yükleniyor…");
+  fetch("/api/state?gun="+encodeURIComponent(gun)+"&t="+Date.now(),{cache:"no-store"})
+    .then(r=>r.json()).then(j=>{if(j.ok){render(j.state);toast("Gün "+gun+" gösteriliyor",false);}
+      else toast(j.error||"Gün açılamadı",true);})
+    .catch(()=>toast("Sunucuya ulaşılamadı",true))
+    .finally(()=>setBusy(false));});
 $("#refreshBtn").addEventListener("click",()=>{if(!busy)load();});
 load();
 </script>

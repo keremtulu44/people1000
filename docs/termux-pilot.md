@@ -220,6 +220,17 @@ Ekranda neler var:
   (görsel çubuk), **düne göre fark oku** (`▲ +7 puan`), Türkçe özet. Statik rol
   tanımı ve model notu daraltılabilir "Detay" içinde; artık her seferinde ekranı
   doldurmuyor.
+- **AI anlatımı her kartın kendi boşluğunda.** `sor`, `devam`, `olay` ile Gemini'den
+  gelen "**1. İktidar Yanlıları** … **6. Gözlemciler**" biçimli metin
+  `society/scenario_text.py` ile 6 bölüme ayrılır; her bölüm **kendi kartındaki**
+  mavi "AI ANLATIMI · GÜN N" kutusuna yazılır (Zenginler kartında 3 alt kanat da
+  aynı kutuda kalır). Motorun sayısal özeti hemen altında gri satırda durur.
+  "Anlatım günü" seçicisiyle zincirin önceki günlerine dönüp o günün 6 kartlık
+  metnini görebilirsin. AI metni yoksa kutu bunu açıkça belirtir.
+- Tam metin artık kayıtta saklanır; eski sürüm yalnızca ilk 600 karakteri
+  tutuyordu. Eski kayıtlarda kartlar "ESKİ KAYIT" etiketiyle kırpılmış metni
+  gösterir; yeni bir `sor`/`devam` çalıştırınca tam metin gelir. Sonraki günlerin
+  prompt'una yine yalnızca kısa özet gider, kotayı şişirmez.
 - Komut paneli: `Gün ilerlet`, `İlerle 3`, `Özet`, `Rapor`, `Ayar`, `Kaydet`,
   senaryo başlatma (`Başlat`), `Devam 1/3`, `Olay ekle`. Tanılama ve sınırlar
   açılır panelinde `Bağlantı`, `Modeller`, `Üretim testi` (onay ister), `Bekleme`,
