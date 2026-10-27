@@ -5,6 +5,17 @@ ve araştırma sonuçları değiştirilmedi. API öz-denetiminin test kanıtı v
 `reports/api-self-audit/report.md` içindedir. Gerçek sağlayıcıya istek gönderilmedi;
 HTTP kontrollü yanıtlarla test edildi.
 
+**Güncel kod `main` dalındadır** (kartlı web arayüzü düzeltmeleri PR #3 ile
+birleşti). Daha önce bir oturum dalını (`arena/...`) klonladıysanız `main`'e
+geçin; `runs/` altındaki kayıtlar korunur:
+
+```bash
+cd "$HOME/people1000"
+git fetch origin
+git checkout -B main origin/main
+git pull --ff-only origin main
+```
+
 ## 1. Kurulum
 
 Güncel Termux kullanın (F-Droid veya projenin resmi GitHub dağıtımı). Android
@@ -14,7 +25,7 @@ telefonun kendi terminalinde çalışır; bu işlem Arena sunucusunda API çalı
 pkg update && pkg upgrade -y
 pkg install python python-pip git nano -y
 cd "$HOME"
-git clone --branch arena/5fb8114f-people1000 --single-branch https://github.com/keremtulu44/people1000.git
+git clone --branch main --single-branch https://github.com/keremtulu44/people1000.git
 cd people1000
 python -m venv .venv
 source .venv/bin/activate
@@ -39,7 +50,7 @@ değildir. İkisini aynı `--state` dosyasıyla aynı anda çalıştırmayın.
 
 ```bash
 cd "$HOME/people1000"
-git pull --ff-only origin arena/5fb8114f-people1000
+git pull --ff-only origin main
 bash tools/termux_setup.sh
 ```
 
@@ -377,7 +388,7 @@ Güncelleme için:
 
 ```bash
 cd "$HOME/people1000"
-git pull --ff-only origin arena/5fb8114f-people1000
+git pull --ff-only origin main
 source .venv/bin/activate
 # Ayar dosyası zaten varsa ÜZERİNE YAZMAYIN (anahtar silinir).
 # nano ile yalnızca model/adres/aralık satırlarını .env.example ile eşitleyin.
