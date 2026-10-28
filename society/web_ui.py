@@ -254,6 +254,7 @@ def build_state(pilot, secili_gun=None):
                     'day': d, 'event': h.get('event', ''),
                     'dal': h.get('branch', ''),
                     'motor_etkisi': h.get('engine_effects') or {},
+                    'anayasal_geribesleme': h.get('constitutional_feedback') or {},
                     'sinir': h.get('allowed_extremes', ''),
                     'metin': tam, 'genel': parsed['genel'],
                     'ortak': parsed['ortak'], 'kitleler': parsed['kitleler'],
@@ -327,7 +328,7 @@ def build_state(pilot, secili_gun=None):
                 'gunluk': pilot.sim.behavior_profile['agenda_dynamics'].get('daily_review_limit'),
             },
             'senaryo': scenario,
-            'sosyal_zihin': psychology.social_mind_overview(psych_map),
+            'sosyal_zihin': psychology.social_mind_overview(psych_map, pilot.sim),
             'hafiza': r.get('institutional_memory', {}),
             'olaylar': events,
             'ozet_metni': termux.turkce_ozet(pilot.sim),
@@ -444,7 +445,7 @@ def execute_command(pilot, payload):
                 {'time': sim.time, 'total': total, 'daily': daily})
             pilot.save(); out = 'Acik istek tavani guncellendi; harcama garantisi degildir.'
         elif cmd == 'sor-limit':
-            qlim = _int(payload, 'count', 1, 200, 5)
+            qlim = _int(payload, 'count', 1, 200, 20)
             meta['question_limit'] = qlim
             pilot.save(); out = f'Soru/senaryo deneme siniri {qlim} olarak guncellendi.'
         elif cmd == 'token-limit':
@@ -1100,6 +1101,7 @@ const DAL_TR={
   gunah_kecisi_cokusu:"Günah Keçisi İlanı ve Tekil Çöküş",
   alt_kademe_tasfiyesi:"Alt Kademe Tasfiyesi",
   seffaf_onarim:"Şeffaf Soruşturma ve Onarım",
+  darvo_karsi_saldiri:"Kurumsal DARVO / İfşacı Karşı-Saldırısı",
   gecikmeli_onlem:"Gecikmeli Güvenlik Önlemleri",
   alt_kademede_kapatma:"Dosyanın Alt Kademede Kapatılması",
   sogutma_ve_yorgunluk:"Gündemi Soğutma ve Yorgunluk",
@@ -1199,8 +1201,8 @@ function pbar(label,val,tone,extraText){
 function moodClass(dom){
   if(!dom)return "";
   if(dom==="ofke_ve_itiraz"||dom==="epistemik_uyari")return "anger";
-  if(dom==="korku_otosansur"||dom==="bastirilmis_ofke"||dom==="tukenmislik")return "fear";
-  if(dom==="suc_kaydirma"||dom==="rasyonalizasyon_savunmasi"||dom==="kuskun_kopus"||dom==="cogulcu_cehalet")return "guard";
+  if(dom==="korku_otosansur"||dom==="bastirilmis_ofke"||dom==="tukenmislik"||dom==="ifsaci_yalnizlasmasi")return "fear";
+  if(dom==="suc_kaydirma"||dom==="rasyonalizasyon_savunmasi"||dom==="kuskun_kopus"||dom==="sessiz_cikis"||dom==="cogulcu_cehalet")return "guard";
   return "calm";
 }
 
@@ -1274,7 +1276,10 @@ function renderStage(s){
     if(me.employer_cut_workers>0)eng.append(node("span","echip alert","İşveren Gelir Kesintisi: "+me.employer_cut_workers+" çalışan"));
     if(me.self_censored_blocks>0)eng.append(node("span","echip warn","Korku / Otosansür Engeli: "+me.self_censored_blocks+" yayın"));
     if(me.disengaged_citizens>0)eng.append(node("span","echip warn","Küskün Kopuş: "+me.disengaged_citizens+" kişi"));
+    if(me.functional_exit_agents>0)eng.append(node("span","echip warn","İşlevsel Çıkış: "+me.functional_exit_agents+" kişi"));
     if(me.observer_warnings>0)eng.append(node("span","echip alert","Gözlemci Teknik Uyarısı: "+me.observer_warnings));
+    if(me.ostracized_whistleblowers>0)eng.append(node("span","echip alert","İfşacı Dışlanması: "+me.ostracized_whistleblowers+" kişi"));
+    if(me.preference_divergence_jsd>0)eng.append(node("span","echip "+(me.preference_divergence_jsd>=20?"warn":""),"Tercih Çarpıklığı (JSD): %"+me.preference_divergence_jsd));
   }
   const b=s.baglanti||{};
   $("#aiKaynak").textContent="Gün "+curKey+" / "+gunler.length+" · "+(b.bagli||0)+"/6 kitle bağlı";
@@ -1412,18 +1417,23 @@ function card(c){
     pc.append(g);
     const tags=node("div","deep-tags");
     if((ps.tukenmislik||0)>=12)tags.append(dtag("Tükenmişlik %"+ps.tukenmislik,"warn"));
+    if((ps.icsellestirme||0)>=8)tags.append(dtag("İçselleştirme %"+ps.icsellestirme,"warn"));
+    if((ps.cikis_egilimi||0)>=25)tags.append(dtag("İşlevsel Çıkış %"+ps.cikis_egilimi,(ps.sessiz_cikis_oran||0)>0?"alert":"warn"));
     if(c.id==="power_aligned"){
       tags.append(dtag("Aracı Güveni %"+(ps.araci_guveni??75),(ps.araci_guveni??75)<45?"warn":""));
+      if((ps.elit_rasyonalizasyon||0)>=15)tags.append(dtag("Elit Çerçeveleme %"+ps.elit_rasyonalizasyon));
       if((ps.kuskun_oran||0)>0)tags.append(dtag("Küskün Kopuş %"+ps.kuskun_oran,"alert"));
     }else if(c.id==="opposition"&&(ps.cogulcu_cehalet||0)>=12){
       tags.append(dtag("Çoğulcu Cehalet %"+ps.cogulcu_cehalet,"warn"));
-    }else if(c.id==="authority"&&(ps.ic_sizinti_egilimi||0)>=15){
-      tags.append(dtag("İç Sızıntı Eğilimi %"+ps.ic_sizinti_egilimi,(ps.ic_sizinti_egilimi||0)>=45?"alert":""));
+    }else if(c.id==="authority"){
+      if((ps.ic_sizinti_egilimi||0)>=15)tags.append(dtag("İç Sızıntı Eğilimi %"+ps.ic_sizinti_egilimi,(ps.ic_sizinti_egilimi||0)>=45?"alert":""));
+      if((ps.ic_kimlik_kopusu||0)>=15)tags.append(dtag("Vicdani Kimlik Kopuşu %"+ps.ic_kimlik_kopusu,"alert"));
     }else if(c.id==="discontented"){
       if((ps.goreli_yoksunluk||0)>=10)tags.append(dtag("Göreli Yoksunluk %"+ps.goreli_yoksunluk,"alert"));
       tags.append(dtag("Dayanışma %"+(ps.dayanisma_kapasitesi??100)));
-    }else if(c.id==="observer"&&(ps.epistemik_alarm||0)>=20){
-      tags.append(dtag("Epistemik Alarm %"+ps.epistemik_alarm,(ps.epistemik_alarm||0)>=60?"alert":""));
+    }else if(c.id==="observer"){
+      if((ps.epistemik_alarm||0)>=20)tags.append(dtag("Epistemik Alarm %"+ps.epistemik_alarm,(ps.epistemik_alarm||0)>=60?"alert":""));
+      if((ps.dislanma_yuku||0)>=15)tags.append(dtag("Dışlanma Yükü %"+ps.dislanma_yuku,"alert"));
     }
     if(tags.childNodes.length)pc.append(tags);
     d.append(pc);

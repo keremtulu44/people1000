@@ -10,12 +10,22 @@ Senaryo zincirindeki her gün:
 from __future__ import annotations
 
 from copy import deepcopy
+import json
+import re
 
 from .agenda import ReferenceAdvisor
 from .agenda_api import AgendaProvider
 from .dynamics import clamp
+from .scenario_text import parse_kitle_sections
 from .session import Session
 from . import collective, psychology
+
+INSTITUTIONAL_POSTURES = ("procedural_calm", "coverup", "darvo_attack", "scapegoat", "transparent_repair")
+ELITE_FRAMINGS = ("none", "polarizing_shield", "commercial_retreat", "deescalation")
+VOICE_RESPONSES = ("ignored", "suppressed", "acknowledged")
+WHISTLEBLOWER_CLIMATES = ("neutral", "ostracized", "protected")
+
+_FEEDBACK_TAG_RE = re.compile(r"\[ANAYASAL_GERIBESLEME\s*:\s*(\{.*?\})\s*\]", re.IGNORECASE | re.DOTALL)
 
 
 def init_branch_state(sim=None, tier: str = "ordinary") -> dict:
@@ -30,9 +40,154 @@ def init_branch_state(sim=None, tier: str = "ordinary") -> dict:
         "coverup_heat": 0,
         "reform_credibility": 0,
         "boycott_active": False,
+        "darvo_active": False,
+        "voice_acknowledged": False,
         "branch_path": "rutin" if tier == "ordinary" else "kriz_baslangici",
         "milestones": [],
+        "constitutional_signals": {
+            "darvo_signal": 0.0,
+            "voice_response": 0.0,
+            "elite_framing_boost": 0.0,
+        },
+        "last_constitutional_feedback": None,
     }
+
+
+def extract_constitutional_feedback(text: str, directive: dict, psych_snapshot: dict | None = None) -> dict:
+    """Project LLM/advisor narrative into an audited, constitutionally bounded ABM decision object."""
+    tier = (directive or {}).get("tier", "ordinary")
+    cond = (directive or {}).get("conditions") or {}
+    branch = (directive or {}).get("branch", "")
+    raw_text = text or ""
+    low_all = raw_text.lower()
+
+    posture = "procedural_calm" if tier == "ordinary" else "coverup"
+    elite_framing = "none"
+    voice_resp = "ignored"
+    wb_climate = "neutral"
+    explicit_source = False
+
+    tag_match = _FEEDBACK_TAG_RE.search(raw_text)
+    if tag_match:
+        try:
+            parsed_tag = json.loads(tag_match.group(1))
+            if isinstance(parsed_tag, dict):
+                explicit_source = True
+                if parsed_tag.get("institutional_posture") in INSTITUTIONAL_POSTURES:
+                    posture = parsed_tag["institutional_posture"]
+                if parsed_tag.get("elite_framing") in ELITE_FRAMINGS:
+                    elite_framing = parsed_tag["elite_framing"]
+                if parsed_tag.get("voice_response") in VOICE_RESPONSES:
+                    voice_resp = parsed_tag["voice_response"]
+                if parsed_tag.get("whistleblower_climate") in WHISTLEBLOWER_CLIMATES:
+                    wb_climate = parsed_tag["whistleblower_climate"]
+        except ValueError:
+            explicit_source = False
+
+    if not explicit_source:
+        sections = parse_kitle_sections(raw_text).get("kitleler", {})
+        au_txt = (sections.get("authority") or low_all).lower()
+        we_txt = (sections.get("wealthy") or low_all).lower()
+        ob_txt = (sections.get("observer") or "").lower()
+
+        if any(w in au_txt for w in ("hedef göster", "karala", "hain", "provokatör", "iftira", "darvo", "ifşacıya soruşturma")):
+            posture = "darvo_attack"
+            voice_resp = "suppressed"
+            wb_climate = "ostracized"
+        elif branch == "seffaf_onarim" or any(w in au_txt for w in ("şeffaf denetim", "şeffaf soruşturma", "bağımsız denetim", "özür", "uyarı dikkate alındı", "sorumluluk aldı")):
+            posture = "transparent_repair"
+            voice_resp = "acknowledged"
+            wb_climate = "protected"
+        elif cond.get("scapegoat_isolated") or "günah keçisi" in au_txt:
+            posture = "scapegoat"
+            voice_resp = "suppressed" if cond.get("prosecution_fear") == "high" else "ignored"
+        elif tier != "ordinary" and (cond.get("coverup_level") in ("moderate", "high") or any(w in au_txt for w in ("kontrol altında", "daralt", "kısıtla", "örtbas"))):
+            posture = "coverup"
+            voice_resp = "suppressed" if cond.get("prosecution_fear") == "high" else "ignored"
+
+        if any(w in we_txt for w in ("tam otosansür", "otosansüre", "sessizliğe gömüldü")):
+            elite_framing = "commercial_retreat"
+        elif any(w in we_txt for w in ("yumuşat", "karşı paylaşım", "algı", "gündemi değiştir")):
+            elite_framing = "polarizing_shield"
+        elif posture == "transparent_repair":
+            elite_framing = "deescalation"
+
+        if wb_climate == "neutral":
+            if any(w in ob_txt for w in ("dışlanma", "hedef göster", "yalnızlaş", "baskı")):
+                wb_climate = "ostracized"
+            elif posture == "coverup" and cond.get("leak_occurred") and cond.get("prosecution_fear") == "high":
+                wb_climate = "ostracized"
+
+    # Constitutional Filtering: reject physically/causally forbidden extremes against ABM ground truth
+    rejected = []
+    if re.search(r"%\s*\d+[^\n]{0,25}intihar|toplu\s+intihar|kitlesel\s+intihar", low_all):
+        rejected.append("mass_suicide_hallucination")
+    if tier == "ordinary":
+        if any(w in low_all for w in ("tutuklandı", "gözaltına alındı", "nezarette")):
+            rejected.append("ordinary_detention_hallucination")
+        if posture in ("darvo_attack", "scapegoat"):
+            rejected.append(f"ordinary_posture_clamped:{posture}")
+            posture = "procedural_calm"
+        if voice_resp == "suppressed":
+            voice_resp = "ignored"
+        if wb_climate == "ostracized":
+            wb_climate = "neutral"
+    elif (posture == "transparent_repair" and cond.get("prosecution_fear") == "high"
+          and cond.get("coverup_level") == "high" and branch != "seffaf_onarim" and not explicit_source):
+        rejected.append("ungrounded_reform_under_high_crackdown")
+        posture = "coverup"
+        voice_resp = "suppressed"
+
+    return {
+        "institutional_posture": posture,
+        "elite_framing": elite_framing,
+        "voice_response": voice_resp,
+        "whistleblower_climate": wb_climate,
+        "explicit_tag": explicit_source,
+        "constitutional_valid": len(rejected) == 0,
+        "rejected_extremes": rejected,
+    }
+
+
+def apply_constitutional_feedback(chain: dict, feedback: dict) -> dict:
+    """Feed validated Day-k LLM/advisor decision object into Day-(k+1) ABM branch & psychology signals."""
+    if not isinstance(chain, dict) or not isinstance(feedback, dict):
+        return {}
+    tier = chain.get("tier", "ordinary")
+    bstate = chain.setdefault("branch_state", init_branch_state(None, tier))
+    bstate["last_constitutional_feedback"] = deepcopy(feedback)
+
+    posture = feedback.get("institutional_posture", "procedural_calm")
+    eframe = feedback.get("elite_framing", "none")
+    vresp = feedback.get("voice_response", "ignored")
+    wb_clim = feedback.get("whistleblower_climate", "neutral")
+
+    darvo_sig = 0.0
+    if posture == "darvo_attack" or wb_clim == "ostracized":
+        darvo_sig = 0.68 if posture == "darvo_attack" else 0.42
+    elif vresp == "suppressed":
+        darvo_sig = 0.25
+
+    voice_sig = 0.0
+    if posture == "transparent_repair" or vresp == "acknowledged":
+        voice_sig = 0.65 if (posture == "transparent_repair" and vresp == "acknowledged") else 0.45
+
+    elite_boost = 0.28 if eframe == "polarizing_shield" else 0.0
+
+    bstate["constitutional_signals"] = {
+        "darvo_signal": round(darvo_sig, 4),
+        "voice_response": round(voice_sig, 4),
+        "elite_framing_boost": round(elite_boost, 4),
+    }
+
+    if tier != "ordinary":
+        if posture == "transparent_repair" and vresp == "acknowledged":
+            bstate["reform_credibility"] = min(10, int(bstate.get("reform_credibility", 0)) + 3)
+            bstate["voice_acknowledged"] = True
+            bstate["darvo_active"] = False
+        elif posture == "darvo_attack":
+            bstate["darvo_active"] = True
+    return bstate["constitutional_signals"]
 
 
 def is_pure_question(text: str) -> bool:
@@ -55,13 +210,16 @@ def _apply_custom_intervention(cond: dict, bstate: dict, custom_event: str | Non
         return None
     low = custom_event.lower()
     triggered = None
-    # 1. Şeffaf reform / erken fiziksel önlem / üst düzey hesap verme dalı
+    # 1. Şeffaf reform / erken fiziksel önlem / Söz'e yanıt (Hirschman Voice->Repair) dalı
     if any(w in low for w in (
         "önlem alındı", "şeffaf soruşturma", "bağımsız denetim", "güvenlik sağlandı",
         "istifa etti", "görevden alındı ve denetim", "reform",
+        "uyarı dikkate alındı", "uzmanlar dinlendi", "özür", "telafi", "müzakere",
     )):
         bstate["reform_credibility"] = min(10, bstate["reform_credibility"] + 7)
         bstate["boycott_active"] = False
+        bstate["darvo_active"] = False
+        bstate["voice_acknowledged"] = True
         bstate["public_anger_heat"] = max(1, bstate["public_anger_heat"] - 3)
         cond["unaddressed_neglect"] = False
         cond["aftershock_stage"] = "contained"
@@ -69,6 +227,20 @@ def _apply_custom_intervention(cond: dict, bstate: dict, custom_event: str | Non
         cond["prosecution_fear"] = "low"
         bstate["branch_path"] = "seffaf_onarim"
         triggered = "reform"
+
+    # 1b. Kurumsal DARVO / İfşacıyı hedef gösterme ve karalama dalı (Freyd)
+    if any(w in low for w in (
+        "hedef gösterildi", "karalama", "ifşacıya soruşturma", "darvo",
+        "provokatör ilan", "hain ilan", "uzmanlar hedef",
+    )):
+        cond["prosecution_fear"] = "high"
+        cond["coverup_level"] = "high"
+        bstate["darvo_active"] = True
+        bstate["voice_acknowledged"] = False
+        bstate["coverup_heat"] = min(10, bstate["coverup_heat"] + 3)
+        bstate["insider_strain"] = min(10, bstate["insider_strain"] + 2)
+        bstate["branch_path"] = "darvo_karsi_saldiri"
+        triggered = triggered or "darvo"
 
     # 2. İçeriden belge / ses kaydı sızıntısı dalı
     if any(w in low for w in ("sızıntı", "sızdı", "belge çıktı", "ses kaydı", "ifşa", "rapor ortaya çıktı")):
@@ -373,6 +545,64 @@ def next_dynamic_directive(chain: dict, day: int, custom_event: str | None = Non
     }
 
 
+def _apply_pre_ticked_day_effects(sim):
+    """When baseline t=0 daily already ran before Day 1 shocks, apply Day 1 crisis deltas."""
+    from . import characters
+    employer_health = {}
+    if psychology.enabled(sim):
+        boycott_signal = float(sim.protocol.get("active_boycott", 0.0))
+        boycott_level = min(0.35, boycott_signal)
+        for w in sim.agents.values():
+            if w.initial_group != "wealthy":
+                continue
+            ec = w.behavior.setdefault("economic_chain", {"contract_factor": 1.0, "boycott_penalty": 0.0, "employer_cut": 0.0})
+            sw = w.behavior.get("subwing")
+            if boycott_level > 0:
+                weight = 1.0 if sw in ("pro_A", "neutral_commercial") else 0.55
+                ec["boycott_penalty"] = min(0.35, boycott_level * weight)
+            else:
+                ec["boycott_penalty"] = 0.0 if ec["boycott_penalty"] < 0.03 else ec["boycott_penalty"] * 0.55
+            wp = w.behavior.get("psychology") or {}
+            cap_flight = (0.08 * float(wp.get("exit_pressure", 0.0))
+                          if (psychology.v2_enabled(sim) and wp.get("functional_exit")) else 0.0)
+            employer_health[w.id] = max(0.25, min(1.0, ec["contract_factor"] * (1.0 - ec["boycott_penalty"]) * (1.0 - cap_flight)))
+        if boycott_signal > 0:
+            sim.protocol["active_boycott"] = 0.0 if boycott_signal < 0.06 else round(boycott_signal * 0.55, 4)
+
+    for a in sim.agents.values():
+        expense = a.expense * sim.price
+        eff_income = a.income
+        emp_cut = 0.0
+        if employer_health:
+            ec = a.behavior.setdefault("economic_chain", {"contract_factor": 1.0, "boycott_penalty": 0.0, "employer_cut": 0.0})
+            if a.initial_group == "wealthy" and a.id in employer_health:
+                h = employer_health[a.id]
+                if h < 0.9999:
+                    emp_cut = round(1.0 - h, 4)
+                    eff_income = a.income * h
+            elif a.employer in employer_health and employer_health[a.employer] < 0.98:
+                emp_cut = round(0.65 * (1.0 - employer_health[a.employer]), 4)
+                eff_income = a.income * (1.0 - emp_cut)
+            ec["employer_cut"] = emp_cut
+        extra_expense = max(0.0, expense - a.expense)
+        income_drop = max(0.0, a.income - eff_income)
+        delta_loss = extra_expense + income_drop
+        if delta_loss > 0:
+            a.savings -= delta_loss
+            a.losses += delta_loss
+        if psychology.enabled(sim):
+            ref_inc = max(1.0, float(a.behavior.get("reference_income", a.income)))
+            income_harm = clamp(max(0.0, ref_inc - a.income) / ref_inc + emp_cut)
+            harm = clamp(extra_expense / max(1.0, a.expense) + income_harm)
+            nonprice = max((d.get("level", 0.0) for k, d in characters.state(a)["domains"].items()
+                            if k not in ("living_cost", "income_security")), default=0.0) if characters.enabled(sim) else 0.0
+            psych = psychology.daily(sim, a, harm, income_harm, nonprice, 0.0, 0.0, False)
+            if collective.enabled(sim) and psych is not None:
+                collective.state(a)["distress"] = psych["effective_drive"]
+            if a.initial_group == "observer" and psych is not None and psych.get("whistleblower_ready"):
+                sim.schedule(sim.time, "decide", {"target": a.id})
+
+
 def sync_day_to_engine(sim, chain: dict, directive: dict) -> dict:
     """Senaryo gününü 100 ajanın gerçek simülasyon motoruna uygular (ücretli API çağrısı yapmaz)."""
     tier = directive["tier"]
@@ -380,7 +610,14 @@ def sync_day_to_engine(sim, chain: dict, directive: dict) -> dict:
     cond = directive["conditions"]
     boycott = bool(directive.get("boycott_active"))
     now = sim.time
-    next_day_start = (now // 1440 + 1) * 1440 if now % 1440 else now
+    day_end = (now // 1440 + 1) * 1440 - 1
+    if day_end <= now:
+        day_end += 1440
+    target_day_idx = day_end // 1440
+    has_upcoming_daily = sim.last_daily_day < target_day_idx
+    daily_at = target_day_idx * 1440
+    t_pre = now
+    t_msg = (daily_at + 10) if has_upcoming_daily else max(now + 10, 10)
 
     leaders_a = [a for a in sim.agents.values() if a.initial_group == "authority" and a.alignment == "A"]
     leaders_b = [a for a in sim.agents.values() if a.initial_group == "authority" and a.alignment == "B"]
@@ -391,136 +628,162 @@ def sync_day_to_engine(sim, chain: dict, directive: dict) -> dict:
     opposition = [a for a in sim.agents.values() if a.initial_group == "opposition"]
 
     log_start = len(sim.log)
-    t_ev = sim.time + 5
+    prev_msg_ids = set(sim.messages)
+    provider = AgendaProvider(ReferenceAdvisor())
 
-    # Boykot sinyali (ertesi daily adımında zengin işveren -> çalışan gelir zincirini etkiler)
+    # Boykot sinyali aynı günün daily adımında işveren -> çalışan gelir zincirini etkiler
     if boycott:
         sim.protocol["active_boycott"] = 0.28 if tier == "severe_security_crisis" else 0.18
-
+    bstate = chain.get("branch_state") or {}
+    csig = bstate.get("constitutional_signals") or {}
+    voice_sig = float(csig.get("voice_response", 0.0))
+    if bstate.get("voice_acknowledged") or directive.get("branch") == "seffaf_onarim":
+        voice_sig = max(voice_sig, 0.65)
+    darvo_sig = float(csig.get("darvo_signal", 0.0))
+    if bstate.get("darvo_active") or directive.get("branch") == "darvo_karsi_saldiri":
+        darvo_sig = max(darvo_sig, 0.72)
+    elite_boost = float(csig.get("elite_framing_boost", 0.0))
+    if tier != "ordinary" and cond.get("coverup_level") in ("moderate", "high") and elite_boost <= 0.0:
+        elite_boost = 0.18
     if tier != "ordinary":
-        # 1. Ekonomik şok veya yerel hizmet/güvenlik kesintisi
-        if dom == "economic_crisis":
-            if cond["unaddressed_neglect"] and sim.price < 2.2:
-                mult = 1.16 if directive["day"] == 1 else 1.08
-                sim.schedule(t_ev, "price_shock", {"multiplier": mult})
-            elif not cond["unaddressed_neglect"] and sim.price > 1.05:
-                sim.schedule(t_ev, "price_shock", {"multiplier": 0.94})
-        else:
-            dis_domain = "infrastructure" if dom == "disaster_neglect" else (
-                "public_safety" if dom == "armed_violence" else "governance")
-            sev = (0.78 if cond.get("aftershock_stage") == "aftershock_occurred"
-                   else 0.52 if cond["unaddressed_neglect"] else 0.14)
-            # Nüfusun etkilenen kesimine gerçek yerel aksama uygula
-            targets = (discontented + opposition[:12] + wealthy_n[:2])[:26]
-            for idx, ag in enumerate(targets):
-                if idx % 2 == directive["day"] % 2 or sev >= 0.70:
-                    sim.schedule(t_ev + idx, "local_disruption",
-                                 {"target": ag.id, "domain": dis_domain, "severity": sev})
-            if boycott and sim.price < 1.65:
-                sim.schedule(t_ev + 1, "price_shock", {"multiplier": 1.06})
+        sim.protocol["active_crisis_signals"] = {
+            "tier": tier, "domain": dom, "conditions": deepcopy(cond), "day": directive["day"],
+            "voice_response": round(voice_sig, 4),
+            "darvo_signal": round(darvo_sig, 4),
+            "elite_framing_boost": round(elite_boost, 4),
+        }
+    else:
+        sim.protocol.pop("active_crisis_signals", None)
 
-        # 2. A otoritesinin resmi "her şey kontrol altında" tahmini -> sonradan güven aşınması üretir
-        if leaders_a and cond["coverup_level"] in ("moderate", "high"):
-            root_a = leaders_a[0]
-            out_targets = [e["target"] for e in sim.edges if e["source"] == root_a.id][:4]
-            for j, tid in enumerate(out_targets[:2]):
-                sim.schedule(t_ev + 10 + j, "external_action", {
-                    "actor": root_a.id,
-                    "proposal": {
-                        "type": "send", "target": tid, "topic": "economic_outlook",
-                        "claim": 10,  # düşük zarar tahmini (iyimser örtbas) -> gerçek zararla çelişir!
-                        "text": "Resmi açıklama: durum tamamen kontrol altındadır.",
-                    },
-                })
+    try:
+        if tier != "ordinary":
+            # A) Günlük ekonomi ve psikoloji hesabından ÖNCE şoklar ve yaptırımlar uygulanır (0 gün gecikme)
+            # 1. Ekonomik şok veya yerel hizmet/güvenlik kesintisi
+            if dom == "economic_crisis":
+                if cond["unaddressed_neglect"] and sim.price < 2.2:
+                    mult = 1.16 if directive["day"] == 1 else 1.08
+                    sim.schedule(t_pre, "price_shock", {"multiplier": mult})
+                elif not cond["unaddressed_neglect"] and sim.price > 1.05:
+                    sim.schedule(t_pre, "price_shock", {"multiplier": 0.94})
+            else:
+                dis_domain = "infrastructure" if dom == "disaster_neglect" else (
+                    "public_safety" if dom == "armed_violence" else "governance")
+                sev = (0.78 if cond.get("aftershock_stage") == "aftershock_occurred"
+                       else 0.52 if cond["unaddressed_neglect"] else 0.14)
+                targets = (discontented + opposition[:12] + wealthy_n[:2])[:26]
+                for idx, ag in enumerate(targets):
+                    if idx % 2 == directive["day"] % 2 or sev >= 0.70:
+                        sim.schedule(t_pre, "local_disruption",
+                                     {"target": ag.id, "domain": dis_domain, "severity": sev})
+                if boycott and sim.price < 1.65:
+                    sim.schedule(t_pre, "price_shock", {"multiplier": 1.06})
 
-        # 3. Sosyal medya alt kanatlarının geniş yayın (`amplify`) hamlesi
-        if wealthy_a:
-            # İyimser 'ekonomi/düzen sağlam' yayını takipçilerde doğrulanabilir beklenti kaydı oluşturur.
-            spin_topic = "economic_outlook" if cond["coverup_level"] in ("moderate", "high") else "media:spin_A"
-            spin_claim = 8 if spin_topic == "economic_outlook" else 82
-            sim.schedule(t_ev + 20, "external_action", {
-                "actor": wealthy_a[0].id,
-                "proposal": {
-                    "type": "amplify", "topic": spin_topic, "claim": spin_claim,
-                    "text": "Yönetim gerekli adımları atıyor; istikrar ve refah korunuyor.",
-                },
-            })
-        if wealthy_b:
-            sim.schedule(t_ev + 22, "external_action", {
-                "actor": wealthy_b[0].id,
-                "proposal": {
-                    "type": "amplify", "topic": "grievance", "claim": 85,
-                    "text": "Ciddi ihmal ve denetimsizlik var; sorumlular hesap vermeli.",
-                },
-            })
-        if wealthy_n:
-            # Korku yükseldiyse tarafsız medya otosansür engeline (`self_censored_under_fear`) takılır!
-            sim.schedule(t_ev + 24, "external_action", {
-                "actor": wealthy_n[0].id,
-                "proposal": {
-                    "type": "amplify", "topic": "media:commercial", "claim": 55,
-                    "text": "Piyasa ve günlük akış üzerindeki belirsizlik izleniyor.",
-                },
-            })
+            # 2. Soruşturma sopası ve sözleşme iptali (`authority` -> bağımlı `wealthy`)
+            if cond.get("prosecution_fear") in ("elevated", "high"):
+                sanctioned = []
+                for cand in [*wealthy_n, *wealthy_b]:
+                    dep_id = cand.authority_dependency
+                    if dep_id and dep_id in sim.agents and sim.agents[dep_id].savings >= 4:
+                        sanctioned.append((dep_id, cand.id))
+                for dep_id, wid in sanctioned[:3]:
+                    sim.schedule(t_pre, "external_action", {
+                        "actor": dep_id,
+                        "proposal": {"type": "pressure", "target": wid},
+                    })
+                det_count = int(cond.get("detained_individuals", 0))
+                if det_count > 0 and directive.get("branch") in ("medya_yaptirimi", "sizinti_ve_sorusturma", "sert_baski"):
+                    for dep_id, wid in sanctioned[:min(2, det_count)]:
+                        sim.schedule(t_pre, "external_action", {
+                            "actor": dep_id,
+                            "proposal": {"type": "revoke_contract", "target": wid},
+                        })
 
-        # 4. İçeriden belge sızıntısı (`conscience_insider` yönetici -> ağ)
-        if cond.get("leak_occurred"):
-            insiders = [a for a in sim.agents.values()
-                        if a.initial_group == "authority" and a.behavior.get("psychology", {}).get("conscience_insider")]
-            leaker = insiders[0] if insiders else (leaders_b[0] if leaders_b else None)
-            if leaker:
-                leak_targets = [e["target"] for e in sim.edges if e["source"] == leaker.id][:2]
-                for k, tid in enumerate(leak_targets):
-                    sim.schedule(t_ev + 30 + k, "external_action", {
-                        "actor": leaker.id,
+            if not has_upcoming_daily:
+                sim.run(t_pre, provider)
+                _apply_pre_ticked_day_effects(sim)
+
+            # B) Gün içi yayın, sızıntı ve boykot buluşmaları (günlük psikoloji ve otosansür güncellendikten SONRA)
+            # 3. A otoritesinin resmi "her şey kontrol altında" tahmini -> sonradan güven aşınması üretir
+            if leaders_a and cond["coverup_level"] in ("moderate", "high"):
+                root_a = leaders_a[0]
+                out_targets = [e["target"] for e in sim.edges if e["source"] == root_a.id][:4]
+                for j, tid in enumerate(out_targets[:2]):
+                    sim.schedule(t_msg + j, "external_action", {
+                        "actor": root_a.id,
                         "proposal": {
-                            "type": "send", "target": tid, "topic": "grievance", "claim": 92,
-                            "text": "İçeriden sızan denetim uyarısı: risk önceden bildirilmişti.",
+                            "type": "send", "target": tid, "topic": "economic_outlook",
+                            "claim": 10,
+                            "text": "Resmi açıklama: durum tamamen kontrol altındadır.",
                         },
                     })
 
-        # 5. Soruşturma sopası ve sözleşme iptali (`authority` -> bağımlı `wealthy`)
-        if cond.get("prosecution_fear") in ("elevated", "high"):
-            sanctioned = []
-            for cand in [*wealthy_n, *wealthy_b]:
-                dep_id = cand.authority_dependency
-                if dep_id and dep_id in sim.agents and sim.agents[dep_id].savings >= 4:
-                    sanctioned.append((dep_id, cand.id))
-            # Baskı uyarısı
-            for idx, (dep_id, wid) in enumerate(sanctioned[:3]):
-                sim.schedule(t_ev + 40 + idx, "external_action", {
-                    "actor": dep_id,
-                    "proposal": {"type": "pressure", "target": wid},
-                })
-            # Gözaltı/ağır yaptırım gününde sözleşme/gelir darbesi (`revoke_contract` -> işveren -> çalışan!)
-            det_count = int(cond.get("detained_individuals", 0))
-            if det_count > 0 and directive.get("branch") in ("medya_yaptirimi", "sizinti_ve_sorusturma", "sert_baski"):
-                for idx, (dep_id, wid) in enumerate(sanctioned[:min(2, det_count)]):
-                    sim.schedule(t_ev + 45 + idx, "external_action", {
-                        "actor": dep_id,
-                        "proposal": {"type": "revoke_contract", "target": wid},
-                    })
-
-        # 6. Toplumsal boykot / barışçıl meydan buluşması (`collective`)
-        if boycott and collective.enabled(sim) and discontented:
-            organizer = discontented[0]
-            g_start = sim.time + 60
-            g_end = min(next_day_start + 1380, g_start + 900)
-            if g_end > g_start + 30:
-                sim.schedule(t_ev + 50, "external_action", {
-                    "actor": organizer.id,
+            # 4. Sosyal medya alt kanatlarının geniş yayın (`amplify`) hamlesi
+            if wealthy_a:
+                spin_topic = "economic_outlook" if cond["coverup_level"] in ("moderate", "high") else "media:spin_A"
+                spin_claim = 8 if spin_topic == "economic_outlook" else 82
+                sim.schedule(t_msg + 10, "external_action", {
+                    "actor": wealthy_a[0].id,
                     "proposal": {
-                        "type": "create_gathering",
-                        "place": "kent_meydani",
-                        "start": g_start,
-                        "end": g_end,
-                        "purpose": "Güvenlik ve adalet boykotu",
+                        "type": "amplify", "topic": spin_topic, "claim": spin_claim,
+                        "text": "Yönetim gerekli adımları atıyor; istikrar ve refah korunuyor.",
+                    },
+                })
+            if wealthy_b:
+                sim.schedule(t_msg + 12, "external_action", {
+                    "actor": wealthy_b[0].id,
+                    "proposal": {
+                        "type": "amplify", "topic": "grievance", "claim": 85,
+                        "text": "Ciddi ihmal ve denetimsizlik var; sorumlular hesap vermeli.",
+                    },
+                })
+            if wealthy_n:
+                # Korku yükseldiyse tarafsız medya otosansür engeline (`self_censored_under_fear`) takılır!
+                sim.schedule(t_msg + 14, "external_action", {
+                    "actor": wealthy_n[0].id,
+                    "proposal": {
+                        "type": "amplify", "topic": "media:commercial", "claim": 55,
+                        "text": "Piyasa ve günlük akış üzerindeki belirsizlik izleniyor.",
                     },
                 })
 
-    # Tam 1 simülasyon günü ilerlet (yalnız yerel ReferenceAdvisor ile; 0 ağ/ücretli çağrı!)
-    session = Session(sim, AgendaProvider(ReferenceAdvisor()))
-    session.day()
+            # 5. İçeriden belge sızıntısı (`conscience_insider` yönetici -> ağ)
+            if cond.get("leak_occurred"):
+                insiders = [a for a in sim.agents.values()
+                            if a.initial_group == "authority" and a.behavior.get("psychology", {}).get("conscience_insider")]
+                leaker = insiders[0] if insiders else (leaders_b[0] if leaders_b else None)
+                if leaker:
+                    leak_targets = [e["target"] for e in sim.edges if e["source"] == leaker.id][:2]
+                    for k, tid in enumerate(leak_targets):
+                        sim.schedule(t_msg + 20 + k, "external_action", {
+                            "actor": leaker.id,
+                            "proposal": {
+                                "type": "send", "target": tid, "topic": "grievance", "claim": 92,
+                                "text": "İçeriden sızan denetim uyarısı: risk önceden bildirilmişti.",
+                            },
+                        })
+
+            # 6. Toplumsal boykot / barışçıl meydan buluşması (`collective`)
+            if boycott and collective.enabled(sim) and discontented:
+                organizer = discontented[0]
+                g_start = t_msg + 50
+                g_end = min(day_end - 59, g_start + 900)
+                if g_end > g_start + 30:
+                    sim.schedule(t_msg + 40, "external_action", {
+                        "actor": organizer.id,
+                        "proposal": {
+                            "type": "create_gathering",
+                            "place": "kent_meydani",
+                            "start": g_start,
+                            "end": g_end,
+                            "purpose": "Güvenlik ve adalet boykotu",
+                        },
+                    })
+
+        # Tam 1 simülasyon günü ilerlet (yalnız yerel ReferenceAdvisor ile; 0 ağ/ücretli çağrı!)
+        session = Session(sim, provider)
+        session.day()
+    finally:
+        sim.protocol.pop("active_crisis_signals", None)
 
     new_logs = sim.log[log_start:]
     amplified = sum(1 for e in new_logs if e["kind"] == "media_amplified")
@@ -529,8 +792,8 @@ def sync_day_to_engine(sim, chain: dict, directive: dict) -> dict:
         if e["kind"] == "action_rejected" and e["payload"].get("reason") == "self_censored_under_fear"
     )
     observer_warnings = sum(
-        1 for e in new_logs
-        if e["kind"] == "message_sent" and e["payload"].get("topic") == "technical_warning"
+        1 for mid, m in sim.messages.items()
+        if mid not in prev_msg_ids and m.get("topic") == "technical_warning"
     )
     pressured = sum(1 for e in new_logs if e["kind"] == "pressure_experienced")
     cut_workers = sum(
@@ -542,18 +805,20 @@ def sync_day_to_engine(sim, chain: dict, directive: dict) -> dict:
         1 for a in sim.agents.values()
         if a.behavior.get("psychology", {}).get("disengaged")
     )
+    functional_exit_agents = sum(
+        1 for a in sim.agents.values()
+        if a.behavior.get("psychology", {}).get("functional_exit")
+    )
+    ostracized_whistleblowers = sum(
+        1 for a in sim.agents.values()
+        if a.initial_group in ("observer", "authority")
+        and float(a.behavior.get("psychology", {}).get("ostracism", 0.0)) >= 0.28
+    )
+    jsd_score = round(psychology.preference_divergence_jsd(sim) * 100, 1)
     bm = sim.behavior_metrics()
 
-    # Senaryo sinyalleri ile canlı motor durumunun birleşik psikolojik anlık görüntüsü
     chain["synced_day"] = directive["day"]
     live_psych = psychology.group_summary(sim, None)
-    # Ayrıca senaryonun o günkü korku/örtbas bağlamını alt kanat ifadeleriyle harmanla
-    temp_chain = {
-        "tier": tier, "domain": dom, "day": directive["day"], "synced_day": directive["day"] - 1,
-        "conditions": deepcopy(cond),
-        "history": [{"day": directive["day"], "conditions": deepcopy(cond)}],
-    }
-    contextual_psych = psychology.group_summary(sim, temp_chain, upto_day=directive["day"])
 
     effects = {
         "sim_day": sim.time // 1440 + (1 if sim.time > 0 else 0),
@@ -564,6 +829,9 @@ def sync_day_to_engine(sim, chain: dict, directive: dict) -> dict:
         "self_censored_blocks": censored_blocks,
         "observer_warnings": observer_warnings,
         "disengaged_citizens": disengaged_citizens,
+        "functional_exit_agents": functional_exit_agents,
+        "ostracized_whistleblowers": ostracized_whistleblowers,
+        "preference_divergence_jsd": jsd_score,
         "pressured_actors": pressured,
         "employer_cut_workers": cut_workers,
         "boycott_active": boycott,
@@ -571,5 +839,5 @@ def sync_day_to_engine(sim, chain: dict, directive: dict) -> dict:
     }
     return {
         "engine_effects": effects,
-        "psychology_snapshot": contextual_psych or live_psych,
+        "psychology_snapshot": live_psych,
     }

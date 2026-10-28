@@ -146,7 +146,11 @@ def daily(sim, a, expense, cause):
         nonprice = max((d.get("level", 0.) for k, d in characters.state(a)["domains"].items()
                         if k not in ("living_cost", "income_security")), default=0.) if characters.enabled(sim) else 0.
         coll_active = bool(collective.state(a).get("collective_active")) if collective.enabled(sim) else False
-        psych = psychology.daily(sim, a, harm, income_harm, nonprice, responsibility, max_own_error, coll_active, cause)
+        eff_own_error = max_own_error
+        if a.initial_group == "observer" and characters.enabled(sim):
+            verified_err = max((sa.get("error", 0.) for sa in characters.state(a).get("source_assessments", {}).values()), default=0.)
+            eff_own_error = max(eff_own_error, verified_err)
+        psych = psychology.daily(sim, a, harm, income_harm, nonprice, responsibility, eff_own_error, coll_active, cause)
     if collective.enabled(sim):
         collective.state(a)["distress"] = (psych["effective_drive"] if psych is not None
             else (reaction if characters.enabled(sim) else clamp(s["burden"])))

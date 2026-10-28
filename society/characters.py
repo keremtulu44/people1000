@@ -46,7 +46,7 @@ def initialize(sim):
 def limit(sim,a,kind,default):
     if enabled(sim) and a.initial_group=='observer':
         return min(default,sim.behavior_profile['character_dynamics'][f'observer_{kind}_limit'])
-    if kind=='communication' and a.initial_group=='wealthy' and sim.behavior_profile.get('psychology_model')=='affective-v1':
+    if kind=='communication' and a.initial_group=='wealthy' and sim.behavior_profile.get('psychology_model') in ('affective-v1','affective-v2'):
         return max(default,6)
     return default
 
@@ -76,7 +76,8 @@ def disruption(sim,a,domain,severity,cause):
     d['surprise']=max(0.,severity-d['expected'])
     d['reaction']=clamp(d['surprise']+d['fatigue'])
     state(a)['reaction']=1-math.prod(1-x.get('reaction',0.) for x in state(a)['domains'].values())
-    a.behavior['social']['distress']=state(a)['reaction']
+    if 'social' in a.behavior:
+        a.behavior['social']['distress']=state(a)['reaction']
     a.memories.append({'type':'direct_experience','event_id':cause,'learned_at':sim.time,
                        'domain':domain,'severity':severity})
     sim.record('local_disruption_experienced',{'agent':a.id,'domain':domain,'severity':severity},cause)
@@ -181,6 +182,7 @@ def policy(obs):
     psych = obs.get('psychology')
     if group=='observer':
         if (psych is not None and psych.get('whistleblower_ready') and obs['contacts']
+                and day-psych.get('last_warning_day',-10000)>=3
                 and obs['budgets_used']['communication']<obs['budget_limits']['communication']):
             return ({'type':'send','target':obs['contacts'][0],'topic':'technical_warning',
                      'claim':round(100*psych.get('epistemic_alarm',.7)),

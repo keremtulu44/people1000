@@ -30,6 +30,7 @@ DOMINANT_LABELS_TR = {
     "rasyonalizasyon_savunmasi": "Psikolojik Savunma (Bahane / Rasyonalizasyon)",
     "suc_kaydirma": "Suç Kaydırma (Lider İyi, Aracılar Bozuk)",
     "kuskun_kopus": "Sessiz Kopuş / Küskün Seçmen (Gri Bölge)",
+    "sessiz_cikis": "İşlevsel Çıkış (Sermaye / Yetenek Çekilmesi)",
     "cogulcu_cehalet": "Çoğulcu Cehalet (Herkes Memnun Sanıp Yalnızlaşma)",
     "sabir_esiginde": "Tahammül Eşiği Altında (Sabrediyor)",
     "ofke_ve_itiraz": "Eşik Aşıldı — Açık Öfke ve İtiraz",
@@ -38,6 +39,7 @@ DOMINANT_LABELS_TR = {
     "tukenmislik": "Tükenmişlik / Öğrenilmiş Çaresizlik",
     "sogukkanli_gozlem": "Mesafeli ve Uyanık Gözlem",
     "epistemik_uyari": "Epistemik Alarm — Teknik Uyarı Eşiğinde",
+    "ifsaci_yalnizlasmasi": "İfşacı Yalnızlaşması / Sosyal Dışlanma",
 }
 
 EXPRESSION_LABELS_TR = {
@@ -46,6 +48,7 @@ EXPRESSION_LABELS_TR = {
     "self_censored": "Tam otosansür / sessizlik",
     "exhausted_withdrawal": "Yorgun kabulleniş / içe çekilme",
     "disengaged_silence": "Küskün sessizlik / sandıktan-söylemden çekilme",
+    "functional_exit": "Sistemden çekilme / sermaye-yetenek koruması",
     "epistemic_warning": "Kanıta dayalı teknik uyarı",
 }
 
@@ -76,6 +79,7 @@ def _default_trait(a, key, fallback):
 
 def _ensure_v2_fields(p, group: str):
     inter_default = 0.78 if group in ("power_aligned", "authority") else 0.52
+    resil_default = 0.76 if group == "observer" else (0.32 if (group == "authority" and p.get("conscience_insider")) else 0.50)
     p.setdefault("adaptation_baseline", 0.0)
     p.setdefault("intermediary_trust", inter_default)
     p.setdefault("blame_shifted", False)
@@ -86,6 +90,16 @@ def _ensure_v2_fields(p, group: str):
     p.setdefault("solidarity_capacity", 1.0)
     p.setdefault("epistemic_alarm", 0.0)
     p.setdefault("whistleblower_ready", False)
+    p.setdefault("last_warning_day", -10000)
+    # 5-axis research synthesis additions (affective-v2):
+    p.setdefault("conformist_days", 0)
+    p.setdefault("conformist_internalization", 0.0)
+    p.setdefault("motivated_framing", 0.0)
+    p.setdefault("exit_pressure", 0.0)
+    p.setdefault("functional_exit", False)
+    p.setdefault("anticipatory_resilience", resil_default)
+    p.setdefault("ostracism", 0.0)
+    p.setdefault("identity_dislocation", 0.0)
     return p
 
 
@@ -126,6 +140,9 @@ def initialize(sim):
             p["conscience_insider"] = h < 0.12
             if p["conscience_insider"]:
                 p["defense_wall"] = clamp(p["defense_wall"] * 0.45)
+                p["anticipatory_resilience"] = 0.30
+        elif a.initial_group == "observer":
+            p["anticipatory_resilience"] = round(clamp(0.68 + 0.22 * (1.0 - a.traits.get("fear_sensitivity", 0.1))), 4)
 
 
 def _local_social_context(sim, a) -> dict:
@@ -144,10 +161,15 @@ def _local_social_context(sim, a) -> dict:
         return {
             "silent_ratio": 0.0, "neighbor_fear": 0.0, "neighbor_anger": 0.0,
             "solidarity_capacity": 1.0, "elite_comfort": 0.0, "contradiction_spread": 0.0,
+            "own_elite_framing": 0.0, "partisan_backlash": 0.0,
         }
     silent = 0
     fears, angers, sav_ratios, elite_comforts = [], [], [], []
+    elite_frames = []
+    defensive_partisans = 0
     pole_claims = set()
+    cs = sim.protocol.get("active_crisis_signals")
+    elite_boost = float(cs.get("elite_framing_boost", 0.0)) if isinstance(cs, dict) else 0.0
     for nb in neighbors:
         np = nb.behavior.get("psychology") or {}
         n_expr = np.get("expression_mode", "open")
@@ -162,8 +184,20 @@ def _local_social_context(sim, a) -> dict:
         sav_ratios.append(1.0 - 0.75 * loss_strain)
         if nb.initial_group == "authority" or (nb.initial_group == "wealthy" and nb.behavior.get("subwing") == "pro_A"):
             elite_comforts.append(float(np.get("comfort", 0.72)))
-        if nb.alignment in ("A", "B"):
-            pole_claims.add(nb.alignment)
+        nb_pole = nb.public_alignment if nb.public_alignment != "none" else nb.alignment
+        if nb_pole in ("A", "B"):
+            pole_claims.add(nb_pole)
+        # Active partisan elites of agent's own pole supply counter-rationalization frames (Kahan)
+        if a.alignment in ("A", "B") and nb_pole == a.alignment and n_expr == "open":
+            is_own_elite = (
+                (nb.initial_group == "wealthy" and nb.behavior.get("subwing") == ("pro_A" if a.alignment == "A" else "pro_B"))
+                or (nb.initial_group == "authority" and not np.get("conscience_insider"))
+            )
+            if is_own_elite:
+                elite_frames.append(clamp(max(float(np.get("motivated_framing", 0.0)), 0.35 + elite_boost)))
+        # Defensive ruling-pole neighbors can enact informal social ostracism against whistleblowers
+        if nb_pole == "A" and float(np.get("defense_wall", 0.5)) >= 0.48 and nb.initial_group in ("power_aligned", "authority", "wealthy"):
+            defensive_partisans += 1
     n = len(neighbors)
     return {
         "silent_ratio": silent / n,
@@ -172,6 +206,8 @@ def _local_social_context(sim, a) -> dict:
         "solidarity_capacity": clamp(sum(sav_ratios) / n, 0.18, 1.0),
         "elite_comfort": max(elite_comforts) if elite_comforts else 0.0,
         "contradiction_spread": 0.25 if len(pole_claims) >= 2 else 0.0,
+        "own_elite_framing": max(elite_frames) if elite_frames else 0.0,
+        "partisan_backlash": defensive_partisans / n,
     }
 
 
@@ -182,6 +218,8 @@ def _classify_expression_and_dominant(group, subwing, tol, stressor, comfort, fe
     guarded_gate = 0.22 if subwing == "neutral_commercial" else 0.30
 
     disengaged = bool(use_v2 and p and p.get("disengaged"))
+    func_exit = bool(use_v2 and p and p.get("functional_exit"))
+    ostracism = float(p.get("ostracism", 0.0)) if (use_v2 and p) else 0.0
     blame_shifted = bool(use_v2 and p and p.get("blame_shifted"))
     pi = float(p.get("pluralistic_ignorance", 0.0)) if (use_v2 and p) else 0.0
     wb = bool(use_v2 and p and p.get("whistleblower_ready"))
@@ -192,6 +230,8 @@ def _classify_expression_and_dominant(group, subwing, tol, stressor, comfort, fe
         expr = "exhausted_withdrawal"
     elif fear >= censorship_gate:
         expr = "self_censored"
+    elif func_exit and fear < censorship_gate and anger < 0.70:
+        expr = "functional_exit"
     elif disengaged and fear < censorship_gate and anger < 0.68:
         expr = "disengaged_silence"
     elif fear >= guarded_gate or pi >= 0.48:
@@ -200,9 +240,14 @@ def _classify_expression_and_dominant(group, subwing, tol, stressor, comfort, fe
         expr = "open"
 
     if group == "observer":
-        dom = "epistemik_uyari" if wb else "sogukkanli_gozlem"
+        if use_v2 and ostracism >= 0.42 and not wb:
+            dom = "ifsaci_yalnizlasmasi"
+        else:
+            dom = "epistemik_uyari" if wb else "sogukkanli_gozlem"
     elif expr == "exhausted_withdrawal":
         dom = "tukenmislik"
+    elif func_exit and expr == "functional_exit":
+        dom = "sessiz_cikis"
     elif disengaged and group in ("power_aligned", "opposition"):
         dom = "kuskun_kopus"
     elif expr == "self_censored" and repressed >= 0.28:
@@ -230,6 +275,7 @@ def _step_agent_psychology(p, traits, group, alignment, public_support, private_
                            pressure, cfg, harm, income_harm, disruption_level,
                            responsibility_own, max_own_error, collective_supported,
                            threat_signal=0.0, coverup_signal=0.0, leak_signal=False,
+                           voice_response_signal=0.0, darvo_signal=0.0, current_day=0,
                            use_v2=False, social_ctx=None):
     _ensure_v2_fields(p, group)
     tol = p["tolerance_threshold"]
@@ -250,18 +296,42 @@ def _step_agent_psychology(p, traits, group, alignment, public_support, private_
     else:
         p["comfort"] = clamp(p["comfort"] + cfg["comfort_recovery"] * (comfort_base - p["comfort"]))
 
-    # 2. v3.5 Blame Shifting (Intermediary vs Core Leader) + Role Dissonance + Defense Wall
+    # 2. v3.5 Blame Shifting + Elite Counter-Rationalization (Kahan) + Voice Repair (Hirschman)
     if use_v2:
+        censorship_gate_role = 0.42 if subwing == "neutral_commercial" else 0.56
+        is_partisan_elite = (
+            (group == "wealthy" and subwing in ("pro_A", "pro_B"))
+            or (group == "authority" and not p.get("conscience_insider"))
+        )
+        own_elite_framing = float(sctx.get("own_elite_framing", 0.0))
+        if is_partisan_elite:
+            if p["fear"] < censorship_gate_role and (coverup_signal > 0.12 or harm > 0.10 or threat_signal > 0.12) and income_harm < 0.28:
+                p["motivated_framing"] = clamp(
+                    0.74 * p.get("motivated_framing", 0.0) + 0.44 * max(coverup_signal, 0.40 * harm + 0.35 * threat_signal)
+                )
+            else:
+                p["motivated_framing"] = clamp(0.80 * p.get("motivated_framing", 0.0))
+        else:
+            if own_elite_framing > 0.05 and income_harm < 0.18 and not leak_signal and max_own_error < 0.30:
+                p["motivated_framing"] = clamp(0.76 * p.get("motivated_framing", 0.0) + 0.36 * own_elite_framing)
+            else:
+                p["motivated_framing"] = clamp(0.60 * p.get("motivated_framing", 0.0))
+
         # Cross-cutting cleavage: e.g. power_aligned citizen hit by employer cut or severe income loss
         if alignment in ("A", "B") and (income_harm > 0.04 or max_own_error > 0.18):
             p["role_dissonance"] = clamp(0.84 * p["role_dissonance"] + 0.52 * income_harm + 0.30 * max_own_error)
         else:
             p["role_dissonance"] = clamp(0.86 * p["role_dissonance"])
 
-        # Intermediaries ('bürokrasi / fırsatçılar') absorb the first wave of blame
-        if material_hit > 0.08 or coverup_signal > 0.20:
+        # Intermediaries ('bürokrasi / fırsatçılar') absorb first wave; elite cues & voice response repair trust
+        if voice_response_signal > 0.15:
+            p["intermediary_trust"] = clamp(p["intermediary_trust"] + 0.12 * voice_response_signal)
+        elif material_hit > 0.08 or coverup_signal > 0.20:
             inter_drop = 0.14 * material_hit + 0.10 * coverup_signal + (0.18 if leak_signal else 0.0)
-            p["intermediary_trust"] = clamp(p["intermediary_trust"] - inter_drop)
+            elite_repair = (0.065 * own_elite_framing
+                            if (own_elite_framing > 0.05 and income_harm < 0.18 and not leak_signal and max_own_error < 0.30)
+                            else 0.0)
+            p["intermediary_trust"] = clamp(p["intermediary_trust"] - inter_drop + elite_repair)
         else:
             inter_base = 0.78 if group in ("power_aligned", "authority") else 0.52
             p["intermediary_trust"] = clamp(p["intermediary_trust"] + 0.03 * (inter_base - p["intermediary_trust"]))
@@ -275,9 +345,13 @@ def _step_agent_psychology(p, traits, group, alignment, public_support, private_
             and not leak_signal
         )
         chronic_comfort_collapse = max(0.0, 0.34 - p["comfort"]) if not p["blame_shifted"] else 0.0
-        if alignment in ("A", "B") and (harm > 0.02 or max_own_error > 0.1 or leak_signal or chronic_comfort_collapse > 0):
+        if voice_response_signal > 0.20 and not leak_signal and income_harm < 0.25:
+            p["defense_wall"] = clamp(p["defense_wall"] + (cfg["defense_recovery"] + 0.06 * voice_response_signal) * (defense_base - p["defense_wall"]))
+        elif alignment in ("A", "B") and (harm > 0.02 or max_own_error > 0.1 or leak_signal or chronic_comfort_collapse > 0):
             leak_hit = 0.22 if leak_signal else 0.0
             shield = 0.35 if p["blame_shifted"] else 1.0
+            if own_elite_framing > 0.05 and income_harm < 0.18 and not leak_signal and max_own_error < 0.30:
+                shield *= (1.0 - 0.34 * own_elite_framing)
             erosion = cfg["defense_erosion"] * shield * (
                 0.65 * harm * max(responsibility_own, 0.45 if chronic_comfort_collapse > 0 else 0.0)
                 + 0.80 * max_own_error
@@ -357,7 +431,7 @@ def _step_agent_psychology(p, traits, group, alignment, public_support, private_
             p["anger"] = clamp(p["anger"] * cfg["anger_retention"] + 0.48 * clamp(excess) + 0.15 * raw_stressor)
             p["chronic_days"] += 1
 
-    # 5. Forced compliance / fear -> Repressed anger + Pluralistic Ignorance & Focal Break
+    # 5. Forced compliance / fear -> Repressed anger + Conformist Internalization + Pluralistic Ignorance
     compliance_gap = max(0.0, public_support - private_loyalty)
     silenced = p["fear"] >= 0.30 or compliance_gap >= 0.20
     if p["anger"] > 0.18 and silenced:
@@ -365,6 +439,32 @@ def _step_agent_psychology(p, traits, group, alignment, public_support, private_
         p["repressed_anger"] = clamp(p["repressed_anger"] * cfg["repressed_retention"] + transfer)
     else:
         p["repressed_anger"] = clamp(p["repressed_anger"] * cfg["repressed_retention"])
+
+    if use_v2:
+        if voice_response_signal > 0.15:
+            p["anger"] = clamp(p["anger"] * (1.0 - 0.22 * voice_response_signal))
+            p["repressed_anger"] = clamp(p["repressed_anger"] * (1.0 - 0.30 * voice_response_signal))
+        # Chronic preference falsification -> cognitive dissonance internalization (UAB / Kuran)
+        forced_conformity = bool(
+            silenced
+            and (compliance_gap >= 0.22 or (p["fear"] >= 0.34 and pressure >= 0.15))
+            and income_harm < 0.18
+            and harm < 0.42
+            and not leak_signal
+        )
+        if forced_conformity:
+            p["conformist_days"] = int(p.get("conformist_days", 0)) + 1
+            if p["conformist_days"] >= 4:
+                core_res = float(traits.get("core_orientation_resistance", 0.8))
+                diss_step = 0.065 * max(compliance_gap, 0.25 * p["fear"]) * max(0.25, 1.15 - 0.65 * core_res)
+                p["conformist_internalization"] = clamp(p.get("conformist_internalization", 0.0) + diss_step)
+                p["repressed_anger"] = clamp(p["repressed_anger"] * (1.0 - 0.08 * p["conformist_internalization"]))
+        elif leak_signal or income_harm >= 0.22:
+            p["conformist_days"] = 0
+            p["conformist_internalization"] = clamp(p.get("conformist_internalization", 0.0) * 0.45)
+        else:
+            p["conformist_days"] = max(0, int(p.get("conformist_days", 0)) - 1)
+            p["conformist_internalization"] = clamp(p.get("conformist_internalization", 0.0) * 0.94)
 
     common_knowledge_surge = 0.0
     if use_v2 and group != "observer":
@@ -408,21 +508,68 @@ def _step_agent_psychology(p, traits, group, alignment, public_support, private_
             recovery = cfg["exhaustion_recovery"] * (0.90 if collective_supported else 1.0)
             p["exhaustion"] = clamp(p["exhaustion"] * recovery)
 
-    # 7. Silent Disengagement ('Küskün Seçmen') & Observer Epistemic Whistleblowing
+    # 7. Silent Disengagement ('Küskün Seçmen'), Functional Exit (Hirschman EVLN) & Whistleblower Ostracism (SIT/DARVO)
     if use_v2:
         if alignment in ("A", "B") and group in ("power_aligned", "opposition"):
-            if p["defense_wall"] < 0.42 and (p["comfort"] < 0.34 or p["role_dissonance"] >= 0.34 or p["exhaustion"] >= 0.48):
+            if voice_response_signal >= 0.40 and p["comfort"] >= 0.30:
+                p["disengaged"] = False
+            elif p["defense_wall"] < 0.42 and (p["comfort"] < 0.34 or p["role_dissonance"] >= 0.34 or p["exhaustion"] >= 0.48):
                 p["disengaged"] = True
             elif p["defense_wall"] >= 0.52 and p["comfort"] >= 0.45 and p["role_dissonance"] < 0.20:
                 p["disengaged"] = False
         if group == "observer":
             contrad = max(max_own_error, float(sctx.get("contradiction_spread", 0.0)))
             evidence_pulse = 0.46 * coverup_signal + 0.34 * disruption_level + 0.25 * contrad + (0.20 if leak_signal else 0.0)
-            if evidence_pulse > 0.18:
+            if voice_response_signal >= 0.40 and coverup_signal < 0.20:
+                p["epistemic_alarm"] = clamp(0.68 * p["epistemic_alarm"])
+            elif evidence_pulse > 0.18:
                 p["epistemic_alarm"] = clamp(0.76 * p["epistemic_alarm"] + 0.45 * evidence_pulse)
             else:
                 p["epistemic_alarm"] = clamp(0.82 * p["epistemic_alarm"])
             p["whistleblower_ready"] = bool(p["epistemic_alarm"] >= 0.62 and p["fear"] < 0.72)
+
+        # 7b. Whistleblower & Conscience-Insider Social Ostracism / Identity Dislocation (SIT / Freyd DARVO)
+        recently_warned = (group == "observer" and (
+            p.get("whistleblower_ready") or (current_day - int(p.get("last_warning_day", -10000)) <= 3)
+        ))
+        moral_dissident = recently_warned or (
+            group == "authority" and p.get("conscience_insider") and (coverup_signal >= 0.30 or leak_signal or darvo_signal > 0.0)
+        )
+        resil = float(p.get("anticipatory_resilience", 0.50))
+        if moral_dissident and voice_response_signal < 0.25 and (coverup_signal >= 0.30 or darvo_signal > 0.0):
+            backlash = max(float(sctx.get("partisan_backlash", 0.35)), darvo_signal)
+            ost_push = clamp(0.46 * coverup_signal + 0.44 * darvo_signal + 0.28 * backlash)
+            p["ostracism"] = clamp(0.78 * p.get("ostracism", 0.0) + 0.42 * ost_push)
+            p["identity_dislocation"] = clamp(p["ostracism"] * (1.0 - 0.58 * resil))
+            # Post-disclosure vigilance & nervous-system load (bounded so observer retains agency)
+            p["fear"] = min(0.68 if group == "observer" else 1.0,
+                            clamp(p["fear"] + 0.13 * ost_push * (1.0 - 0.55 * resil)))
+            p["exhaustion"] = clamp(p["exhaustion"] + 0.05 * p["ostracism"] * (1.0 - 0.42 * resil))
+        elif voice_response_signal >= 0.25:
+            p["ostracism"] = clamp(p.get("ostracism", 0.0) * (1.0 - 0.55 * voice_response_signal))
+            p["identity_dislocation"] = clamp(p.get("identity_dislocation", 0.0) * (1.0 - 0.55 * voice_response_signal))
+        else:
+            p["ostracism"] = clamp(0.85 * p.get("ostracism", 0.0))
+            p["identity_dislocation"] = clamp(0.85 * p.get("identity_dislocation", 0.0))
+
+        # 7c. Hirschman Functional Exit (Capital Hoarding in Wealthy / Civic-Talent Withdrawal in Citizens & Observers)
+        if group == "wealthy":
+            exit_push = ((0.48 * p["fear"] + 0.44 * income_harm) * (1.0 - 0.65 * voice_response_signal)
+                         if (p["fear"] >= 0.35 or income_harm >= 0.16) else 0.0)
+        else:
+            exit_push = ((0.38 * p["exhaustion"] + 0.36 * p["ostracism"] + 0.24 * (1.0 - p["solidarity_capacity"]))
+                         * (1.0 - 0.70 * voice_response_signal)
+                         if (p["chronic_days"] >= 3 or p["exhaustion"] >= 0.38 or p["ostracism"] >= 0.32) else 0.0)
+        if voice_response_signal >= 0.25:
+            p["exit_pressure"] = clamp(p.get("exit_pressure", 0.0) * (1.0 - 0.48 * voice_response_signal))
+        elif exit_push > 0.12:
+            p["exit_pressure"] = clamp(0.80 * p.get("exit_pressure", 0.0) + 0.38 * exit_push)
+        else:
+            p["exit_pressure"] = clamp(0.86 * p.get("exit_pressure", 0.0))
+        if p["exit_pressure"] >= 0.52:
+            p["functional_exit"] = True
+        elif p["exit_pressure"] < 0.36:
+            p["functional_exit"] = False
 
     expr, dom = _classify_expression_and_dominant(
         group, subwing, tol, raw_stressor, p["comfort"], p["fear"],
@@ -493,6 +640,35 @@ def trust_erosion_multiplier(sim, a) -> float:
     return 1.0
 
 
+def _role_crisis_inputs(a, subwing: str | None, sig: dict):
+    own_resp = sig["resp_A"] if a.alignment == "A" else (0.15 if a.alignment == "B" else 0.0)
+    own_err = (0.45 if sig["leak"] else 0.20 * sig["harm"]) if a.alignment == "A" else (
+        0.45 if a.initial_group == "observer" and sig["leak"] else 0.0)
+    role_threat = sig["threat"]
+    inc_harm = 0.0
+    if a.initial_group == "wealthy":
+        if subwing == "pro_A":
+            role_threat = sig["threat"] * 0.35
+            inc_harm = 0.06 * sig["threat"]
+        elif subwing == "pro_B":
+            role_threat = sig["threat"] * 0.92
+            inc_harm = 0.22 * sig["threat"]
+        else:  # neutral_commercial
+            role_threat = clamp(sig["threat"] * 1.15)
+            inc_harm = 0.32 * sig["threat"]
+    elif a.initial_group == "authority":
+        role_threat = clamp(sig["threat"] * 0.55 + (0.30 if sig["scapegoat"] else 0.0))
+    elif a.initial_group == "opposition":
+        role_threat = sig["threat"] * 0.85
+    elif a.initial_group == "discontented":
+        role_threat = sig["threat"] * 0.60
+    elif a.initial_group == "power_aligned":
+        role_threat = sig["threat"] * 0.25
+    else:  # observer
+        role_threat = sig["threat"] * 0.20
+    return role_threat, inc_harm, own_resp, own_err
+
+
 def daily(sim, a, harm: float, income_harm: float, disruption_level: float,
           responsibility_own: float, max_own_error: float, collective_supported: bool, cause=None):
     if not enabled(sim):
@@ -501,15 +677,54 @@ def daily(sim, a, harm: float, income_harm: float, disruption_level: float,
     cfg = sim.behavior_profile["psychology_dynamics"]
     use_v2 = v2_enabled(sim)
     sctx = _local_social_context(sim, a) if use_v2 else None
+    threat_sig = 0.0
+    coverup_sig = 0.0
+    leak_sig = False
+    voice_resp_sig = 0.0
+    darvo_sig = 0.0
+    cur_day = sim.time // 1440
+    cs = sim.protocol.get("active_crisis_signals")
+    if isinstance(cs, dict) and cs.get("tier", "ordinary") != "ordinary":
+        sig = _scenario_day_signals(
+            cs["tier"], cs.get("domain", "ordinary"),
+            cs.get("conditions", {}), int(cs.get("day", 1)),
+            voice_response=float(cs.get("voice_response", 0.0)),
+            darvo_signal=float(cs.get("darvo_signal", 0.0)),
+        )
+        role_threat, role_inc_harm, own_resp, own_err = _role_crisis_inputs(a, p.get("subwing"), sig)
+        threat_sig = role_threat
+        coverup_sig = sig["coverup"]
+        leak_sig = sig["leak"]
+        voice_resp_sig = sig["voice_response"]
+        darvo_sig = sig["darvo"]
+        harm = max(harm, sig["harm"])
+        income_harm = max(income_harm, role_inc_harm)
+        disruption_level = max(
+            disruption_level,
+            sig["disruption"] if a.initial_group == "observer" else 0.35 * sig["disruption"],
+        )
+        responsibility_own = max(responsibility_own, own_resp)
+        max_own_error = max(max_own_error, own_err)
+    elif isinstance(cs, dict):
+        voice_resp_sig = clamp(float(cs.get("voice_response", 0.0)))
+        darvo_sig = clamp(float(cs.get("darvo_signal", 0.0)))
     _step_agent_psychology(
         p, a.traits, a.initial_group, a.alignment, a.public_support, a.private_loyalty,
         a.pressure, cfg, harm, income_harm, disruption_level,
         responsibility_own, max_own_error, collective_supported,
+        threat_signal=threat_sig, coverup_signal=coverup_sig, leak_signal=leak_sig,
+        voice_response_signal=voice_resp_sig, darvo_signal=darvo_sig, current_day=cur_day,
         use_v2=use_v2, social_ctx=sctx,
     )
-    if use_v2 and p.get("disengaged") and a.public_support > 0.40:
-        # Küskün seçmen kutbunu terk etmez ama aktif görünür desteğini sessizce geri çeker.
-        a.public_support = round(max(0.38, a.public_support - 0.04), 4)
+    if use_v2:
+        if p.get("disengaged") and a.public_support > 0.40:
+            # Küskün seçmen kutbunu terk etmez ama aktif görünür desteğini sessizce geri çeker.
+            a.public_support = round(max(0.38, a.public_support - 0.04), 4)
+        if p.get("conformist_days", 0) >= 5 and p.get("conformist_internalization", 0.0) >= 0.05:
+            # Uzun süreli sahte kamusal uyum bilişsel çelişkiyi azaltmak için kısmen içselleştirilir (UAB/Kuran).
+            if a.public_support > a.private_loyalty:
+                drift = 0.025 * p["conformist_internalization"] * (a.public_support - a.private_loyalty)
+                a.private_loyalty = round(clamp(a.private_loyalty + drift), 4)
     sim.record("psychology_updated", {
         "agent": a.id, "comfort": p["comfort"], "fear": p["fear"],
         "anger": p["anger"], "repressed_anger": p["repressed_anger"],
@@ -518,6 +733,55 @@ def daily(sim, a, harm: float, income_harm: float, disruption_level: float,
         "effective_drive": p["effective_drive"],
     }, cause)
     return p
+
+
+def preference_divergence_jsd(sim) -> float:
+    """Normalized Jensen-Shannon Divergence in [0, 1] between private and publicly expressed preferences."""
+    if not sim or not getattr(sim, "agents", None):
+        return 0.0
+    priv = {"A": 0.0, "B": 0.0, "S": 0.0}
+    pub = {"A": 0.0, "B": 0.0, "S": 0.0}
+    n = len(sim.agents)
+    for a in sim.agents.values():
+        p = a.behavior.get("psychology") or {}
+        expr = p.get("expression_mode", "open")
+        # 1. Private preference distribution
+        if a.alignment in ("A", "B"):
+            w_priv = clamp(0.25 + 0.75 * float(a.private_loyalty))
+            priv[a.alignment] += w_priv
+            priv["S"] += (1.0 - w_priv)
+        else:
+            priv["S"] += 1.0
+        # 2. Publicly expressed distribution (accounting for preference falsification & silence)
+        pub_pole = a.public_alignment if a.public_alignment in ("A", "B") else "none"
+        if expr in ("self_censored", "disengaged_silence", "exhausted_withdrawal", "functional_exit"):
+            if a.pressure >= 0.20 and pub_pole in ("A", "B") and a.public_support - a.private_loyalty >= 0.15:
+                w_false = clamp(0.65 * float(a.public_support))
+                pub[pub_pole] += w_false
+                pub["S"] += (1.0 - w_false)
+            else:
+                pub["S"] += 1.0
+        elif expr == "guarded" and pub_pole in ("A", "B"):
+            w_guard = clamp(0.42 * float(a.public_support))
+            pub[pub_pole] += w_guard
+            pub["S"] += (1.0 - w_guard)
+        elif pub_pole in ("A", "B"):
+            w_pub = clamp(0.25 + 0.75 * float(a.public_support))
+            pub[pub_pole] += w_pub
+            pub["S"] += (1.0 - w_pub)
+        else:
+            pub["S"] += 1.0
+
+    jsd = 0.0
+    for k in ("A", "B", "S"):
+        pk = priv[k] / n
+        qk = pub[k] / n
+        mk = 0.5 * (pk + qk)
+        if pk > 1e-12 and mk > 1e-12:
+            jsd += 0.5 * pk * math.log(pk / mk)
+        if qk > 1e-12 and mk > 1e-12:
+            jsd += 0.5 * qk * math.log(qk / mk)
+    return round(clamp(math.sqrt(max(0.0, jsd) / math.log(2.0))), 4)
 
 
 def expression_for_agenda(sim, a, approach: str) -> str:
@@ -550,7 +814,8 @@ def expression_for_agenda(sim, a, approach: str) -> str:
     return approach
 
 
-def _scenario_day_signals(tier: str, domain: str, cond: dict, day_no: int):
+def _scenario_day_signals(tier: str, domain: str, cond: dict, day_no: int,
+                          voice_response: float = 0.0, darvo_signal: float = 0.0):
     """Map non-numeric causal conditions of a scenario day to bounded environmental signals."""
     fear_map = {"low": 0.05, "elevated": 0.45, "high": 0.82}
     coverup_map = {"none": 0.05, "moderate": 0.42, "high": 0.78}
@@ -572,6 +837,10 @@ def _scenario_day_signals(tier: str, domain: str, cond: dict, day_no: int):
         if not neglect and day_no >= 8:
             disruption = 0.35
         resp_A = 0.60 + (0.22 if leak else 0.0) - (0.10 if scapegoat else 0.0)
+    # Şeffaf onarım / Söz'e yanıt verildiğinde örtbas ve ikincil tehdit düşer
+    if not neglect and coverup <= 0.08 and threat <= 0.08 and tier != "ordinary":
+        voice_response = max(voice_response, 0.60)
+        harm *= 0.65
     return {
         "harm": clamp(harm),
         "disruption": clamp(disruption),
@@ -580,6 +849,8 @@ def _scenario_day_signals(tier: str, domain: str, cond: dict, day_no: int):
         "leak": leak,
         "scapegoat": scapegoat,
         "resp_A": clamp(resp_A),
+        "voice_response": clamp(voice_response),
+        "darvo": clamp(darvo_signal),
     }
 
 
@@ -639,8 +910,13 @@ def _describe_group_psychology_tr(gid: str, stats: dict) -> str:
         return (f"Başlangıç konforu düşük (%{konfor}); kitlenin %{asan}'inde sabır eşiği kırıldı, "
                 f"öfke (%{ofke}) ve yerel boykot/itiraz arayışı yükseliyor.{extra}")
     if alarm >= 60:
+        ost_note = (f" İfşa sonrası sosyal dışlanma yükü (%{stats.get('dislanma_yuku', 0)}) yükseldi."
+                    if stats.get("dislanma_yuku", 0) >= 20 else "")
         return (f"İki kutuptan toplanan çelişkiler epistemik alarm eşiğini (%{alarm}) aştı; "
-                f"yaklaşan ikincil riske karşı kanıta dayalı 'Teknik Uyarı' konumuna geçti.")
+                f"yaklaşan ikincil riske karşı kanıta dayalı 'Teknik Uyarı' konumuna geçti.{ost_note}")
+    if stats.get("dislanma_yuku", 0) >= 35:
+        return (f"Teknik uyarı sonrasında kurumsal karalama ve dışlanma yükü (%{stats['dislanma_yuku']}) "
+                f"taşımak zorunda kaldı; öngörülü direnç sayesinde epistemik çizgisini koruyor.")
     return (f"Propaganda ve sürü etkisine kapalı (Konfor/Mesafe %{konfor}, Korku %{korku}); "
             f"yöneticilerin örtbas ve medyanın algı tiyatrosunu dışarıdan soğukkanlılıkla çözümlüyor.")
 
@@ -654,6 +930,7 @@ def _aggregate_records(records):
     expr = Counter(r["expression_mode"] for r in records).most_common(1)[0][0]
     breached = round(sum(1 for r in records if r["stressor"] > r["tolerance_threshold"]) / n * 100)
     disengaged_pct = round(sum(1 for r in records if r.get("disengaged")) / n * 100)
+    func_exit_pct = round(sum(1 for r in records if r.get("functional_exit")) / n * 100)
     blame_shift_pct = round(sum(1 for r in records if r.get("blame_shifted")) / n * 100)
     wb_pct = round(sum(1 for r in records if r.get("whistleblower_ready")) / n * 100)
     return {
@@ -672,6 +949,12 @@ def _aggregate_records(records):
         "goreli_yoksunluk": avg("relative_deprivation"),
         "dayanisma_kapasitesi": avg("solidarity_capacity", 1.0),
         "epistemik_alarm": avg("epistemic_alarm"),
+        "icsellestirme": avg("conformist_internalization"),
+        "elit_rasyonalizasyon": avg("motivated_framing"),
+        "cikis_egilimi": avg("exit_pressure"),
+        "sessiz_cikis_oran": func_exit_pct,
+        "dislanma_yuku": avg("ostracism"),
+        "kimlik_kopusu": avg("identity_dislocation"),
         "kuskun_oran": disengaged_pct,
         "suc_kaydirma_oran": blame_shift_pct,
         "uyari_hazir_oran": wb_pct,
@@ -806,12 +1089,13 @@ def group_summary(sim, chain: dict | None = None, upto_day: int | None = None) -
             insiders = [p for _, p in items if p.get("conscience_insider")]
             agg["ic_catlak_sayisi"] = len(insiders)
             agg["ic_sizinti_egilimi"] = round(sum(p["anger"] + p["repressed_anger"] for p in insiders) / len(insiders) * 100) if insiders else 0
+            agg["ic_kimlik_kopusu"] = round(sum(p.get("identity_dislocation", 0.0) for p in insiders) / len(insiders) * 100) if insiders else 0
         agg["yorum"] = _describe_group_psychology_tr(gid, agg) if agg else ""
         by_group[gid] = agg
     return by_group
 
 
-def social_mind_overview(psych_by_role: dict) -> dict:
+def social_mind_overview(psych_by_role: dict, sim=None) -> dict:
     """High-level macro-psychological indicators across all 6 groups for operator & UI radar."""
     if not psych_by_role:
         return {}
@@ -822,6 +1106,7 @@ def social_mind_overview(psych_by_role: dict) -> dict:
     di = psych_by_role.get("discontented", {})
     ob = psych_by_role.get("observer", {})
     nt = (we.get("alt_kanatlar") or {}).get("neutral_commercial", {})
+    pro_a = (we.get("alt_kanatlar") or {}).get("pro_A", {})
 
     kuskun_toplam = round((pa.get("kuskun_oran", 0) * 0.30 + op.get("kuskun_oran", 0) * 0.30) / 0.60)
     sahte_huzur = round(max(op.get("cogulcu_cehalet", 0), op.get("bastirilmis_ofke", 0), nt.get("korku", 0)))
@@ -830,6 +1115,15 @@ def social_mind_overview(psych_by_role: dict) -> dict:
         + 0.32 * op.get("bastirilmis_ofke", 0)
         + 0.30 * di.get("goreli_yoksunluk", 0)
     )
+    jsd_pct = (round(preference_divergence_jsd(sim) * 100)
+               if sim is not None else round(0.55 * sahte_huzur + 0.25 * kuskun_toplam))
+    cikis_egilimi = round(
+        0.35 * we.get("cikis_egilimi", 0)
+        + 0.25 * ob.get("cikis_egilimi", 0)
+        + 0.20 * op.get("cikis_egilimi", 0)
+        + 0.20 * di.get("cikis_egilimi", 0)
+    )
+    ifsaci_dislanma = max(ob.get("dislanma_yuku", 0), au.get("ic_kimlik_kopusu", 0))
     return {
         "kuskun_secmen_orani": kuskun_toplam,
         "iktidar_araci_guveni": pa.get("araci_guveni", 75),
@@ -843,6 +1137,11 @@ def social_mind_overview(psych_by_role: dict) -> dict:
         "ic_sizinti_egilimi": au.get("ic_sizinti_egilimi", 0),
         "sahte_uyum_riski": min(100, sahte_huzur),
         "yay_bosalma_potansiyeli": min(100, patlama_potansiyeli),
+        "tercih_carpikligi_jsd": min(100, jsd_pct),
+        "konformist_icsellestirme": max(op.get("icsellestirme", 0), we.get("icsellestirme", 0)),
+        "elit_karsi_rasyonalizasyon": max(pro_a.get("elit_rasyonalizasyon", 0), pa.get("elit_rasyonalizasyon", 0)),
+        "islevsel_cikis_egilimi": min(100, cikis_egilimi),
+        "ifsaci_dislanma_yuku": min(100, ifsaci_dislanma),
     }
 
 

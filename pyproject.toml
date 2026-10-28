@@ -15,4 +15,12 @@ people1000 = "society.cli:main"
 packages = ["society"]
 
 [tool.setuptools.package-data]
-society = ["behavior.json", "behavior-v2.json", "behavior-v3.json", "behavior-v31.json", "behavior-v32.json"]
+society = [
+    "behavior.json",
+    "behavior-v2.json",
+    "behavior-v3.json",
+    "behavior-v31.json",
+    "behavior-v32.json",
+    "behavior-v33.json",
+    "behavior-v34.json",
+]

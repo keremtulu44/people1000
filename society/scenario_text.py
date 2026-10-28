@@ -63,6 +63,7 @@ _SUMMARY = re.compile(
     r'|son\s*soz|genel\s*bakis|genel\s*durum|nihai\s*degerlendirme)',
     re.IGNORECASE)
 _SUMMARY_COLON = re.compile(r'^([^:：]{1,70}?)\s*[:：]\s*(.*)$')
+_CONSTITUTIONAL_TAG = re.compile(r'\[ANAYASAL_GERIBESLEME\s*:\s*\{.*?\}\s*\]', re.IGNORECASE | re.DOTALL)
 
 
 def _norm(text):
@@ -258,7 +259,8 @@ def analyze_scenario(text, legacy=False):
              'karakter': 0}
     if not isinstance(text, str) or not text.strip():
         return empty
-    lines = text.splitlines()
+    clean_text = _CONSTITUTIONAL_TAG.sub('', text)
+    lines = clean_text.splitlines()
     items = [{'raw': ln, 'cand': _classify(ln)} for ln in lines]
 
     group_cands = [(i, it['cand']) for i, it in enumerate(items)
