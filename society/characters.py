@@ -44,8 +44,11 @@ def initialize(sim):
 
 
 def limit(sim,a,kind,default):
-    if not enabled(sim) or a.initial_group!='observer':return default
-    return min(default,sim.behavior_profile['character_dynamics'][f'observer_{kind}_limit'])
+    if enabled(sim) and a.initial_group=='observer':
+        return min(default,sim.behavior_profile['character_dynamics'][f'observer_{kind}_limit'])
+    if kind=='communication' and a.initial_group=='wealthy' and sim.behavior_profile.get('psychology_model')=='affective-v1':
+        return max(default,6)
+    return default
 
 
 def receive(sim,a,m,sender):
@@ -175,7 +178,14 @@ def policy(obs):
     """Role-specific action selection. Always return an auditable reason."""
     if 'character' not in obs:return None,None
     s=obs['character'];day=obs['time']//1440;cfg=obs['character_config'];group=obs['group']
+    psych = obs.get('psychology')
     if group=='observer':
+        if (psych is not None and psych.get('whistleblower_ready') and obs['contacts']
+                and obs['budgets_used']['communication']<obs['budget_limits']['communication']):
+            return ({'type':'send','target':obs['contacts'][0],'topic':'technical_warning',
+                     'claim':round(100*psych.get('epistemic_alarm',.7)),
+                     'text':'Kanıta dayalı teknik risk ve ihmal uyarısı'},
+                    'observer_epistemic_warning')
         if s['last_study_day']!=day:return {'type':'self_study'},'self_development'
         return {'type':'wait'},'inward_focus_already_studied'
     if group=='authority':
@@ -203,9 +213,20 @@ def policy(obs):
         return {'type':'wait'},'no_affordable_material_rivalry' if s['rival_actions'] else 'no_affordable_local_opportunity'
     if obs['public_support']>0 and obs['private_loyalty']<.5 and s['verified_failures']:
         return {'type':'withdraw_support'},'withdraw_after_personally_failed_forecast'
+    psych = obs.get('psychology')
+    if (psych is not None and obs['public_support']>0 and obs['private_loyalty']<.5
+            and psych.get('repressed_anger',0.)>=.38 and psych.get('fear',0.)<.30):
+        return {'type':'withdraw_support'},'withdraw_after_repressed_disillusionment'
     # Restore only after a personally checked recovery, not because of crowd size.
     if obs['public_support']==0 and obs['private_loyalty']>=.5 and s['verified_recoveries'] and obs['alignment'] in ('A','B'):
         return {'type':'declare_support','value':obs['private_loyalty']},'support_recovery_from_personal_evidence'
+    if psych is not None:
+        if psych.get('expression_mode')=='self_censored':
+            return None,'self_censored_under_fear'
+        if psych.get('expression_mode')=='disengaged_silence':
+            return None,'disengaged_silent_exit'
+        if psych.get('expression_mode')=='exhausted_withdrawal':
+            return None,'exhausted_learned_helplessness'
     from . import collective
     for gid,g in obs['social']['known_gatherings'].items():
         if g['organizer']==obs['agent_id'] and obs['time']<g['start']:

@@ -72,12 +72,30 @@ def _norm(text):
                     'ç': 'c', 'â': 'a', 'î': 'i', 'û': 'u'}.get(c, c) for c in s)
 
 
-def _group_for(title):
+def _group_for(title, digit=None):
     low = _norm(title)
+    # Tabi niteleyicileri ("yoneticilere bagimli") ana baslik kimligi sanma.
+    scrubbed = re.sub(r'\b(?:yoneticilere|otoriteye)\s+bagimli\b', ' ', low)
+    matches = []
     for gid, words in KEYWORDS.items():
-        if any(word in low for word in words):
-            return gid
-    return None
+        matched_words = [w for w in words if w in scrubbed]
+        if matched_words:
+            best_len = max(len(w) for w in matched_words)
+            first_pos = min(scrubbed.find(w) for w in matched_words)
+            matches.append((gid, best_len, first_pos))
+    if not matches:
+        for gid, words in KEYWORDS.items():
+            if any(word in low for word in words):
+                matches.append((gid, 1, 0))
+    if not matches:
+        return None
+    if len(matches) == 1:
+        return matches[0][0]
+    matched_ids = {m[0] for m in matches}
+    if digit and 1 <= digit <= len(GROUPS) and GROUPS[digit - 1] in matched_ids:
+        return GROUPS[digit - 1]
+    matches.sort(key=lambda item: (-item[1], item[2]))
+    return matches[0][0]
 
 
 def _explicit_id(title):
@@ -136,7 +154,7 @@ def _classify(raw):
     digit = int(numbered.group(1)) if numbered else None
     title = numbered.group(2) if numbered else head
     explicit = _explicit_id(head)
-    groupish = bool(explicit or _group_for(title) or _group_for(head))
+    groupish = bool(explicit or _group_for(title, digit) or _group_for(head, digit))
 
     summary = _summary_parts(head) or (None if bold else _summary_parts(clean))
     if summary and not groupish:
@@ -154,7 +172,7 @@ def _classify(raw):
     gid = explicit
     by_keyword = False
     if not gid:
-        gid = _group_for(title) or _group_for(head)
+        gid = _group_for(title, digit) or _group_for(head, digit)
         by_keyword = bool(gid)
 
     confidence = 'strong'

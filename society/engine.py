@@ -13,7 +13,7 @@ from pathlib import Path
 import random
 from typing import Protocol
 
-from . import dynamics, collective, characters, agenda
+from . import dynamics, collective, characters, agenda, psychology
 from .behavior import load_profile, sample_traits, validate_profile
 
 GROUPS = {name: group["population_percent"] for name, group in load_profile()["groups"].items()}
@@ -135,6 +135,8 @@ class Simulation:
         if characters.enabled(self):
             characters.initialize(self)
         if agenda.enabled(self):agenda.initialize(self)
+        if psychology.enabled(self):
+            psychology.initialize(self)
         self.schedule(0, "daily", {})
 
     def _id(self, prefix):
@@ -142,21 +144,31 @@ class Simulation:
         return f"{prefix}{self.seq:08d}"
 
     def _populate(self):
+        psych_on = psychology.enabled(self)
         for group, settings in self.behavior_profile["groups"].items():
             fraction = settings["population_percent"]
-            for _ in range(self.config.population * fraction // 100):
+            count = self.config.population * fraction // 100
+            for idx in range(count):
                 aid = f"A{len(self.agents) + 1:04d}"
-                pole = "B" if group == "opposition" else (
-                    "none" if group in {"observer", "discontented"} else self.rng.choice(["A", "B"]))
-                if group == "power_aligned":
-                    pole = "A"
-                traits = sample_traits(self.rng, settings)
-                wealthy = group in {"wealthy", "authority"}
+                subwing = None
+                if psych_on and group == "wealthy":
+                    subwing = psychology.wealthy_subwing(idx)
+                    pole = psychology.pole_for_wealthy_subwing(subwing)
+                else:
+                    pole = "B" if group == "opposition" else (
+                        "none" if group in {"observer", "discontented"} else self.rng.choice(["A", "B"]))
+                    if group == "power_aligned":
+                        pole = "A"
+                traits = sample_traits(self.rng, settings, subwing=subwing)
+                is_wealthy = group in {"wealthy", "authority"}
+                perms = ["pressure", "revoke_contract"] if group == "authority" else (
+                    ["amplify"] if psych_on and group == "wealthy" else [])
                 self.agents[aid] = Agent(aid, group, pole,
-                    self.rng.uniform(200, 400) if wealthy else self.rng.uniform(20, 80),
-                    15.0 if wealthy else 5.0, 4.0, traits, deepcopy(traits),
-                    ["pressure", "revoke_contract"] if group == "authority" else [])
+                    self.rng.uniform(200, 400) if is_wealthy else self.rng.uniform(20, 80),
+                    15.0 if is_wealthy else 5.0, 4.0, traits, deepcopy(traits), perms)
         leaders = [a.id for a in self.agents.values() if a.initial_group == "authority"]
+        leaders_a = [x for x in leaders if self.agents[x].alignment == "A"] or leaders
+        leaders_b = [x for x in leaders if self.agents[x].alignment == "B"] or leaders
         wealthy = [a.id for a in self.agents.values() if a.initial_group == "wealthy"]
         for leader in leaders:
             a = self.agents[leader]
@@ -164,26 +176,121 @@ class Simulation:
                 "allied_authorities": [x for x in leaders if x != leader and self.agents[x].alignment == a.alignment],
                 "conflicting_authorities": [x for x in leaders if self.agents[x].alignment != a.alignment]}
         ids = list(self.agents)
-        for a in self.agents.values():
-            degree = 1 if a.initial_group == "observer" else (3 if a.initial_group == "discontented" else 5)
-            for target in self.rng.sample([x for x in ids if x != a.id], degree):
-                self.edges.append({"source": a.id, "target": target, "type": "close",
-                                   "trust": self.rng.uniform(.3, .9), "latency": self.rng.randint(15, 180)})
-            if a.initial_group != "observer":
-                matches = [x for x in leaders if self.agents[x].alignment == a.alignment]
-                leader = self.rng.choice(matches or leaders)
-                # source -> target is information-flow direction, not who follows whom.
-                if not self.edge(leader, a.id) and leader != a.id:
-                    self.edges.append({"source": leader, "target": a.id, "type": "authority",
-                                       "trust": self.rng.uniform(.6, .95), "latency": self.rng.randint(5, 90)})
-            if a.initial_group == "wealthy":
-                a.authority_dependency = self.rng.choice(leaders)
-            if a.initial_group not in {"wealthy", "authority"}:
-                a.employer = self.rng.choice(wealthy)
+        if not psych_on:
+            for a in self.agents.values():
+                degree = 1 if a.initial_group == "observer" else (3 if a.initial_group == "discontented" else 5)
+                for target in self.rng.sample([x for x in ids if x != a.id], degree):
+                    self.edges.append({"source": a.id, "target": target, "type": "close",
+                                       "trust": self.rng.uniform(.3, .9), "latency": self.rng.randint(15, 180)})
+                if a.initial_group != "observer":
+                    matches = [x for x in leaders if self.agents[x].alignment == a.alignment]
+                    leader = self.rng.choice(matches or leaders)
+                    if not self.edge(leader, a.id) and leader != a.id:
+                        self.edges.append({"source": leader, "target": a.id, "type": "authority",
+                                           "trust": self.rng.uniform(.6, .95), "latency": self.rng.randint(5, 90)})
+                if a.initial_group == "wealthy":
+                    a.authority_dependency = self.rng.choice(leaders)
+                if a.initial_group not in {"wealthy", "authority"}:
+                    a.employer = self.rng.choice(wealthy)
+        else:
+            # v3.4: Yankı odaları (homophily), sosyal medya yayın erişimi ve gözlemci izleme ağları
+            wealthy_idx_map = {wid: idx for idx, wid in enumerate(wealthy)}
+            for a in self.agents.values():
+                others = [x for x in ids if x != a.id and self.agents[x].initial_group != "observer"]
+                if a.initial_group in ("power_aligned", "opposition"):
+                    same_pole = [x for x in others if self.agents[x].alignment == a.alignment]
+                    diff_pole = [x for x in others if self.agents[x].alignment != a.alignment]
+                    in_picks = self.rng.sample(same_pole, min(4, len(same_pole)))
+                    out_picks = self.rng.sample(diff_pole, min(1, len(diff_pole)))
+                    for target in in_picks:
+                        self.edges.append({"source": a.id, "target": target, "type": "close",
+                                           "trust": self.rng.uniform(.58, .92), "latency": self.rng.randint(15, 120)})
+                    for target in out_picks:
+                        self.edges.append({"source": a.id, "target": target, "type": "close",
+                                           "trust": self.rng.uniform(.25, .52), "latency": self.rng.randint(45, 180)})
+                elif a.initial_group == "discontented":
+                    solidarity = [x for x in others if self.agents[x].initial_group in ("discontented", "opposition")]
+                    rest = [x for x in others if x not in solidarity]
+                    for target in self.rng.sample(solidarity, min(2, len(solidarity))):
+                        self.edges.append({"source": a.id, "target": target, "type": "close",
+                                           "trust": self.rng.uniform(.55, .88), "latency": self.rng.randint(15, 120)})
+                    for target in self.rng.sample(rest, min(1, len(rest))):
+                        self.edges.append({"source": a.id, "target": target, "type": "close",
+                                           "trust": self.rng.uniform(.30, .60), "latency": self.rng.randint(30, 180)})
+                elif a.initial_group == "observer":
+                    # Gözlemci dışarıya az konuşur (1 bağ), ama iki kutbu ve medyayı dengeli izler (6 gelen bağ)
+                    target = self.rng.choice(others)
+                    self.edges.append({"source": a.id, "target": target, "type": "close",
+                                       "trust": self.rng.uniform(.35, .60), "latency": self.rng.randint(30, 150)})
+                    pro_a_w = [w for w in wealthy if psychology.wealthy_subwing(wealthy_idx_map[w]) == "pro_A"]
+                    pro_b_w = [w for w in wealthy if psychology.wealthy_subwing(wealthy_idx_map[w]) == "pro_B"]
+                    citizens_a = [x for x in others if self.agents[x].initial_group == "power_aligned"]
+                    citizens_b = [x for x in others if self.agents[x].initial_group in ("opposition", "discontented")]
+                    monitors = [
+                        self.rng.choice(leaders_a),
+                        self.rng.choice(leaders_b),
+                        self.rng.choice(pro_a_w or wealthy),
+                        self.rng.choice(pro_b_w or wealthy),
+                        self.rng.choice(citizens_a or others),
+                        self.rng.choice(citizens_b or others),
+                    ]
+                    for src in dict.fromkeys(monitors):
+                        if src != a.id and not self.edge(src, a.id):
+                            self.edges.append({"source": src, "target": a.id, "type": "monitor",
+                                               "trust": self.rng.uniform(.40, .60), "latency": self.rng.randint(10, 60)})
+                else:
+                    for target in self.rng.sample(others, min(5, len(others))):
+                        self.edges.append({"source": a.id, "target": target, "type": "close",
+                                           "trust": self.rng.uniform(.40, .85), "latency": self.rng.randint(15, 150)})
+
+                if a.initial_group != "observer":
+                    matches = [x for x in leaders if self.agents[x].alignment == a.alignment]
+                    leader = self.rng.choice(matches or leaders)
+                    if not self.edge(leader, a.id) and leader != a.id:
+                        self.edges.append({"source": leader, "target": a.id, "type": "authority",
+                                           "trust": self.rng.uniform(.6, .95), "latency": self.rng.randint(5, 90)})
+
+                if a.initial_group == "wealthy":
+                    sw = psychology.wealthy_subwing(wealthy_idx_map[a.id])
+                    # İktidar ve düzen sopası: A yanlısı ve Tarafsız/Ticari sermaye A otoritesine bağımlıdır;
+                    # B yanlısı medyanın da düzenleyici olarak yarısı A otoritesi denetimindedir.
+                    if sw in ("pro_A", "neutral_commercial"):
+                        a.authority_dependency = self.rng.choice(leaders_a)
+                    else:
+                        a.authority_dependency = self.rng.choice(leaders_a if wealthy_idx_map[a.id] % 2 == 0 else leaders_b)
+                    # Sosyal medya etki ekibi yayın ağı (audience / media edges)
+                    if sw == "pro_A":
+                        pool = [x for x in others if x != a.id and self.agents[x].initial_group in ("power_aligned", "discontented", "wealthy")]
+                    elif sw == "pro_B":
+                        pool = [x for x in others if x != a.id and self.agents[x].initial_group in ("opposition", "discontented", "wealthy")]
+                    else:
+                        pool = [x for x in others if x != a.id]
+                    for follower in self.rng.sample(pool, min(12, len(pool))):
+                        if not self.edge(a.id, follower):
+                            trust_lo, trust_hi = (.50, .82) if self.agents[follower].alignment == a.alignment and a.alignment in ("A", "B") else (.28, .58)
+                            self.edges.append({"source": a.id, "target": follower, "type": "media",
+                                               "trust": self.rng.uniform(trust_lo, trust_hi), "latency": self.rng.randint(5, 45)})
+
+                if a.initial_group not in {"wealthy", "authority"}:
+                    if a.initial_group == "power_aligned":
+                        pref = [w for w in wealthy if psychology.wealthy_subwing(wealthy_idx_map[w]) in ("pro_A", "neutral_commercial")]
+                    elif a.initial_group == "opposition":
+                        pref = [w for w in wealthy if psychology.wealthy_subwing(wealthy_idx_map[w]) in ("pro_B", "neutral_commercial")]
+                    else:
+                        pref = wealthy
+                    a.employer = self.rng.choice(pref or wealthy)
 
     def _initialize_behavior(self):
+        wealthy_idx = 0
+        psych_on = psychology.enabled(self)
         for a in self.agents.values():
+            subwing = None
+            if psych_on and a.initial_group == "wealthy":
+                subwing = psychology.wealthy_subwing(wealthy_idx)
+                wealthy_idx += 1
             if a.behavior:
+                if subwing and "subwing" not in a.behavior:
+                    a.behavior["subwing"] = subwing
                 continue
             known = {}
             # Initial public affiliations of directly connected people are part of
@@ -195,6 +302,8 @@ class Simulation:
                     known[other] = {"pole": person.public_alignment if person.public_alignment != "none" else person.alignment,
                                     "group": person.initial_group, "trust": edge["trust"]}
             dynamics.initialize(a, known)
+            if subwing:
+                a.behavior["subwing"] = subwing
             if a.public_alignment == "none":
                 a.public_alignment = a.alignment
 
@@ -299,6 +408,8 @@ class Simulation:
             result["agenda"]=deepcopy(agenda.state(a))
             result["allowed_actions"].extend(agenda.ACTIONS)
             result["untrusted_data_fields"].extend(["agenda.claims","agenda.suggestion"])
+        if psychology.enabled(self):
+            result["psychology"] = deepcopy(psychology.state(a))
         return result
 
     def propose(self, aid, proposal, cause=None):
@@ -340,6 +451,34 @@ class Simulation:
             edge = self.edge(a.id, p["target"])
             self.schedule(self.time + edge["latency"], "delivery",
                           {"message_id": mid, "sender": a.id, "target": p["target"]}, did)
+        elif kind == "amplify":
+            a.used["communication"] += 1
+            if "message_id" in p and p["message_id"] is not None:
+                mid = p["message_id"]
+            else:
+                mid = self._id("M")
+                self.messages[mid] = {
+                    "id": mid, "original_source": a.id, "created_at": self.time,
+                    "source_group": a.initial_group,
+                    "source_alignment": a.public_alignment if collective.enabled(self) else a.alignment,
+                    "text": p["text"], "topic": p.get("topic", "general"),
+                    "claim": p.get("claim"), "audience": None,
+                }
+            media_edges = [e for e in self.edges if e["source"] == a.id and e["type"] == "media"]
+            close_edges = [e for e in self.edges if e["source"] == a.id and e["type"] != "media"]
+            chosen_edges = (media_edges + close_edges)[:12]
+            scope = self.messages[mid].get("audience")
+            delivered_targets = []
+            for edge in chosen_edges:
+                tgt = edge["target"]
+                if scope is not None and tgt not in scope:
+                    continue
+                delivered_targets.append(tgt)
+                self.schedule(self.time + edge["latency"], "delivery",
+                              {"message_id": mid, "sender": a.id, "target": tgt}, did)
+            self.record("media_amplified", {"actor": a.id, "message_id": mid,
+                                            "subwing": a.behavior.get("subwing"),
+                                            "reach_count": len(delivered_targets)}, did)
         elif kind in agenda.ACTIONS:
             agenda.apply(self,a,p,did)
         elif kind in characters.ACTIONS:
@@ -359,6 +498,11 @@ class Simulation:
             a.public_support = max(0., a.public_support - .02)
             target.memories.append({"event_id": did, "learned_at": self.time, "type": "direct_experience", "actor": a.id, "pressure": .2})
             self.record("pressure_experienced", {"target": target.id, "actor": a.id}, did)
+            if psychology.enabled(self):
+                psychology.apply_stimulus(self, target, "pressure", 0.5, did)
+                if target.initial_group == "wealthy":
+                    ec = target.behavior.setdefault("economic_chain", {"contract_factor": 1.0, "boycott_penalty": 0.0, "employer_cut": 0.0})
+                    ec["contract_factor"] = max(0.65, ec["contract_factor"] - 0.12)
         elif kind == "revoke_contract":
             a.savings -= 2
             target = self.agents[p["target"]]
@@ -371,6 +515,11 @@ class Simulation:
             from . import appraisal
             if appraisal.enabled(self):
                 appraisal.direct_notice(self,target,a.id,a.public_alignment,loss,did)
+            if psychology.enabled(self):
+                psychology.apply_stimulus(self, target, "contract_loss", min(1.0, loss / max(1.0, target.income + loss)), did)
+                if target.initial_group == "wealthy":
+                    ec = target.behavior.setdefault("economic_chain", {"contract_factor": 1.0, "boycott_penalty": 0.0, "employer_cut": 0.0})
+                    ec["contract_factor"] = max(0.35, ec["contract_factor"] - 0.28)
         if characters.enabled(self):
             local=characters.state(a)
             if kind=="send" and p.get("gathering_id") is not None:
@@ -394,6 +543,8 @@ class Simulation:
             return "invalid proposal or actor"
         kind = p.get("type")
         allowed = {"wait", "send", "relay", "declare_support", "pressure", "revoke_contract"}
+        if psychology.enabled(self):
+            allowed.add("amplify")
         if collective.enabled(self):
             allowed.update(collective.ACTIONS)
         if characters.enabled(self):allowed.update(characters.ACTIONS)
@@ -407,6 +558,28 @@ class Simulation:
         if kind in characters.ACTIONS:return characters.validate(self,a,p)
         if kind in collective.ACTIONS:
             return collective.validate(self,a,p)
+        if kind == "amplify":
+            if "amplify" not in a.permissions:
+                return "permission denied"
+            if used["communication"] >= characters.limit(self, a, "communication", self.config.communication_budget):
+                return "communication budget exhausted"
+            if psychology.enabled(self) and psychology.state(a).get("expression_mode") == "self_censored":
+                return "self_censored_under_fear"
+            if not any(e["source"] == a.id for e in self.edges):
+                return "no communication path"
+            if p.get("message_id") is not None:
+                mid = p.get("message_id")
+                if not isinstance(mid, str) or mid not in self.messages:
+                    return "message not learned"
+                if not any(m.get("message_id") == mid for m in a.memories):
+                    return "message not learned"
+            else:
+                if not isinstance(p.get("topic", "general"), str) or not 0 < len(p.get("topic", "general")) <= 200:
+                    return "invalid topic"
+                if not isinstance(p.get("text"), str) or not 0 < len(p["text"]) <= 2000:
+                    return "invalid message text"
+                if p.get("claim") is not None and (type(p["claim"]) not in (int, float) or not 0 <= p["claim"] <= 100):
+                    return "invalid claim"
         if kind in {"send", "relay"}:
             if used["communication"] >= characters.limit(self,a,"communication",self.config.communication_budget):
                 return "communication budget exhausted"
@@ -487,15 +660,61 @@ class Simulation:
             if day <= self.last_daily_day:
                 return False
             self.last_daily_day = day
+            employer_health = {}
+            if psychology.enabled(self):
+                # Halk boykotu veya aktif protesto buluşmaları ticari/zengin işverenlerin cirosunu vurur
+                open_attendees = set()
+                if collective.enabled(self) and hasattr(self, "gatherings"):
+                    for g in self.gatherings.values():
+                        if g["start"] <= self.time < g["end"]:
+                            open_attendees.update(g.get("participants", ()))
+                boycott_signal = float(self.protocol.get("active_boycott", 0.0))
+                crowd_ratio = len(open_attendees) / max(1, len(self.agents))
+                boycott_level = min(0.35, max(boycott_signal, crowd_ratio * 1.6 if crowd_ratio >= 0.05 else 0.0))
+                for w in self.agents.values():
+                    if w.initial_group != "wealthy":
+                        continue
+                    ec = w.behavior.setdefault("economic_chain", {"contract_factor": 1.0, "boycott_penalty": 0.0, "employer_cut": 0.0})
+                    sw = w.behavior.get("subwing")
+                    if boycott_level > 0:
+                        weight = 1.0 if sw in ("pro_A", "neutral_commercial") else 0.55
+                        ec["boycott_penalty"] = min(0.35, boycott_level * weight)
+                    else:
+                        ec["boycott_penalty"] = 0.0 if ec["boycott_penalty"] < 0.03 else ec["boycott_penalty"] * 0.55
+                    health = max(0.25, min(1.0, ec["contract_factor"] * (1.0 - ec["boycott_penalty"])))
+                    employer_health[w.id] = health
+                    # Yaptırım olmayan sakin günlerde sözleşme çarpanı kademeli toparlanır
+                    if boycott_level == 0 and ec["contract_factor"] < 1.0:
+                        ec["contract_factor"] = min(1.0, ec["contract_factor"] + 0.03)
+                # Tek günlük boykot sinyali işlendikten sonra yumuşar
+                if boycott_signal > 0:
+                    self.protocol["active_boycott"] = 0.0 if boycott_signal < 0.06 else round(boycott_signal * 0.55, 4)
+
             for a in self.agents.values():
                 self._refresh_budget(a)
                 expense = a.expense * self.price
-                a.savings += a.income - expense
-                loss = max(0., expense - a.expense)
+                eff_income = a.income
+                emp_cut = 0.0
+                if employer_health:
+                    ec = a.behavior.setdefault("economic_chain", {"contract_factor": 1.0, "boycott_penalty": 0.0, "employer_cut": 0.0})
+                    if a.initial_group == "wealthy" and a.id in employer_health:
+                        h = employer_health[a.id]
+                        if h < 0.9999:
+                            emp_cut = round(1.0 - h, 4)
+                            eff_income = a.income * h
+                    elif a.employer in employer_health and employer_health[a.employer] < 0.98:
+                        emp_cut = round(0.65 * (1.0 - employer_health[a.employer]), 4)
+                        eff_income = a.income * (1.0 - emp_cut)
+                    ec["employer_cut"] = emp_cut
+                a.savings += eff_income - expense
+                loss = max(0., expense - a.expense) + max(0., a.income - eff_income)
                 a.losses += loss
                 # Personal expense is observable; global prices/power are not injected.
-                a.memories.append({"event_id": eid, "type": "direct_experience",
-                                   "learned_at": self.time, "expense": expense, "income": a.income})
+                mem = {"event_id": eid, "type": "direct_experience",
+                       "learned_at": self.time, "expense": expense, "income": eff_income}
+                if emp_cut > 0:
+                    mem["employer_cut"] = emp_cut
+                a.memories.append(mem)
                 self.schedule(self.time, "read", {"target": a.id}, eid)
                 self.schedule(self.time, "behavior", {"target": a.id, "expense": expense}, eid)
             self.schedule(self.time + 1439, "day_end", {}, eid)
@@ -699,6 +918,9 @@ class Simulation:
             obj.__dict__.setdefault("agenda_runtime",{"cache":{},"requests":[],"daily_counts":{},"network_requests":0})
         if characters.enabled(obj):
             for a in obj.agents.values():characters.state(a)
+        if psychology.enabled(obj):
+            for a in obj.agents.values():
+                psychology.state(a)
         return obj
 
     @staticmethod
@@ -714,6 +936,8 @@ class Simulation:
             for field in ("traits", "initial_traits"):
                 for name, bounds in settings["parameters"].items():
                     a[field].setdefault(name, a[field]["resistance"] if name == "core_orientation_resistance" else sum(bounds) / 2)
+                for name, bounds in settings.get("psychology", {}).items():
+                    a[field].setdefault(name, sum(bounds) / 2)
             a["budget_day"] = data["time"] // 1440
             for item in a["inbox"]:
                 item.setdefault("delivered_at", data["time"])
