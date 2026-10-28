@@ -94,7 +94,7 @@ def exp1_v33_vs_v34_and_scale(seeds=(44, 101, 202)):
         }
 
     v33 = behavior.load_v33_profile()
-    v34 = behavior.load_profile()
+    v34 = behavior.load_v34_profile()
     runs_v33 = [run_one(v33, s, pop=100, days=25) for s in seeds]
     runs_v34 = [run_one(v34, s, pop=100, days=25) for s in seeds]
     scale_1000 = run_one(v34, 44, pop=1000, days=15)
@@ -384,10 +384,11 @@ def exp6_cumulative_institutional_memory():
 
 
 def run_all_studies(output_path: Path | str = Path("reports/psychology-research-v34.json")) -> dict:
+    v34_profile = behavior.load_v34_profile()
     results = {
         "study": "People1000 v3.4 Affective Psychology & Social Topology Empirical Research",
-        "behavior_version": behavior.load_profile()["behavior_version"],
-        "psychology_model": behavior.load_profile()["psychology_model"],
+        "behavior_version": v34_profile["behavior_version"],
+        "psychology_model": v34_profile["psychology_model"],
         "experiments": {
             "exp1_v33_vs_v34_and_1000_scale": exp1_v33_vs_v34_and_scale(),
             "exp2_preference_falsification_and_rebound": exp2_preference_falsification_and_rebound(),

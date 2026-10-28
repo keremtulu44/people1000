@@ -462,8 +462,10 @@ class Simulation:
                     "source_group": a.initial_group,
                     "source_alignment": a.public_alignment if collective.enabled(self) else a.alignment,
                     "text": p["text"], "topic": p.get("topic", "general"),
-                    "claim": p.get("claim"), "audience": None,
+                    "claim": p.get("claim"), "audience": p.get("audience"),
                 }
+                if p.get("agenda_id") is not None:
+                    agenda.attach(self, a, p, self.messages[mid])
             media_edges = [e for e in self.edges if e["source"] == a.id and e["type"] == "media"]
             close_edges = [e for e in self.edges if e["source"] == a.id and e["type"] != "media"]
             chosen_edges = (media_edges + close_edges)[:12]
@@ -529,6 +531,9 @@ class Simulation:
             if kind=="create_gathering" or (kind=="send" and p.get("gathering_id") is not None):
                 self.schedule(self.time,"decide",{"target":a.id},did)
             if kind=="compete_position":self.schedule(self.time,"decide",{"target":p["target"]},did)
+        if psychology.enabled(self) and kind=="send" and p.get("topic")=="technical_warning":
+            psychology.state(a)["last_warning_day"]=self.time//1440
+            self.schedule(self.time,"decide",{"target":a.id},did)
         self.record("action_applied", {"decision": did, "actor": a.id, "type": kind, "target": p.get("target"), "public_support": a.public_support}, d["cause"])
         return True
 
@@ -565,7 +570,10 @@ class Simulation:
                 return "communication budget exhausted"
             if psychology.enabled(self) and psychology.state(a).get("expression_mode") == "self_censored":
                 return "self_censored_under_fear"
-            if not any(e["source"] == a.id for e in self.edges):
+            media_edges = [e for e in self.edges if e["source"] == a.id and e["type"] == "media"]
+            close_edges = [e for e in self.edges if e["source"] == a.id and e["type"] != "media"]
+            chosen_edges = (media_edges + close_edges)[:12]
+            if not chosen_edges:
                 return "no communication path"
             if p.get("message_id") is not None:
                 mid = p.get("message_id")
@@ -573,7 +581,23 @@ class Simulation:
                     return "message not learned"
                 if not any(m.get("message_id") == mid for m in a.memories):
                     return "message not learned"
+                scope = self.messages[mid].get("audience")
+                if scope is not None and not any(e["target"] in scope for e in chosen_edges):
+                    return "outside message audience"
             else:
+                if p.get("agenda_id") is not None:
+                    reason = agenda.validate_send(self, a, p)
+                    if reason:
+                        return reason
+                elif isinstance(p.get("topic", ""), str) and p.get("topic", "").startswith("agenda:"):
+                    return "agenda topics require structured local issue"
+                audience = p.get("audience")
+                if audience is not None and (
+                    not isinstance(audience, list)
+                    or any(not isinstance(x, str) or x not in self.agents for x in audience)
+                    or not any(e["target"] in audience for e in chosen_edges)
+                ):
+                    return "invalid or inaccessible audience"
                 if not isinstance(p.get("topic", "general"), str) or not 0 < len(p.get("topic", "general")) <= 200:
                     return "invalid topic"
                 if not isinstance(p.get("text"), str) or not 0 < len(p["text"]) <= 2000:
@@ -681,7 +705,10 @@ class Simulation:
                         ec["boycott_penalty"] = min(0.35, boycott_level * weight)
                     else:
                         ec["boycott_penalty"] = 0.0 if ec["boycott_penalty"] < 0.03 else ec["boycott_penalty"] * 0.55
-                    health = max(0.25, min(1.0, ec["contract_factor"] * (1.0 - ec["boycott_penalty"])))
+                    wp = w.behavior.get("psychology") or {}
+                    cap_flight = (0.08 * float(wp.get("exit_pressure", 0.0))
+                                  if (psychology.v2_enabled(self) and wp.get("functional_exit")) else 0.0)
+                    health = max(0.25, min(1.0, ec["contract_factor"] * (1.0 - ec["boycott_penalty"]) * (1.0 - cap_flight)))
                     employer_health[w.id] = health
                     # Yaptırım olmayan sakin günlerde sözleşme çarpanı kademeli toparlanır
                     if boycott_level == 0 and ec["contract_factor"] < 1.0:
@@ -915,7 +942,8 @@ class Simulation:
         obj._initialize_behavior()
         if agenda.enabled(obj):
             obj.__dict__.setdefault("agendas",{})
-            obj.__dict__.setdefault("agenda_runtime",{"cache":{},"requests":[],"daily_counts":{},"network_requests":0})
+            obj.__dict__.setdefault("agenda_runtime",{"cache":{},"requests":[],"daily_counts":{},"network_requests":0,"scheduled_reviews":{}})
+            obj.agenda_runtime.setdefault("scheduled_reviews",{})
         if characters.enabled(obj):
             for a in obj.agents.values():characters.state(a)
         if psychology.enabled(obj):

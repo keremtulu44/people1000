@@ -7,7 +7,7 @@ import unittest
 from unittest.mock import patch,MagicMock
 
 from society.termux import (create_pilot,report,turkce_ozet,ask_operator,main,
-    init_scenario_chain,advance_scenario_day,advance_scenario_days)
+    init_scenario_chain,start_scenario,advance_scenario_day,advance_scenario_days)
 from society.agenda import ReferenceAdvisor
 from society.agenda_api import AgendaProvider,OpenAICompatibleAdvisor
 from society.session import Session
@@ -109,6 +109,68 @@ class TermuxPilotTests(unittest.TestCase):
         self.assertEqual(ch3['conditions']['aftershock_stage'],'contained')
         self.assertFalse(ch3['conditions']['unaddressed_neglect'])
         self.assertEqual(ch3['day'],10)
+
+    def test_live_scenario_failure_is_atomic_and_live_prompt_matches_offline_engine(self):
+        sim_live = create_pilot(seed=44)
+        # Seed a completed 3-day crisis so institutional memory imprinting would trigger if non-atomic
+        init_scenario_chain(sim_live, 'Büyük ihale yolsuzluğu ve yayın yasağı')
+        advance_scenario_days(sim_live, ReferenceAdvisor(), 3)
+        snap_before = deepcopy({
+            'time': sim_live.time,
+            'agents': sim_live.agents,
+            'chain': sim_live.protocol['termux_pilot']['scenario_chain'],
+            'mem': deepcopy(sim_live.protocol.get('institutional_memory')),
+        })
+
+        adapter = OpenAICompatibleAdvisor('https://example.invalid/v1/chat/completions', 'model')
+        with patch.dict(os.environ, {'PEOPLE1000_API_KEY': 'dummy'}), \
+             patch('society.termux.urlopen', side_effect=TimeoutError('timeout')):
+            # 1) Failed live `start_scenario` must NOT wipe previous chain or imprint memory
+            with self.assertRaises(RuntimeError):
+                start_scenario(sim_live, 'Maden ocağında göçük ve denetim ihmali', adapter)
+            self.assertEqual(sim_live.time, snap_before['time'])
+            self.assertEqual(sim_live.agents, snap_before['agents'])
+            self.assertEqual(sim_live.protocol['termux_pilot']['scenario_chain'], snap_before['chain'])
+            self.assertEqual(sim_live.protocol.get('institutional_memory'), snap_before['mem'])
+            self.assertEqual(sim_live.protocol['termux_pilot']['question_attempts'], 1)
+            self.assertEqual(sim_live.protocol['termux_pilot']['question_log'][-1]['status'], 'failed')
+
+            # 2) Failed live `advance_scenario_day` must NOT consume Day 4 milestone
+            with self.assertRaises(RuntimeError):
+                advance_scenario_day(sim_live, adapter)
+            self.assertEqual(sim_live.time, snap_before['time'])
+            self.assertEqual(sim_live.protocol['termux_pilot']['scenario_chain'], snap_before['chain'])
+
+        # 3) Live vs Offline causal parity: LLM receives Day-k synced engine state, matching offline
+        sim_a = create_pilot(seed=44)
+        sim_b = create_pilot(seed=44)
+        init_scenario_chain(sim_b, 'Büyük maden faciası yaşandı, denetim ihmali iddiası var')
+        advance_scenario_day(sim_b, ReferenceAdvisor())
+
+        captured_payloads = []
+        def fake_urlopen(req, timeout=60):
+            captured_payloads.append(json.loads(req.data.decode('utf-8')))
+            r = MagicMock()
+            r.__enter__.return_value.read.return_value = json.dumps({
+                'choices': [{'finish_reason': 'stop', 'message': {'content': 'Gün tamamlandı.'}}],
+                'usage': {'total_tokens': 25},
+            }).encode('utf-8')
+            return r
+
+        with patch.dict(os.environ, {'PEOPLE1000_API_KEY': 'dummy'}), \
+             patch('society.termux.urlopen', side_effect=fake_urlopen):
+            start_scenario(sim_a, 'Büyük maden faciası yaşandı, denetim ihmali iddiası var', adapter)
+
+        sent_user = json.loads(captured_payloads[0]['messages'][1]['content'])
+        self.assertEqual(sent_user['operator_report']['time'], sim_b.time)
+        self.assertEqual(
+            sim_a.protocol['termux_pilot']['scenario_chain']['history'][-1]['engine_effects'],
+            sim_b.protocol['termux_pilot']['scenario_chain']['history'][-1]['engine_effects'],
+        )
+        self.assertEqual(
+            sim_a.protocol['termux_pilot']['scenario_chain']['history'][-1]['psychology_snapshot'],
+            sim_b.protocol['termux_pilot']['scenario_chain']['history'][-1]['psychology_snapshot'],
+        )
 
 
 if __name__=='__main__':unittest.main()

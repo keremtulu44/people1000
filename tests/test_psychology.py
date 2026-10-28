@@ -422,6 +422,231 @@ class DeepSocialMindV35Tests(unittest.TestCase):
         self.assertTrue(po['whistleblower_ready'])
         self.assertEqual(psychology.expression_for_agenda(sim, obs, 'observe'), 'epistemic_technical_warning')
 
+    def test_v35_wealthy_comm_limit_amplify_agenda_gate_and_same_day_bridge_warnings(self):
+        import tomllib
+        from society import characters, character_study, psychology_research_v34
+
+        # 1. pyproject.toml includes all 7 behavior JSON files
+        pyproject = tomllib.loads((Path(__file__).resolve().parents[1] / 'pyproject.toml').read_text(encoding='utf-8'))
+        pkg_files = set(pyproject['tool']['setuptools']['package-data']['society'])
+        for expected_json in (
+            'behavior.json', 'behavior-v2.json', 'behavior-v3.json',
+            'behavior-v31.json', 'behavior-v32.json', 'behavior-v33.json', 'behavior-v34.json',
+        ):
+            self.assertIn(expected_json, pkg_files)
+
+        # 2. Historical study loaders preserve v3.4 vs v3.5 separation
+        cs_case = next(c for c in character_study.catalog() if c['name'] == 'none')
+        self.assertEqual(character_study.setup(cs_case, model='v3.4').behavior_profile['behavior_version'], '3.4.0')
+        self.assertEqual(character_study.setup(cs_case, model='v3.5').behavior_profile['behavior_version'], '3.5.0')
+        self.assertTrue(hasattr(psychology_research_v34, 'run_all_studies'))
+
+        # 3. v3.5 wealthy communication limit is 6 (not regressed to 2)
+        sim = Simulation(Config(seed=44, population=100))
+        w = next(a for a in sim.agents.values() if a.initial_group == 'wealthy')
+        self.assertEqual(characters.limit(sim, w, 'communication', sim.config.communication_budget), 6)
+
+        # 4. `amplify` enforces structured agenda gate & rejects inaccessible audience without spending budget
+        used_before = dict(w.used)
+        self.assertFalse(sim.apply(sim.propose(w.id, {
+            'type': 'amplify', 'topic': 'agenda:appointment:qualification',
+            'claim': 100, 'text': 'Belgesiz gündem yayını',
+        })))
+        self.assertEqual(sim.log[-1]['payload']['reason'], 'agenda topics require structured local issue')
+        self.assertFalse(sim.apply(sim.propose(w.id, {
+            'type': 'amplify', 'topic': 'media:scoped', 'claim': 50,
+            'text': 'Erişilmez hedef kitle', 'audience': [w.id],
+        })))
+        self.assertEqual(w.used, used_before)
+
+        # 5. Crisis bridge: same-day sanction/boycott effects (0-day lag) & live observer_warnings > 0
+        pilot_sim = termux.create_pilot(seed=44)
+        ch = termux.init_scenario_chain(pilot_sim, 'Büyük maden faciası yaşandı, denetim ihmali iddiası var')
+        termux.advance_scenario_days(pilot_sim, ReferenceAdvisor(), count=6)
+        by_day = {h['day']: h['engine_effects'] for h in ch['history']}
+        self.assertGreater(by_day[2]['employer_cut_workers'], 0)
+        self.assertGreater(by_day[2]['self_censored_blocks'], 0)
+        self.assertGreater(by_day[3]['observer_warnings'], 0)
+        self.assertGreater(by_day[6]['employer_cut_workers'], by_day[4]['employer_cut_workers'])
+
+
+class FiveResearchSynthesisTests(unittest.TestCase):
+    def test_1_preference_falsification_internalization_and_jsd_index(self):
+        sim = Simulation(Config(seed=44, population=100))
+        sim.run(0)
+        jsd_calm = psychology.preference_divergence_jsd(sim)
+
+        opp = next(a for a in sim.agents.values() if a.initial_group == 'opposition')
+        opp.pressure = 0.55
+        opp.public_alignment = 'A'
+        opp.public_support = 0.85
+        opp.private_loyalty = 0.25
+        loyalty_day2 = None
+        for day in range(1, 8):
+            sim.protocol['active_crisis_signals'] = {
+                'tier': 'institutional_crisis', 'domain': 'corruption_institutional',
+                'conditions': {'prosecution_fear': 'elevated', 'coverup_level': 'moderate',
+                               'leak_occurred': False, 'scapegoat_isolated': False, 'unaddressed_neglect': True},
+                'day': day,
+            }
+            psychology.daily(sim, opp, harm=0.12, income_harm=0.04, disruption_level=0.10,
+                             responsibility_own=0.0, max_own_error=0.0, collective_supported=False)
+            if day == 2:
+                loyalty_day2 = opp.private_loyalty
+        # Days 1-2 keep private loyalty untouched; chronic forced conformity (5+ days) partially internalizes
+        self.assertEqual(loyalty_day2, 0.25)
+        self.assertGreaterEqual(opp.behavior['psychology']['conformist_days'], 5)
+        self.assertGreater(opp.behavior['psychology']['conformist_internalization'], 0.08)
+        self.assertGreater(opp.private_loyalty, 0.25)
+
+        # Widespread self-censorship elevates macro JSD divergence
+        for a in sim.agents.values():
+            if a.initial_group in ('opposition', 'discontented'):
+                psychology.state(a)['expression_mode'] = 'self_censored'
+        jsd_silenced = psychology.preference_divergence_jsd(sim)
+        self.assertGreater(jsd_silenced, jsd_calm + 0.05)
+
+        # Leak breaks cognitive spell
+        sim.protocol['active_crisis_signals']['conditions']['leak_occurred'] = True
+        psychology.daily(sim, opp, harm=0.12, income_harm=0.04, disruption_level=0.10,
+                         responsibility_own=0.0, max_own_error=0.0, collective_supported=False)
+        self.assertEqual(opp.behavior['psychology']['conformist_days'], 0)
+
+    def test_2_elite_counter_rationalization_repairs_wall_until_personal_harm(self):
+        sim_framed = Simulation(Config(seed=44, population=100))
+        sim_isolated = Simulation(Config(seed=44, population=100))
+        sim_framed.run(0)
+        sim_isolated.run(0)
+
+        pa_f = next(a for a in sim_framed.agents.values() if a.initial_group == 'power_aligned' and a.alignment == 'A')
+        pa_i = sim_isolated.agents[pa_f.id]
+        # Connect pa_f to an active pro_A wealthy elite; sever elite ties for pa_i
+        elite_a = next(a for a in sim_framed.agents.values()
+                       if a.initial_group == 'wealthy' and a.behavior.get('subwing') == 'pro_A')
+        psychology.state(elite_a)['motivated_framing'] = 0.75
+        if not sim_framed.edge(elite_a.id, pa_f.id):
+            sim_framed.edges.append({'source': elite_a.id, 'target': pa_f.id, 'type': 'media', 'trust': 0.8, 'latency': 5})
+        sim_isolated.edges = [
+            e for e in sim_isolated.edges
+            if not (e['target'] == pa_i.id and sim_isolated.agents[e['source']].initial_group in ('wealthy', 'authority'))
+            and not (e['source'] == pa_i.id and sim_isolated.agents[e['target']].initial_group in ('wealthy', 'authority'))
+        ]
+
+        for _ in range(5):
+            psychology.daily(sim_framed, pa_f, harm=0.22, income_harm=0.02, disruption_level=0.15,
+                             responsibility_own=0.65, max_own_error=0.15, collective_supported=False)
+            psychology.daily(sim_isolated, pa_i, harm=0.22, income_harm=0.02, disruption_level=0.15,
+                             responsibility_own=0.65, max_own_error=0.15, collective_supported=False)
+        pf = psychology.state(pa_f)
+        pi = psychology.state(pa_i)
+        self.assertGreater(pf['intermediary_trust'], pi['intermediary_trust'])
+        self.assertGreater(pf['defense_wall'], pi['defense_wall'])
+
+    def test_3_hirschman_functional_exit_capital_flight_and_voice_repair(self):
+        sim = Simulation(Config(seed=44, population=100))
+        sim.run(0)
+        w = next(a for a in sim.agents.values()
+                 if a.initial_group == 'wealthy' and a.behavior.get('subwing') == 'neutral_commercial')
+        workers = [a for a in sim.agents.values() if a.employer == w.id]
+        self.assertTrue(workers)
+        for _ in range(6):
+            psychology.apply_stimulus(sim, w, 'pressure', magnitude=0.80)
+            psychology.daily(sim, w, harm=0.35, income_harm=0.30, disruption_level=0.20,
+                             responsibility_own=0.0, max_own_error=0.0, collective_supported=False)
+        self.assertTrue(psychology.state(w)['functional_exit'])
+        sim.run(1440)
+        # Capital flight contracts dependent workers' effective income in closed economy
+        self.assertTrue(any(wk.behavior.get('economic_chain', {}).get('employer_cut', 0.0) > 0 for wk in workers))
+
+        # Credible institutional response to Voice repairs trust and lowers exit pressure
+        pa = next(a for a in sim.agents.values() if a.initial_group == 'power_aligned')
+        psychology.state(pa)['disengaged'] = True
+        psychology.state(pa)['intermediary_trust'] = 0.35
+        exit_before = psychology.state(w)['exit_pressure']
+        sim.protocol['active_crisis_signals'] = {
+            'tier': 'institutional_crisis', 'domain': 'corruption_institutional',
+            'conditions': {'prosecution_fear': 'low', 'coverup_level': 'none',
+                           'leak_occurred': False, 'scapegoat_isolated': False, 'unaddressed_neglect': False},
+            'day': 4, 'voice_response': 0.70,
+        }
+        psychology.daily(sim, w, harm=0.05, income_harm=0.02, disruption_level=0.05,
+                         responsibility_own=0.0, max_own_error=0.0, collective_supported=False)
+        psychology.daily(sim, pa, harm=0.05, income_harm=0.0, disruption_level=0.05,
+                         responsibility_own=0.2, max_own_error=0.0, collective_supported=False)
+        self.assertLess(psychology.state(w)['exit_pressure'], exit_before)
+        self.assertFalse(psychology.state(pa)['disengaged'])
+        self.assertGreater(psychology.state(pa)['intermediary_trust'], 0.40)
+
+    def test_4_whistleblower_ostracism_darvo_and_anticipatory_resilience(self):
+        sim = Simulation(Config(seed=44, population=100))
+        sim.run(0)
+        obs = next(a for a in sim.agents.values() if a.initial_group == 'observer')
+        insider = next(a for a in sim.agents.values()
+                       if a.initial_group == 'authority' and psychology.state(a).get('conscience_insider'))
+        psychology.state(obs)['epistemic_alarm'] = 0.72
+        psychology.state(obs)['whistleblower_ready'] = True
+        sim.protocol['active_crisis_signals'] = {
+            'tier': 'severe_security_crisis', 'domain': 'disaster_neglect',
+            'conditions': {'prosecution_fear': 'high', 'coverup_level': 'high',
+                           'leak_occurred': True, 'scapegoat_isolated': False, 'unaddressed_neglect': True},
+            'day': 3, 'darvo_signal': 0.72,
+        }
+        for _ in range(3):
+            psychology.daily(sim, obs, harm=0.25, income_harm=0.0, disruption_level=0.65,
+                             responsibility_own=0.0, max_own_error=0.45, collective_supported=False)
+            psychology.daily(sim, insider, harm=0.25, income_harm=0.0, disruption_level=0.30,
+                             responsibility_own=0.6, max_own_error=0.45, collective_supported=False)
+        po = psychology.state(obs)
+        pi = psychology.state(insider)
+        self.assertGreater(po['ostracism'], 0.30)
+        self.assertGreater(pi['ostracism'], 0.30)
+        # SIT prediction: unprepared insider suffers deeper identity dislocation than prepared observer
+        self.assertGreater(pi['identity_dislocation'], po['identity_dislocation'])
+
+    def test_5_hybrid_constitutional_llm_to_abm_feedback_and_guardrail_filtering(self):
+        from society import crisis_bridge
+        # A) Constitutional filter blocks mass-suicide & ordinary-tier arrest hallucinations and strips tag from cards
+        ord_dir = {'day': 1, 'tier': 'ordinary', 'branch': 'rutin',
+                   'conditions': {'prosecution_fear': 'low', 'coverup_level': 'none'}}
+        bad_llm_text = (
+            "**1. İktidar Yanlıları (power_aligned)**\nSavundu.\n"
+            "**2. Muhalifler (opposition)**\nSorguladı.\n"
+            "**3. Yöneticiler / Otorite (authority)**\nEleştirenler tutuklandı ve hain ilan edildi.\n"
+            "**4. Zenginler ve Sosyal Medya Etki Ekibi (wealthy)**\nÜç kanat izledi.\n"
+            "**5. Hoşnutsuz Kesim (discontented)**\nKitlenin %15'i intihar etti.\n"
+            "**6. Gözlemciler (observer)**\nOyunu izledi.\n"
+            "**Günün Genel Özeti:** Tartışma sürdü.\n"
+            '[ANAYASAL_GERIBESLEME: {"institutional_posture":"darvo_attack","voice_response":"suppressed","whistleblower_climate":"ostracized"}]'
+        )
+        parsed_cards = scenario_text.analyze_scenario(bad_llm_text)
+        self.assertEqual(parsed_cards['bagli'], 6)
+        self.assertNotIn('ANAYASAL_GERIBESLEME', parsed_cards['genel'])
+        self.assertNotIn('ANAYASAL_GERIBESLEME', parsed_cards['kitleler']['observer'])
+
+        fb_bad = crisis_bridge.extract_constitutional_feedback(bad_llm_text, ord_dir)
+        self.assertFalse(fb_bad['constitutional_valid'])
+        self.assertIn('mass_suicide_hallucination', fb_bad['rejected_extremes'])
+        self.assertEqual(fb_bad['institutional_posture'], 'procedural_calm')
+        self.assertEqual(fb_bad['whistleblower_climate'], 'neutral')
+
+        # B) Valid constructive LLM feedback causally steers crisis chain into `seffaf_onarim` over 2 days
+        pilot_sim = termux.create_pilot(seed=44)
+        chain = termux.init_scenario_chain(pilot_sim, 'Büyük maden faciası yaşandı, denetim ihmali iddiası var')
+        for _ in range(2):
+            d_no = chain['day'] + 1
+            direc = termux.causal_day_directive(chain, d_no, sim=pilot_sim)
+            crisis_bridge.sync_day_to_engine(pilot_sim, chain, direc)
+            chain['day'] = d_no
+            good_fb = crisis_bridge.extract_constitutional_feedback(
+                '**3. Yöneticiler (authority)**\nUzman uyarısı dikkate alındı, bağımsız denetim ve şeffaf soruşturma başlatıldı.\n'
+                '[ANAYASAL_GERIBESLEME: {"institutional_posture":"transparent_repair","elite_framing":"deescalation","voice_response":"acknowledged","whistleblower_climate":"protected"}]',
+                direc,
+            )
+            self.assertTrue(good_fb['constitutional_valid'])
+            crisis_bridge.apply_constitutional_feedback(chain, good_fb)
+        direc_day3 = termux.causal_day_directive(chain, 3, sim=pilot_sim)
+        self.assertEqual(direc_day3['branch'], 'seffaf_onarim')
+
 
 if __name__ == '__main__':
     unittest.main()

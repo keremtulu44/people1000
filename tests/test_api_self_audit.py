@@ -195,5 +195,47 @@ class APISelfAudit(unittest.TestCase):
         err404=safe_api_error(HTTPError(ENDPOINT,404,'not found',{},io.BytesIO(b'{"error":{"message":"This model models/gemini-2.5-flash-lite is no longer available to new users. private-key"}}')))
         self.assertIn('yeni kullanıcı',str(err404));self.assertNotIn('private-key',str(err404))
 
+    def test_openai_operator_max_tokens_oversize_minimal_test_prompt_and_gemini_null_fields(self):
+        sim = create_pilot()
+        oa = OpenAICompatibleAdvisor('https://example.invalid/v1/chat/completions', 'model')
+        # 1. OpenAI connection_test uses minimal system prompt, not full PHILOSOPHY_SYSTEM_PROMPT
+        ok_resp = response({'choices': [{'finish_reason': 'stop', 'message': {'content': 'BAĞLANTI TAMAM'}}], 'usage': {'total_tokens': 8}})
+        with patch.dict(os.environ, {'PEOPLE1000_API_KEY': 'key'}), patch('society.termux.urlopen', return_value=ok_resp) as send_op:
+            self.assertEqual(ask_operator(sim, 'test', oa, connection_test=True), 'BAĞLANTI TAMAM')
+            sys_msg = json.loads(send_op.call_args.args[0].data)['messages'][0]['content']
+            self.assertEqual(sys_msg, 'Türkçe, kısa yanıt ver.')
+
+        # 2. OpenAI ask_operator finish_reason=='length' preserves kind=='max_tokens'
+        trunc_resp = response({'choices': [{'finish_reason': 'length', 'message': {'content': 'yarım'}}], 'usage': {'total_tokens': 64}})
+        with patch.dict(os.environ, {'PEOPLE1000_API_KEY': 'key'}), patch('society.termux.urlopen', return_value=trunc_resp):
+            with self.assertRaises(APIError) as ctx:
+                ask_operator(sim, 'Rapor?', oa)
+            self.assertEqual(ctx.exception.kind, 'max_tokens')
+        self.assertEqual(sim.protocol['termux_pilot']['question_log'][-1]['failure_kind'], 'max_tokens')
+
+        # 3. OpenAI ask_operator >2MB response raises response_size APIError
+        big_resp = response({})
+        big_resp.__enter__.return_value.read.return_value = b'x' * 2_000_001
+        with patch.dict(os.environ, {'PEOPLE1000_API_KEY': 'key'}), patch('society.termux.urlopen', return_value=big_resp):
+            with self.assertRaises(APIError) as ctx2:
+                ask_operator(sim, 'Rapor?', oa)
+            self.assertEqual(ctx2.exception.kind, 'response_size')
+
+        # 4. GeminiAdvisor handles explicit JSON nulls & classifies invalid review JSON as invalid_response
+        g = GeminiAdvisor(ENDPOINT, 'gemini-3.5-flash-lite', min_interval=3.0)
+        null_payload = {'usageMetadata': None, 'candidates': [{'finishReason': 'STOP', 'content': None}]}
+        with patch.dict(os.environ, {'PEOPLE1000_API_KEY': 'key'}), patch('society.agenda_api.urlopen', return_value=response(null_payload)):
+            with self.assertRaises(APIError) as ctx3:
+                g.generate('s', 'u')
+            self.assertEqual(ctx3.exception.kind, 'empty_text')
+
+        bad_json_payload = candidate('not-json')
+        with patch.dict(os.environ, {'PEOPLE1000_API_KEY': 'key'}), \
+             patch('society.agenda_api.time.sleep'), \
+             patch('society.agenda_api.urlopen', return_value=response(bad_json_payload)):
+            with self.assertRaises(APIError) as ctx4:
+                g.review({'allowed_approaches': ['reserve']})
+            self.assertEqual(ctx4.exception.kind, 'invalid_response')
+
 
 if __name__=='__main__':unittest.main()

@@ -35,6 +35,7 @@ s.run(10*1440)
 s.save('replay.json')
 print(hashlib.sha256(Path('replay.json').read_bytes()).hexdigest())
 '''
+    (root/'runs').mkdir(parents=True,exist_ok=True)
     with tempfile.TemporaryDirectory(dir=root/'runs') as td:
         td=Path(td);old=td/'frozen';old.mkdir()
         with zipfile.ZipFile(archive) as z:
@@ -43,7 +44,7 @@ print(hashlib.sha256(Path('replay.json').read_bytes()).hexdigest())
         env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1')
         def replay(cwd,pythonpath):
             return subprocess.check_output([sys.executable,'-c',code],cwd=cwd,
-                env={**env,'PYTHONPATH':str(pythonpath)},text=True).strip()
+                env={**env,'PYTHONPATH':str(Path(pythonpath).resolve())},text=True).strip()
         previous=replay(old,old)
         current=td/'current';current.mkdir();now=replay(current,root)
     return {'archive_sha256':hashlib.sha256(archive.read_bytes()).hexdigest(),

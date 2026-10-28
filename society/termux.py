@@ -14,7 +14,7 @@ from urllib.request import Request
 
 from copy import deepcopy
 from .agenda import ReferenceAdvisor, ReviewBudgetExceeded
-from .agenda_api import AgendaProvider, OpenAICompatibleAdvisor, GeminiAdvisor, USER_AGENT, advisor_from_environment, safe_api_error, token_usage, urlopen, api_key
+from .agenda_api import APIError, AgendaProvider, OpenAICompatibleAdvisor, GeminiAdvisor, USER_AGENT, advisor_from_environment, safe_api_error, token_usage, urlopen, api_key
 from .engine import Simulation, Config, BaselineProvider
 from .behavior import load_profile
 from .session import Session
@@ -58,7 +58,7 @@ def report(sim):
         'last_response':next((e['response'] for e in reversed(es) if e['response'] is not None),None)} for g,es in by.items()}
     meta=sim.protocol['termux_pilot']
     result['psychology_by_role']=psychology.group_summary(sim,meta.get('scenario_chain'))
-    result['social_mind']=psychology.social_mind_overview(result['psychology_by_role'])
+    result['social_mind']=psychology.social_mind_overview(result['psychology_by_role'], sim)
     result['institutional_memory']=psychology.memory_summary_tr(sim)
     result['diagnostics']={'attempts':meta.get('diagnostic_attempts',0),'limit':10,'last_model_check':meta.get('last_model_check')}
     result['operator_questions']={'attempts':sim.protocol['termux_pilot']['question_attempts'],
@@ -317,14 +317,17 @@ def _offline_scenario_day(chain,directive,psych=None,effects=None):
         f"===========================================================")
 
 
-def _compact_psychology_for_prompt(sim, chain, directive):
-    temp_chain = deepcopy(chain) if chain else None
-    if temp_chain is not None:
-        temp_chain['day'] = directive['day']
-        temp_chain['history'] = [*temp_chain.get('history', []), {
-            'day': directive['day'], 'conditions': deepcopy(directive['conditions']),
-        }]
-    summary = psychology.group_summary(sim, temp_chain, upto_day=directive['day'] if directive else None)
+def _compact_psychology_for_prompt(sim, chain, directive, psych_summary=None):
+    if psych_summary is not None:
+        summary = psych_summary
+    else:
+        temp_chain = deepcopy(chain) if chain else None
+        if temp_chain is not None:
+            temp_chain['day'] = directive['day']
+            temp_chain['history'] = [*temp_chain.get('history', []), {
+                'day': directive['day'], 'conditions': deepcopy(directive['conditions']),
+            }]
+        summary = psychology.group_summary(sim, temp_chain, upto_day=directive['day'] if directive else None)
     compact = {}
     for gid, info in summary.items():
         item = {
@@ -346,8 +349,41 @@ def _compact_psychology_for_prompt(sim, chain, directive):
     return compact
 
 
-def ask_operator(sim,question,advisor,connection_test=False,causal_directive=None):
-    """One explicitly requested paid call, no mutation/action proposal capability."""
+def _commit_staged_sim(sim, staged, existing_chain=None):
+    q_attempts = sim.protocol['termux_pilot']['question_attempts']
+    q_log = sim.protocol['termux_pilot']['question_log']
+    staged_meta = staged.protocol['termux_pilot']
+    staged_meta['question_attempts'] = q_attempts
+    staged_meta['question_log'] = q_log
+    if existing_chain is not None and isinstance(staged_meta.get('scenario_chain'), dict):
+        new_chain = deepcopy(staged_meta['scenario_chain'])
+        existing_chain.clear()
+        existing_chain.update(new_chain)
+        staged_meta['scenario_chain'] = existing_chain
+    sim.__dict__.clear()
+    sim.__dict__.update(staged.__dict__)
+
+
+def _prepare_live_day(sim, *, start_text=None, custom_event=None, sync_engine=True):
+    staged = deepcopy(sim)
+    meta_s = staged.protocol['termux_pilot']
+    if start_text is not None:
+        chain = init_scenario_chain(staged, start_text)
+        next_day = 1
+        directive = causal_day_directive(chain, 1, sim=staged)
+    else:
+        chain = meta_s.get('scenario_chain')
+        if not chain:
+            chain = init_scenario_chain(
+                staged, custom_event or 'Bir yöneticinin yakınının atanması: yeterlilik ve usul ayrı')
+        next_day = chain['day'] + 1
+        directive = causal_day_directive(chain, next_day, custom_event=custom_event, sim=staged)
+    bridge = crisis_bridge.sync_day_to_engine(staged, chain, directive) if sync_engine else None
+    return staged, chain, directive, bridge
+
+
+def ask_operator(sim,question,advisor,connection_test=False,causal_directive=None,_staged=None):
+    """One explicitly requested paid call, atomic on API failure."""
     # `sor` kullanıcı metni web_ui tarafında 2000 karakterle sınırlıdır; zincir
     # prompt'u ise biçim talimatını da taşıdığı için daha geniş iç sınıra sahiptir.
     if not isinstance(question,str) or not 0<len(question)<=4000:raise ValueError('Soru 1–4000 karakter olmalı.')
@@ -357,7 +393,17 @@ def ask_operator(sim,question,advisor,connection_test=False,causal_directive=Non
     if not isinstance(advisor,OpenAICompatibleAdvisor):
         return 'Çevrimdışı mod: serbest metin AI yanıtı yok. Durum için rapor, ozet veya devam komutunu kullan.'
     key=api_key(advisor.key_env)
-    context=report(sim)
+    pure_q = (not connection_test and causal_directive is None and _staged is None and crisis_bridge.is_pure_question(question))
+    existing_chain = None
+    staged_chain = None
+    bridge = None
+    ctx_sim = sim
+    if _staged is not None:
+        ctx_sim, staged_chain, causal_directive, bridge, existing_chain = _staged
+    elif not connection_test and causal_directive is None and not pure_q:
+        ctx_sim, staged_chain, causal_directive, bridge = _prepare_live_day(
+            sim, start_text=question, sync_engine=False)
+    context=report(ctx_sim)
     # Prompt boyutu ve token tasarrufu için tekrarlayan ayrıntıları sadeleştir.
     context.pop('psychology_by_role',None)
     context.pop('social_mind',None)
@@ -371,32 +417,36 @@ def ask_operator(sim,question,advisor,connection_test=False,causal_directive=Non
                'approach':(v.get('last_response') or {}).get('approach')}
             for g,v in context['issue_by_role'].items()
         }
-    pure_q = (not connection_test and causal_directive is None and crisis_bridge.is_pure_question(question))
-    if not connection_test and causal_directive is None and not pure_q:
-        chain=init_scenario_chain(sim,question)
-        causal_directive=causal_day_directive(chain,1,sim=sim)
     psych_ctx = None if connection_test or causal_directive is None else _compact_psychology_for_prompt(
-        sim, meta.get('scenario_chain'), causal_directive)
+        ctx_sim,
+        staged_chain or ctx_sim.protocol['termux_pilot'].get('scenario_chain'),
+        causal_directive,
+        psych_summary=bridge['psychology_snapshot'] if bridge is not None else None,
+    )
     fmt = None if CIKTI_BICIMI in question else CIKTI_BICIMI
+    active_ch = staged_chain or ctx_sim.protocol['termux_pilot'].get('scenario_chain')
+    prior_fb = ((active_ch.get('branch_state') or {}).get('last_constitutional_feedback')
+                if isinstance(active_ch, dict) else None)
     user_payload={'question_or_scenario':question,'causal_directive':causal_directive,
                   'group_psychology':psych_ctx,'operator_report':context}
+    if prior_fb is not None and not connection_test:
+        user_payload['prior_constitutional_feedback']=prior_fb
     if fmt is not None:
         user_payload['output_format']=fmt
+    sys_prompt='Türkçe, kısa yanıt ver.' if connection_test else PHILOSOPHY_SYSTEM_PROMPT
     user_text='Yalnız BAĞLANTI TAMAM yaz.' if connection_test else json.dumps(user_payload,ensure_ascii=False)
     advisor.last_usage=None
     meta['question_attempts']+=1
     entry={'time':sim.time,'status':'started'};meta['question_log'].append(entry)
     try:
         if isinstance(advisor,GeminiAdvisor):
-            answer=advisor.generate(
-                'Türkçe, kısa yanıt ver.' if connection_test else PHILOSOPHY_SYSTEM_PROMPT,
-                'Yalnız BAĞLANTI TAMAM yaz.' if connection_test else json.dumps(user_payload,ensure_ascii=False))
+            answer=advisor.generate(sys_prompt,user_text)
             data={'usage':advisor.last_usage or {}}
         else:
             # Yerel Gemini adaptörü native generateContent kullanır; OpenAI
             # `messages`/Bearer isteği yalnızca OpenAI-uyumlu sağlayıcıda kurulur.
             payload={'model':advisor.model,'messages':[
-                {'role':'system','content':PHILOSOPHY_SYSTEM_PROMPT},
+                {'role':'system','content':sys_prompt},
                 {'role':'user','content':user_text}],
                 'max_completion_tokens':64 if connection_test else max(advisor.max_output_tokens,1400)}
             request=Request(advisor.endpoint,data=json.dumps(payload).encode(),headers={
@@ -404,24 +454,42 @@ def ask_operator(sim,question,advisor,connection_test=False,causal_directive=Non
                 'Authorization':'Bearer '+key})
             advisor.pace()
             try:
-                with urlopen(request,timeout=advisor.timeout) as response:data=json.loads(response.read(2_000_000))
+                with urlopen(request,timeout=advisor.timeout) as response:
+                    raw=response.read(2_000_001)
             finally:
                 advisor.mark_request_done()
+            if len(raw)>2_000_000:
+                raise APIError('API yanıtı güvenli boyut sınırını aştı.','response_size')
+            data=json.loads(raw)
+            if not isinstance(data,dict):
+                raise APIError('API JSON nesnesi döndürmedi.')
             advisor.last_usage=token_usage(data.get('usage'))
-            if data['choices'][0].get('finish_reason')=='length':raise RuntimeError('API çıktı token sınırında kesildi; tamamlanmış yanıt değil.')
+            if data['choices'][0].get('finish_reason')=='length':
+                raise APIError('API çıktı token sınırında kesildi; tamamlanmış yanıt değil.','max_tokens')
             answer=data['choices'][0]['message']['content']
         if not isinstance(answer,str) or not 0<len(answer)<=20000:raise ValueError('Invalid answer')
         entry.update(status='answered',usage={k:v for k,v in data.get('usage',{}).items()
             if k in ('prompt_tokens','completion_tokens','total_tokens') and type(v) is int and v>=0})
+        if ctx_sim is not sim:
+            _commit_staged_sim(sim, ctx_sim, existing_chain=existing_chain)
+            meta=sim.protocol['termux_pilot']
         if not connection_test and 'scenario_chain' in meta and causal_directive is not None:
             ch=meta['scenario_chain']
             ch['day']=causal_directive['day']
-            ch['history'].append({'day':causal_directive['day'],
+            psych_snap=bridge['psychology_snapshot'] if bridge is not None else None
+            fb=crisis_bridge.extract_constitutional_feedback(answer,causal_directive,psych_snap)
+            crisis_bridge.apply_constitutional_feedback(ch,fb)
+            hist_entry={'day':causal_directive['day'],
                 'branch':causal_directive.get('branch','standart'),
                 'event':causal_directive['event_of_day'],
                 'allowed_extremes':causal_directive['allowed_extremes'],
                 'conditions':deepcopy(causal_directive['conditions']),
-                'summary':kisa_ozet(answer),'full_text':answer})
+                'constitutional_feedback':fb,
+                'summary':kisa_ozet(answer),'full_text':answer}
+            if bridge is not None:
+                hist_entry['engine_effects']=bridge['engine_effects']
+                hist_entry['psychology_snapshot']=bridge['psychology_snapshot']
+            ch['history'].append(hist_entry)
         return answer
     except Exception as exc:
         entry['status']='failed'
@@ -434,51 +502,57 @@ def ask_operator(sim,question,advisor,connection_test=False,causal_directive=Non
 
 
 def start_scenario(sim,question,advisor,sync_engine=True):
-    """Yeni senaryoyu (Gün 1) başlatır ve gerçek simülasyon motoruyla senkronize eder."""
-    ans=ask_operator(sim,question,advisor)
+    """Yeni senaryoyu (Gün 1) başlatır ve gerçek simülasyon motoruyla atomik olarak senkronize eder."""
+    if not isinstance(question,str) or not 0<len(question)<=4000:
+        raise ValueError('Soru 1–4000 karakter olmalı.')
+    if not isinstance(advisor,OpenAICompatibleAdvisor) or crisis_bridge.is_pure_question(question):
+        return ask_operator(sim,question,advisor)
     meta=sim.protocol['termux_pilot']
-    ch=meta.get('scenario_chain')
-    if (sync_engine and isinstance(advisor,OpenAICompatibleAdvisor)
-            and not crisis_bridge.is_pure_question(question)
-            and ch and ch.get('history') and ch['history'][-1].get('day')==1):
-        last=ch['history'][-1]
-        directive={
-            'day':1,'tier':ch['tier'],'domain':ch.get('domain','ordinary'),
-            'phase':ch['tier'],'branch':last.get('branch','standart'),
-            'boycott_active':bool(ch.get('branch_state',{}).get('boycott_active')),
-            'event_of_day':last['event'],'allowed_extremes':last['allowed_extremes'],
-            'conditions':deepcopy(last['conditions']),
-        }
-        bridge=crisis_bridge.sync_day_to_engine(sim,ch,directive)
-        last['engine_effects']=bridge['engine_effects']
-        last['psychology_snapshot']=bridge['psychology_snapshot']
-    return ans
+    if meta['question_attempts']>=meta['question_limit']:
+        raise RuntimeError(f"Soru/senaryo istek sınırı ({meta['question_limit']}) doldu. Devam etmek için 'sor-limit 50' komutuyla veya arayüzdeki 'Soru limiti' ayarıyla sınırı artırabilirsin.")
+    api_key(advisor.key_env)
+    staged, chain, directive, bridge = _prepare_live_day(
+        sim, start_text=question, sync_engine=sync_engine)
+    return ask_operator(
+        sim, question, advisor, causal_directive=directive,
+        _staged=(staged, chain, directive, bridge, None),
+    )
 
 
 def advance_scenario_day(sim,advisor,custom_event=None,sync_engine=True):
     meta=sim.protocol['termux_pilot']
-    chain=meta.get('scenario_chain')
-    if not chain:
-        chain=init_scenario_chain(sim,custom_event or 'Bir yöneticinin yakınının atanması: yeterlilik ve usul ayrı')
-    next_day=chain['day']+1
-    directive=causal_day_directive(chain,next_day,custom_event=custom_event,sim=sim)
     if not isinstance(advisor,OpenAICompatibleAdvisor):
+        chain=meta.get('scenario_chain')
+        if not chain:
+            chain=init_scenario_chain(sim,custom_event or 'Bir yöneticinin yakınının atanması: yeterlilik ve usul ayrı')
+        next_day=chain['day']+1
+        directive=causal_day_directive(chain,next_day,custom_event=custom_event,sim=sim)
         bridge=crisis_bridge.sync_day_to_engine(sim,chain,directive) if sync_engine else None
         psych=(bridge['psychology_snapshot'] if bridge is not None
                else psychology.group_summary(sim,chain,upto_day=next_day))
         effects=bridge['engine_effects'] if bridge is not None else None
         out=_offline_scenario_day(chain,directive,psych=psych,effects=effects)
         chain['day']=next_day
+        fb=crisis_bridge.extract_constitutional_feedback(out,directive,psych)
+        crisis_bridge.apply_constitutional_feedback(chain,fb)
         entry={'day':next_day,'branch':directive.get('branch','standart'),
             'event':directive['event_of_day'],
             'allowed_extremes':directive['allowed_extremes'],
             'conditions':deepcopy(directive['conditions']),
+            'constitutional_feedback':fb,
             'summary':kisa_ozet(out),'full_text':out}
         if bridge is not None:
             entry['engine_effects']=bridge['engine_effects']
             entry['psychology_snapshot']=bridge['psychology_snapshot']
         chain['history'].append(entry)
         return out
+    if meta['question_attempts']>=meta['question_limit']:
+        raise RuntimeError(f"Soru/senaryo istek sınırı ({meta['question_limit']}) doldu. Devam etmek için 'sor-limit 50' komutuyla veya arayüzdeki 'Soru limiti' ayarıyla sınırı artırabilirsin.")
+    api_key(advisor.key_env)
+    existing_chain=meta.get('scenario_chain')
+    staged,chain,directive,bridge=_prepare_live_day(
+        sim,custom_event=custom_event,sync_engine=sync_engine)
+    next_day=directive['day']
     # Tam metin kayitta durur; modele yalnizca kisa ozet gider (kota/token siniri).
     # Ozet de cumle sinirinda kisaltilir; kelime ortasi kesilmez.
     gecmis=[{'day':h.get('day'),'event':h.get('event'),
@@ -488,11 +562,10 @@ def advance_scenario_day(sim,advisor,custom_event=None,sync_engine=True):
               f"Önceki günlerin özeti: {json.dumps(gecmis,ensure_ascii=False)}\n"
               f"Bu günün nedensel sınırlarına ({directive['allowed_extremes']}) ve `group_psychology` verisindeki psikolojik hallere uyarak {next_day}. günü 6 kitle için ayrı ayrı (Zenginleri A yanlısı, B yanlısı ve Tarafsız sosyal medya olarak 3 alt kanatta; Gözlemcileri ise oyunu dışarıdan okuyan uyanık karakteriyle) Türkçe açıkla ve özetle.\n"
               f"{CIKTI_BICIMI}")
-    ans=ask_operator(sim,prompt_q[:4000],advisor,connection_test=False,causal_directive=directive)
-    if sync_engine and chain.get('history'):
-        bridge=crisis_bridge.sync_day_to_engine(sim,chain,directive)
-        chain['history'][-1]['engine_effects']=bridge['engine_effects']
-        chain['history'][-1]['psychology_snapshot']=bridge['psychology_snapshot']
+    ans=ask_operator(
+        sim,prompt_q[:4000],advisor,connection_test=False,
+        causal_directive=directive,_staged=(staged,chain,directive,bridge,existing_chain),
+    )
     return f"\n================ SENARYO ZİNCİRİ — GÜN {next_day} ================\n{ans}"
 
 
