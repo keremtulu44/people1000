@@ -44,13 +44,7 @@ def message(sim, a, m, sender):
     source = m["original_source"]
     s["known"][source] = {"pole": m["source_alignment"], "group": m["source_group"],
                           "trust": edge["trust"]}
-    from . import psychology
-    is_partisan_broadcast = (
-        psychology.v2_enabled(sim)
-        and m["source_group"] == "wealthy"
-        and m["source_alignment"] in ("A", "B")
-    )
-    if m["source_group"] == "authority" or is_partisan_broadcast:
+    if m["source_group"] == "authority":
         s["trust"].setdefault(source, edge["trust"])
         if m["topic"] == "economic_outlook" and m["claim"] is not None:
             s["forecasts"][source] = {"prediction": m["claim"] / 100,
@@ -82,8 +76,7 @@ def daily(sim, a, expense, cause):
         "observed_days": 0, "harm_days": 0, "first_harm_at": None, "excess_cost": 0.})
     exposure["observed_days"] += 1
     s["observed_days"] += 1
-    emp_cut = a.behavior.get("economic_chain", {}).get("employer_cut", 0.0) if isinstance(a.behavior.get("economic_chain"), dict) else 0.0
-    income_harm = clamp(max(0., s["reference_income"] - a.income) / max(1., s["reference_income"]) + emp_cut)
+    income_harm = max(0., s["reference_income"] - a.income) / max(1., s["reference_income"])
     harm = clamp(max(0., expense - a.expense) / max(1., a.expense) + income_harm)
     if harm > 0:
         exposure["harm_days"] += 1
@@ -102,13 +95,7 @@ def daily(sim, a, expense, cause):
             if old != 100*harm:
                 sim.record("belief_updated", {"agent": a.id, "topic": "experienced_harm",
                     "old": old, "new": 100*harm, "evidence": cause}, cause)
-    from . import psychology
-    if psychology.enabled(sim):
-        pcfg = sim.behavior_profile["psychology_dynamics"]
-        for pole in ("A", "B"):
-            s["peer_pull"][pole] *= pcfg["peer_pull_retention"]
     # The authority forecast is compared only with later personal expenses/income.
-    max_own_error = 0.
     for source, f in list(s["forecasts"].items()):
         age = sim.time - f["learned_at"]
         if age <= 0:
@@ -117,12 +104,8 @@ def daily(sim, a, expense, cause):
             del s["forecasts"][source]
             continue
         error = abs(f["prediction"] - harm)
-        own_source = s["known"].get(source, {}).get("pole") == a.alignment
-        if own_source:
-            max_own_error = max(max_own_error, error)
         old = s["trust"][source]
-        erosion_scale = psychology.trust_erosion_multiplier(sim, a) if own_source else 1.
-        delta = (-cfg["trust_erosion"] * erosion_scale * error * t["authority_sensitivity"] if error > .1
+        delta = (-cfg["trust_erosion"] * error * t["authority_sensitivity"] if error > .1
                  else cfg["trust_recovery"] * (1-error))
         if sim.config.ablation == "trust_erosion" and delta < 0:
             delta = 0.
@@ -141,15 +124,8 @@ def daily(sim, a, expense, cause):
     from . import collective, characters
     reaction=characters.temporal(sim,a,expense,income_harm,cause) if characters.enabled(sim) else harm
     if characters.enabled(sim):characters.track_trust(a,trust_changes)
-    psych = None
-    if psychology.enabled(sim):
-        nonprice = max((d.get("level", 0.) for k, d in characters.state(a)["domains"].items()
-                        if k not in ("living_cost", "income_security")), default=0.) if characters.enabled(sim) else 0.
-        coll_active = bool(collective.state(a).get("collective_active")) if collective.enabled(sim) else False
-        psych = psychology.daily(sim, a, harm, income_harm, nonprice, responsibility, max_own_error, coll_active, cause)
     if collective.enabled(sim):
-        collective.state(a)["distress"] = (psych["effective_drive"] if psych is not None
-            else (reaction if characters.enabled(sim) else clamp(s["burden"])))
+        collective.state(a)["distress"] = reaction if characters.enabled(sim) else clamp(s["burden"])
         appraisal.state(a)["responsibility_current"] = responsibility
     political_burden = appraisal.state(a)["burden_by_pole"].get(a.alignment,0.) if causal else s["burden"]
     own = [v for source, v in s["trust"].items()
@@ -182,19 +158,14 @@ def daily(sim, a, expense, cause):
     elif group == "observer":
         exit_cost += .5
         attraction *= .3
-    if psych is not None:
-        exit_cost += .12 * psych["comfort"]
     peer_effect = (1-t["peer_opinion_resistance"]) * s["peer_pull"].get(alt,0.)
     if sim.config.ablation == "peer":
         # Keep receipt, authority forecasts, and source recognition unchanged.
         peer_effect = 0.
     evidence_before = a.change_evidence
-    backlash = (0.03 * psych["repressed_anger"]
-                if psych is not None and a.public_support - a.private_loyalty > 0.25
-                and psych["repressed_anger"] > 0.30 and psych["fear"] < 0.30 else 0.)
     contributions = {"retained": evidence_before * cfg["evidence_retention"],
         "economic": 0. if sim.config.ablation == "economic_evidence" else cfg["evidence_economic"] * political_burden,
-        "distrust": cfg["evidence_distrust"] * distrust * t["authority_sensitivity"] + backlash,
+        "distrust": cfg["evidence_distrust"] * distrust * t["authority_sensitivity"],
         "peer": cfg["evidence_peer"] * peer_effect, "relief": -.015*(1-harm)}
     # Attribution ledger is diagnostic only; it never enters the decision score.
     components = s.setdefault("diagnostic_evidence_components", {"economic": 0., "distrust": 0., "peer": 0., "relief": 0., "unattributed": evidence_before})
@@ -213,14 +184,8 @@ def daily(sim, a, expense, cause):
     if characters.enabled(sim) and not own:prior_adjustment=0.
     if characters.enabled(sim) and a.initial_group in ("authority","observer"):
         prior_adjustment=0.  # No generic verbal/initial-network popularity drift.
-    loyalty_loss_scale = 1.
-    if psych is not None:
-        if psych["defense_wall"] >= 0.45:
-            loyalty_loss_scale = 1.0 - 0.40 * psych["defense_wall"]
-        elif psych["defense_wall"] < 0.35:
-            loyalty_loss_scale = 1.0 + 0.35 * psych["repressed_anger"]
     a.private_loyalty = clamp(a.private_loyalty + cfg["loyalty_step"] *
-        (prior_adjustment - reaction * t["economic_harm_response"] * responsibility * loyalty_loss_scale))
+        (prior_adjustment - reaction * t["economic_harm_response"] * responsibility))
     threshold = t["alignment_change_threshold"] + exit_cost
     if alt == s["previous_alignment"]:
         threshold += cfg["return_margin"]  # return requires greater evidence

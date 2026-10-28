@@ -12,7 +12,7 @@ import time
 
 from . import character_research_v32 as base
 from . import character_study as old
-from .behavior import load_v33_profile as load_profile
+from .behavior import load_profile
 
 OUT=Path('reports/character-research-v33');RAW=Path('runs/character-research-v33')
 AGENDA_CASES=('notice','claim-aligned','claim-opposed','claim-peer','claim-manager-only',

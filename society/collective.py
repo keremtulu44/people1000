@@ -206,9 +206,6 @@ def policy(obs):
         return {'type':'withdraw_support'}
     if s['present_at'] is not None or obs['group'] == 'observer':
         return None
-    psych = obs.get('psychology')
-    if psych is not None and psych.get('expression_mode') in ('self_censored', 'exhausted_withdrawal'):
-        return None
     for gid, g in s['known_gatherings'].items():
         if not g['start'] <= obs['time'] < g['end']:
             continue

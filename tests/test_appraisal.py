@@ -4,9 +4,9 @@ import tempfile
 from pathlib import Path
 import unittest
 
-from society import appraisal, dynamics, psychology
+from society import appraisal, dynamics
 from society.engine import Simulation
-from society.behavior import load_profile, load_legacy_profile, load_v3_profile
+from society.behavior import load_profile, load_legacy_profile
 
 
 class AppraisalContracts(unittest.TestCase):
@@ -30,13 +30,11 @@ class AppraisalContracts(unittest.TestCase):
         return appraisal.assess(self.sim,self.a,'test-assessment')
 
     def test_profile_coefficients_preserved_and_old_version_explicit(self):
-        old=load_legacy_profile();v3=load_v3_profile();current=load_profile()
-        self.assertEqual(old['groups'],v3['groups'])
-        self.assertEqual(old['dynamics'],v3['dynamics'])
-        self.assertNotEqual(old['groups'],current['groups'])
+        old=load_legacy_profile();new=load_profile()
+        self.assertEqual(old['groups'],new['groups'])
+        self.assertEqual(old['dynamics'],new['dynamics'])
         self.assertFalse(appraisal.enabled(Simulation(behavior_profile=old)))
         self.assertTrue(appraisal.enabled(self.sim))
-        self.assertTrue(psychology.enabled(self.sim))
 
     def test_unknown_loss_has_no_automatic_political_blame(self):
         self.sim.schedule(1,'price_shock',{'multiplier':1.8});self.sim.run(30*1440-1)

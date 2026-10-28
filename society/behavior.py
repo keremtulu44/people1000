@@ -12,23 +12,6 @@ PARAMETERS = {
     "core_orientation_resistance",
 }
 
-PSYCHOLOGY_PARAMETERS = {
-    "tolerance_threshold", "fear_sensitivity", "comfort_baseline",
-    "defense_strength", "exhaustion_rate",
-}
-
-PSYCHOLOGY_DYNAMICS_KEYS = {
-    "fear_retention", "anger_retention", "repressed_retention",
-    "comfort_recovery", "defense_erosion", "defense_recovery",
-    "exhaustion_step", "exhaustion_recovery", "peer_pull_retention",
-}
-
-
-def _valid_interval(bounds):
-    return (isinstance(bounds, list) and len(bounds) == 2 and all(
-        type(x) in (int, float) and math.isfinite(x) for x in bounds
-    ) and 0 <= bounds[0] <= bounds[1] <= 1)
-
 
 def validate_profile(profile):
     if profile.get("schema_version") != 1 or not isinstance(profile.get("behavior_version"), str):
@@ -62,21 +45,10 @@ def validate_profile(profile):
             if type(v) not in (int,float) or not math.isfinite(v) or v<0:raise ValueError("Invalid agenda coefficient")
             if k.endswith("limit") and type(v) is not int:raise ValueError("Review budgets require integers")
             if not k.endswith("limit") and v>1:raise ValueError("Agenda rates must be bounded")
-    if profile.get("psychology_model") not in (None, "affective-v1", "affective-v2"):
-        raise ValueError("Unknown psychology model")
-    if profile.get("psychology_model"):
-        if profile.get("character_model") != "local-v1":
-            raise ValueError("Affective psychology requires local characters")
-        pcfg = profile.get("psychology_dynamics", {})
-        if set(pcfg) != PSYCHOLOGY_DYNAMICS_KEYS:
-            raise ValueError("Invalid psychology dynamics keys")
-        for v in pcfg.values():
-            if type(v) not in (int, float) or not math.isfinite(v) or not 0 <= v <= 1:
-                raise ValueError("Psychology dynamics rates must lie in [0, 1]")
     expected = {"power_aligned", "opposition", "authority", "wealthy", "discontented", "observer"}
     if set(profile.get("groups", {})) != expected:
         raise ValueError("Exactly six groups are required")
-    for gname, group in profile["groups"].items():
+    for group in profile["groups"].values():
         if type(group.get("population_percent")) is not int or group["population_percent"] <= 0:
             raise ValueError("Invalid population percentage")
         if type(group.get("requires_aligned_authority")) is not bool:
@@ -84,15 +56,10 @@ def validate_profile(profile):
         if set(group.get("parameters", {})) != PARAMETERS:
             raise ValueError("Missing or unknown behavior parameter")
         for bounds in [*group["parameters"].values(), group.get("risk_tolerance")]:
-            if not _valid_interval(bounds):
+            if not isinstance(bounds, list) or len(bounds) != 2 or any(
+                type(x) not in (int, float) or not math.isfinite(x) for x in bounds
+            ) or not 0 <= bounds[0] <= bounds[1] <= 1:
                 raise ValueError("Parameter ranges must be finite ordered intervals in [0, 1]")
-        if profile.get("psychology_model"):
-            psych = group.get("psychology", {})
-            if set(psych) != PSYCHOLOGY_PARAMETERS or any(not _valid_interval(b) for b in psych.values()):
-                raise ValueError("Missing or invalid group psychology bounds")
-            if gname == "wealthy" and "neutral_defense_strength" in group:
-                if not _valid_interval(group["neutral_defense_strength"]):
-                    raise ValueError("Invalid wealthy neutral defense bounds")
     if sum(g["population_percent"] for g in profile["groups"].values()) != 100:
         raise ValueError("Population percentages must sum to 100")
     step = profile.get("belief_step")
@@ -119,15 +86,9 @@ def load_profile(path=None):
     return validate_profile(json.loads(Path(path or Path(__file__).with_name("behavior.json")).read_text(encoding="utf-8")))
 
 
-def sample_traits(rng, group, subwing=None):
+def sample_traits(rng, group):
     traits = {name: rng.uniform(*bounds) for name, bounds in group["parameters"].items()}
     traits["risk_tolerance"] = rng.uniform(*group["risk_tolerance"])
-    if "psychology" in group:
-        for name, bounds in group["psychology"].items():
-            if name == "defense_strength" and subwing == "neutral_commercial" and "neutral_defense_strength" in group:
-                traits[name] = rng.uniform(*group["neutral_defense_strength"])
-            else:
-                traits[name] = rng.uniform(*bounds)
     # Backward-compatible name used by the original reference engine.
     traits["resistance"] = traits["core_orientation_resistance"]
     return traits
@@ -151,14 +112,3 @@ def load_v31_profile():
 def load_v32_profile():
     """Frozen pre-agenda v3.2. No implicit upgrade."""
     return load_profile(Path(__file__).with_name("behavior-v32.json"))
-
-
-def load_v33_profile():
-    """Frozen pre-affective v3.3. Preserves historical 808-run research profile."""
-    return load_profile(Path(__file__).with_name("behavior-v33.json"))
-
-
-def load_v34_profile():
-    """Frozen v3.4 (affective-v1) profile before v3.5 deep social-mind calibration."""
-    return load_profile(Path(__file__).with_name("behavior-v34.json"))
-

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "behavior_version": "3.5.0",
-  "description": "Differentiated six-group temperament, deep social-mind calibration (hedonic adaptation, blame shifting, pluralistic ignorance, disengaged loyalists, relative deprivation, observer whistleblowing).",
+  "behavior_version": "3.3.0",
+  "description": "Uncalibrated experimental assumptions; not social facts.",
   "belief_step": 0.3,
   "groups": {
     "power_aligned": {
@@ -9,328 +9,214 @@
       "requires_aligned_authority": true,
       "parameters": {
         "authority_sensitivity": [
-          0.8,
-          0.98
+          0.7,
+          1.0
         ],
         "peer_opinion_resistance": [
           1,
           1
         ],
         "economic_harm_response": [
-          0.35,
-          0.55
+          0.4,
+          0.6
         ],
         "pressure_response": [
-          0.12,
-          0.22
+          0.08,
+          0.12
         ],
         "topic_change_threshold": [
-          0.08,
-          0.18
+          0,
+          0
         ],
         "alignment_change_threshold": [
-          0.88,
-          0.96
+          0.85,
+          0.95
         ],
         "core_orientation_resistance": [
-          0.8,
-          0.96
+          0.7,
+          0.95
         ]
       },
       "risk_tolerance": [
-        0.15,
-        0.4
-      ],
-      "psychology": {
-        "tolerance_threshold": [
-          0.65,
-          0.85
-        ],
-        "fear_sensitivity": [
-          0.25,
-          0.5
-        ],
-        "comfort_baseline": [
-          0.65,
-          0.85
-        ],
-        "defense_strength": [
-          0.75,
-          0.95
-        ],
-        "exhaustion_rate": [
-          0.25,
-          0.45
-        ]
-      }
+        0.1,
+        0.6
+      ]
     },
     "opposition": {
       "population_percent": 30,
       "requires_aligned_authority": true,
       "parameters": {
         "authority_sensitivity": [
-          0.65,
-          0.85
+          0.7,
+          1.0
         ],
         "peer_opinion_resistance": [
           1,
           1
         ],
         "economic_harm_response": [
-          0.55,
-          0.75
+          0.4,
+          0.6
         ],
         "pressure_response": [
-          0.05,
+          0.08,
           0.12
         ],
         "topic_change_threshold": [
-          0.04,
-          0.12
+          0,
+          0
         ],
         "alignment_change_threshold": [
           0.85,
           0.95
         ],
         "core_orientation_resistance": [
-          0.78,
+          0.7,
           0.95
         ]
       },
       "risk_tolerance": [
-        0.3,
-        0.65
-      ],
-      "psychology": {
-        "tolerance_threshold": [
-          0.2,
-          0.4
-        ],
-        "fear_sensitivity": [
-          0.35,
-          0.65
-        ],
-        "comfort_baseline": [
-          0.3,
-          0.5
-        ],
-        "defense_strength": [
-          0.6,
-          0.8
-        ],
-        "exhaustion_rate": [
-          0.35,
-          0.55
-        ]
-      }
+        0.1,
+        0.6
+      ]
     },
     "authority": {
       "population_percent": 15,
       "requires_aligned_authority": false,
       "parameters": {
         "authority_sensitivity": [
-          0.1,
-          0.25
+          0.7,
+          1.0
         ],
         "peer_opinion_resistance": [
-          0.88,
-          0.98
+          0.7,
+          0.95
         ],
         "economic_harm_response": [
-          0.45,
-          0.65
+          0.4,
+          0.6
         ],
         "pressure_response": [
-          0.04,
-          0.1
+          0.08,
+          0.12
         ],
         "topic_change_threshold": [
-          0.15,
-          0.3
+          0,
+          0
         ],
         "alignment_change_threshold": [
-          0.9,
-          0.98
+          0.85,
+          0.95
         ],
         "core_orientation_resistance": [
-          0.85,
-          0.98
+          0.7,
+          0.95
         ]
       },
       "risk_tolerance": [
-        0.35,
-        0.7
-      ],
-      "psychology": {
-        "tolerance_threshold": [
-          0.55,
-          0.8
-        ],
-        "fear_sensitivity": [
-          0.5,
-          0.8
-        ],
-        "comfort_baseline": [
-          0.8,
-          0.98
-        ],
-        "defense_strength": [
-          0.7,
-          0.9
-        ],
-        "exhaustion_rate": [
-          0.1,
-          0.25
-        ]
-      }
+        0.1,
+        0.6
+      ]
     },
     "wealthy": {
       "population_percent": 12,
       "requires_aligned_authority": false,
       "parameters": {
         "authority_sensitivity": [
-          0.55,
-          0.8
+          0.7,
+          1.0
         ],
         "peer_opinion_resistance": [
-          0.75,
-          0.92
+          0.7,
+          0.95
         ],
         "economic_harm_response": [
-          0.65,
-          0.88
+          0.4,
+          0.6
         ],
         "pressure_response": [
-          0.18,
-          0.35
+          0.08,
+          0.12
         ],
         "topic_change_threshold": [
-          0.05,
-          0.15
+          0,
+          0
         ],
         "alignment_change_threshold": [
-          0.82,
-          0.94
+          0.85,
+          0.95
         ],
         "core_orientation_resistance": [
-          0.65,
-          0.9
+          0.7,
+          0.95
         ]
       },
       "risk_tolerance": [
         0.1,
-        0.35
-      ],
-      "neutral_defense_strength": [
-        0.05,
-        0.2
-      ],
-      "psychology": {
-        "tolerance_threshold": [
-          0.2,
-          0.4
-        ],
-        "fear_sensitivity": [
-          0.65,
-          0.95
-        ],
-        "comfort_baseline": [
-          0.75,
-          0.95
-        ],
-        "defense_strength": [
-          0.45,
-          0.7
-        ],
-        "exhaustion_rate": [
-          0.3,
-          0.5
-        ]
-      }
+        0.6
+      ]
     },
     "discontented": {
       "population_percent": 10,
       "requires_aligned_authority": false,
       "parameters": {
         "authority_sensitivity": [
-          0.2,
-          0.45
+          0.7,
+          1.0
         ],
         "peer_opinion_resistance": [
-          0.55,
-          0.8
-        ],
-        "economic_harm_response": [
-          0.75,
+          0.7,
           0.95
         ],
+        "economic_harm_response": [
+          0.4,
+          0.6
+        ],
         "pressure_response": [
-          0.06,
-          0.14
+          0.08,
+          0.12
         ],
         "topic_change_threshold": [
-          0.03,
-          0.1
+          0,
+          0
         ],
         "alignment_change_threshold": [
-          0.88,
-          0.97
+          0.85,
+          0.95
         ],
         "core_orientation_resistance": [
-          0.75,
-          0.92
+          0.7,
+          0.95
         ]
       },
       "risk_tolerance": [
-        0.25,
-        0.65
-      ],
-      "psychology": {
-        "tolerance_threshold": [
-          0.25,
-          0.45
-        ],
-        "fear_sensitivity": [
-          0.3,
-          0.55
-        ],
-        "comfort_baseline": [
-          0.05,
-          0.25
-        ],
-        "defense_strength": [
-          0.05,
-          0.2
-        ],
-        "exhaustion_rate": [
-          0.6,
-          0.85
-        ]
-      }
+        0.1,
+        0.6
+      ]
     },
     "observer": {
       "population_percent": 3,
       "requires_aligned_authority": false,
       "parameters": {
         "authority_sensitivity": [
-          0.05,
-          0.2
+          0.7,
+          1.0
         ],
         "peer_opinion_resistance": [
-          0.92,
-          0.99
+          0.7,
+          0.95
         ],
         "economic_harm_response": [
-          0.25,
-          0.45
+          0.4,
+          0.6
         ],
         "pressure_response": [
-          0.02,
-          0.06
+          0.08,
+          0.12
         ],
         "topic_change_threshold": [
-          0.15,
-          0.3
+          0,
+          0
         ],
         "alignment_change_threshold": [
           0.999,
@@ -342,31 +228,9 @@
         ]
       },
       "risk_tolerance": [
-        0.05,
-        0.15
-      ],
-      "psychology": {
-        "tolerance_threshold": [
-          0.75,
-          0.95
-        ],
-        "fear_sensitivity": [
-          0.05,
-          0.2
-        ],
-        "comfort_baseline": [
-          0.55,
-          0.75
-        ],
-        "defense_strength": [
-          0.1,
-          0.25
-        ],
-        "exhaustion_rate": [
-          0.1,
-          0.25
-        ]
-      }
+        0.1,
+        0.6
+      ]
     }
   },
   "dynamics": {
@@ -395,8 +259,8 @@
     "adaptation_days": 14.0,
     "fatigue_days": 90.0,
     "study_step": 0.02,
-    "observer_incoming_limit": 6,
-    "observer_read_limit": 6,
+    "observer_incoming_limit": 1,
+    "observer_read_limit": 1,
     "observer_communication_limit": 1,
     "competition_cost": 2.0,
     "competition_transfer": 0.1,
@@ -410,17 +274,5 @@
     "claim_step": 0.2,
     "daily_review_limit": 64,
     "total_review_limit": 512
-  },
-  "psychology_model": "affective-v2",
-  "psychology_dynamics": {
-    "fear_retention": 0.88,
-    "anger_retention": 0.82,
-    "repressed_retention": 0.97,
-    "comfort_recovery": 0.08,
-    "defense_erosion": 0.14,
-    "defense_recovery": 0.03,
-    "exhaustion_step": 0.09,
-    "exhaustion_recovery": 0.92,
-    "peer_pull_retention": 0.92
   }
 }

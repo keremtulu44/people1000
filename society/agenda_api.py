@@ -44,8 +44,8 @@ def urlopen(request,timeout=60):
 
 
 class APIError(RuntimeError):
-    def __init__(self,message,kind='invalid_response',http_status=None,retry_after=None):
-        super().__init__(message);self.kind=kind;self.http_status=http_status;self.retry_after=retry_after
+    def __init__(self,message,kind='invalid_response',http_status=None):
+        super().__init__(message);self.kind=kind;self.http_status=http_status
 
 
 def api_key(env):
@@ -161,16 +161,14 @@ def safe_api_error(exc):
                 elif exc.code==404 and 'api version' in message:
                     detail=' Sağlayıcı bu API sürümü/model/yöntem birleşimini desteklemediğini bildiriyor.'
         except Exception:pass
-        parsed_retry=None
         try:
             retry_after=int(str((exc.headers or {}).get('Retry-After','')).strip())
             if exc.code==429 and 1<=retry_after<=3600:
-                parsed_retry=retry_after
                 detail+=f' Sağlayıcı {retry_after} saniye beklenmesini bildirdi (Retry-After).'
         except Exception:pass
         if 300<=exc.code<400:detail=' Kimlik bilgilerini korumak için yönlendirme izlenmedi.'
         return APIError(f'API HTTP {exc.code}: '+hints.get(exc.code,'Sağlayıcı isteği reddetti.')+detail+' Otomatik tekrar yapılmadı.',
-            'http_error',exc.code,retry_after=parsed_retry)
+            'http_error',exc.code)
     reason=exc.reason if isinstance(exc,URLError) else exc
     if isinstance(reason,(TimeoutError,socket.timeout)):
         return APIError('API zaman aşımı: yanıt alınamadı. Başarılı bağlantı olarak sayılmadı; otomatik tekrar yok.','timeout')

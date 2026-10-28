@@ -16,7 +16,7 @@ import statistics
 import time
 
 from .engine import Simulation, Config, BaselineProvider
-from .behavior import load_v31_profile as load_profile, load_v3_profile, load_legacy_profile, load_profile as load_current_profile, load_v32_profile, load_v33_profile
+from .behavior import load_v31_profile as load_profile, load_v3_profile, load_legacy_profile, load_profile as load_current_profile, load_v32_profile
 
 OUT=Path('reports/character-study')
 RAW=Path('runs/character-study')
@@ -89,7 +89,7 @@ def world(sim):
 
 
 def setup(case,seed=0,population=100,model='v3.1',days=30):
-    profile={'v2':load_legacy_profile,'v3.0':load_v3_profile,'v3.1':load_profile,'v3.2':load_v32_profile,'v3.3':load_v33_profile,'v3.4':load_current_profile}[model]()
+    profile={'v2':load_legacy_profile,'v3.0':load_v3_profile,'v3.1':load_profile,'v3.2':load_v32_profile,'v3.3':load_current_profile}[model]()
     sim=Simulation(Config(seed=seed,population=population),profile)
     by={g:[a.id for a in sim.agents.values() if a.initial_group==g] for g in GROUPS}
     auth={p:next(x for x in sim.authorities if sim.agents[x].alignment==p) for p in ('A','B')}
