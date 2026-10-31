@@ -8,6 +8,33 @@ yoktur. Gerçek AI API bağlantısı isteğe bağlı ortam değişkenleriyle aç
 ve sıfır bağımlılıklı **yerel web arayüzü** (`python -m society.web_ui`) vardır.
 Herkese açık barındırılan bir web paneli bu sürümde yoktur.
 
+## ApiWrapper bağlantısı (31 Ekim 2026)
+
+Proje, kendi **OpenAI uyumlu ApiWrapper** servisinize doğrudan bağlanabilir.
+Çağrı sunucu tarafında yapılır; anahtar tarayıcıya, repoya veya günlüklere
+yazılmaz. Adres ve anahtar kodda sabitlenmez, yalnızca ortamdan okunur.
+
+```bash
+export WRAPPER_URL='https://api-wrapper.example.com'  # sonundaki / kaldırılıp /v1 eklenir
+export WRAPPER_API_KEY='...'                           # yalnızca ortamda; repoya yazmayın
+python -m society.wrapper_api --check                  # ağ isteği yok
+python -m society.wrapper_api "Merhaba"                # tek gerçek istek
+python -m society.web_ui --state runs/wrapper-pilot.json
+```
+
+- `base_url`: `WRAPPER_URL` + `/v1` · `model`: `max` · `stream`: `false` ·
+  zaman aşımı: 180 saniye.
+- Her istek bağımsızdır: sohbet geçmişi, veritabanı, oturum yeniden kullanımı ve
+  developer mode yoktur. Metin `messages` içinde tek `user` rolüyle gider; yanıt
+  `choices[0].message.content` alanından okunur.
+- Hata durumunda HTTP durum kodu ve varsa ApiWrapper `error.code` değeri
+  gösterilir; anahtar ve sağlayıcı hata metni gösterilmez.
+- Arayüzde **ApiWrapper Bağlantısı** paneli ve sunucu tarafında `POST /api/wrapper`
+  yolu vardır (Next.js yok; sıfır bağımlılıklı Python sunucusu).
+- `WRAPPER_URL` boşsa eski Gemini/OpenAI-uyumlu ayarlar aynen çalışır.
+- `.env.example` yalnızca placeholder içerir. Ayrıntı:
+  [ApiWrapper entegrasyonu](docs/apiwrapper-integration.md).
+
 ## Web arayüzü — kart bağlantıları (27 Ekim 2026)
 
 `python -m society.web_ui` arayüzünde AI anlatımının 6 kitle kartına ayrılması

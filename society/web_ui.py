@@ -28,6 +28,8 @@ from .engine import Simulation
 from .session import Session
 from . import psychology, termux
 from .scenario_text import GROUPS, analyze_scenario, parse_kitle_sections  # noqa: F401
+from .wrapper_api import (WrapperAdvisor, WrapperClient, WrapperError,
+                          wrapper_configured)
 
 MAX_TEXT = 2000
 MAX_DAYS = 30
@@ -308,6 +310,7 @@ def build_state(pilot, secili_gun=None):
             'day': day,
             'mode': 'offline' if settings.get('mode') == 'offline' else 'live',
             'settings': settings,
+            'wrapper': wrapper_configured(),
             'kitleler': cards,
             'dunya': {
                 'taraf_degisimi': wm.get('alignment_changes', 0),
@@ -408,6 +411,10 @@ def execute_command(pilot, payload):
         elif cmd in ('baglanti', 'modeller'):
             if not confirm:
                 raise ValueError('Bu komut 1 metadata istegi atar; once onay verin.')
+            if isinstance(advisor, WrapperAdvisor):
+                raise ValueError('ApiWrapper icin metadata denetimi yok. '
+                                 'Baglantiyi "ApiWrapper Baglantisi" panelinden '
+                                 'deneyin; her gonderim tek gercek istektir.')
             if not isinstance(advisor, GeminiAdvisor):
                 raise ValueError('Metadata denetimi yalnizca Gemini adaptorunde var.')
             try:
@@ -520,19 +527,65 @@ class Handler(BaseHTTPRequestHandler):
                 'Content-Disposition': 'attachment; filename="people1000-rapor.json"'})
         return self._send(404, 'Bulunamadi.', 'text/plain; charset=utf-8')
 
-    def do_POST(self):
-        if urlsplit(self.path).path != '/api/command':
-            return self._send(404, 'Bulunamadi.', 'text/plain; charset=utf-8')
+    def _read_json(self):
+        """Govdeyi guvenli sinirlar icinde okur; (payload, hata) dondurur."""
         try:
             length = int(self.headers.get('Content-Length', '0'))
         except ValueError:
-            return self._json(400, {'ok': False, 'error': 'Gecersiz uzunluk.'})
+            return None, (400, 'Gecersiz uzunluk.')
         if not 0 < length <= 65536:
-            return self._json(413, {'ok': False, 'error': 'Istek cok buyuk.'})
+            return None, (413, 'Istek cok buyuk.')
         try:
-            payload = json.loads(self.rfile.read(length).decode('utf-8'))
+            return json.loads(self.rfile.read(length).decode('utf-8')), None
         except (ValueError, UnicodeDecodeError):
-            return self._json(400, {'ok': False, 'error': 'Gecersiz JSON.'})
+            return None, (400, 'Gecersiz JSON.')
+
+    @staticmethod
+    def _wrapper_status(exc):
+        """ApiWrapper hata sinifini yerel HTTP durum koduna esler."""
+        if exc.http_status is not None and 400 <= exc.http_status <= 599:
+            return exc.http_status
+        return {'missing_url': 503, 'invalid_url': 503, 'missing_key': 500,
+                'key_format': 500, 'timeout': 504, 'network': 502, 'tls': 502,
+                'text': 400}.get(exc.kind, 502)
+
+    def _wrapper(self):
+        """ApiWrapper'a tek ve bagimsiz istek atar; anahtar yalniz sunucuda kalir."""
+        payload, error = self._read_json()
+        if error:
+            return self._json(error[0], {'ok': False, 'error': error[1]})
+        text = payload.get('text') if isinstance(payload, dict) else None
+        if not isinstance(text, str) or not 0 < len(text.strip()) <= MAX_TEXT:
+            return self._json(400, {'ok': False,
+                                    'error': f'Metin 1–{MAX_TEXT} karakter olmali.'})
+        try:
+            # Her istek icin yeni istemci: sohbet gecmisi/session reuse yok.
+            client = WrapperClient.from_environment()
+            answer = client.ask(text)
+        except WrapperError as exc:
+            body = {'ok': False,
+                    'error': self.server.pilot.redact(str(exc)),
+                    'error_kind': exc.kind}
+            if exc.http_status is not None:
+                body['http_status'] = exc.http_status
+            if exc.code:
+                body['error_code'] = exc.code
+            return self._json(self._wrapper_status(exc), body)
+        except (ValueError, RuntimeError) as exc:
+            return self._json(502, {'ok': False,
+                                    'error': self.server.pilot.redact(str(exc))})
+        return self._json(200, {'ok': True, 'answer': answer, 'model': client.model,
+                                'stream': False, 'usage': client.last_usage or {}})
+
+    def do_POST(self):
+        path = urlsplit(self.path).path
+        if path == '/api/wrapper':
+            return self._wrapper()
+        if path != '/api/command':
+            return self._send(404, 'Bulunamadi.', 'text/plain; charset=utf-8')
+        payload, error = self._read_json()
+        if error:
+            return self._json(error[0], {'ok': False, 'error': error[1]})
         try:
             message, state = execute_command(self.server.pilot, payload)
             return self._json(200, {'ok': True, 'message': message, 'state': state})
@@ -595,7 +648,8 @@ def main():
     pilot = WebPilot(sim, advisor, args.state)
     server = create_server(args.host, args.port, pilot)
     url = f'http://{args.host}:{args.port}/'
-    mode = 'CEVRIMDISI' if args.offline else 'CANLI API'
+    mode = ('CEVRIMDISI' if args.offline else
+            'CANLI API (ApiWrapper)' if isinstance(advisor, WrapperAdvisor) else 'CANLI API')
     print(f'People1000 web arayuzu: {url}  [{mode}]', flush=True)
     print('Anahtar yalnizca bu surecte; tarayiciya gonderilmez. Durdurmak icin CTRL+C.', flush=True)
     if args.open_browser:
@@ -716,6 +770,10 @@ input[type=number]{flex:0 0 82px;min-width:74px;text-align:center}
 .preset:hover{color:var(--cyan);border-color:var(--cyan);border-style:solid}
 #status{font-size:12.5px;font-weight:700;color:var(--gold);margin-top:8px;min-height:0}
 #status:empty{display:none}
+#wrapperStatus{font-size:12px;font-weight:600;color:var(--muted);margin-top:9px;min-height:0}
+#wrapperStatus:empty{display:none}
+#wrapperStatus.err{color:var(--gold)}
+#wrapperWrap{margin-top:10px}
 .tools-drawer{margin-top:10px;border-top:1px solid var(--line);padding-top:8px}
 .tools-drawer summary{cursor:pointer;color:var(--muted);font-size:12px;font-weight:650;padding:4px 2px}
 .tools-drawer .drawer-body{padding-top:10px;display:flex;flex-direction:column;gap:9px}
@@ -992,6 +1050,37 @@ footer{padding:8px 2px 0;color:var(--dim);font-size:11px;border-top:1px solid va
           </div>
         </div>
       </details>
+    </div>
+  </section>
+
+  <!-- 1b. APIWRAPPER DOĞRUDAN BAĞLANTI (tek istek, sohbet geçmişi yok) -->
+  <section id="wrapperSection">
+    <div class="sec-head">
+      <h2 class="sec-title"><span class="step-num">A</span> ApiWrapper Bağlantısı</h2>
+      <span id="wrapperHint" class="muted">Tek istek · sohbet geçmişi yok · anahtar yalnız sunucuda</span>
+    </div>
+    <div class="desk">
+      <div class="desk-grid">
+        <div class="desk-block">
+          <div class="block-label">ApiWrapper'a Metin Gönder <span id="wrapperConfig">model: max · stream: kapalı · 180 sn</span></div>
+          <div class="row">
+            <input id="wrapperText" maxlength="2000" placeholder="Örn: Tek cümlelik bir bağlantı testi yanıtı ver">
+            <button id="wrapperSend" type="button" class="btn primary">⇄ Gönder</button>
+          </div>
+          <div class="presets">
+            <button type="button" class="preset" data-fill="wrapperText" data-val="Merhaba, tek cümlelik bir bağlantı testi yanıtı ver.">✓ Kısa test</button>
+            <button type="button" class="preset" data-fill="wrapperText" data-val="Bu metni tek paragrafta özetle: Kapalı toplum simülasyonu, sınırlı bilgiyle karar veren 100 kişilik bir ağdan oluşur.">⚡ Tek paragraf</button>
+          </div>
+          <div id="wrapperStatus" class="muted"></div>
+          <div class="output-wrap" id="wrapperWrap" hidden>
+            <div class="output-head">
+              <span id="wrapperMeta">Yanıt</span>
+              <button type="button" class="mini" data-copy="wrapperAnswer">Kopyala</button>
+            </div>
+            <pre id="wrapperAnswer" class="output"></pre>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -1502,6 +1591,10 @@ function render(s){
   $("#modeBadge").className="badge "+(s.mode==="offline"?"offline":"live");
   $("#quotaBadge").textContent="İstek: "+s.api.soru+"/"+s.api.soru_limiti;
   $("#dayBadge").textContent=s.senaryo.var?("Senaryo Gün "+s.senaryo.gun):("Motor Gün "+s.day);
+  const wr=s.wrapper||{};
+  if($("#wrapperHint"))$("#wrapperHint").textContent=wr.configured
+    ? ("ApiWrapper bağlı · model "+(wr.model||"max")+" · stream kapalı · "+Math.round(wr.timeout_seconds||180)+" sn")
+    : "WRAPPER_URL ayarlı değil · bağlantı pasif";
 
   renderBanner(s);
   renderStage(s);
@@ -1671,6 +1764,40 @@ document.querySelectorAll("[data-fill]").forEach(b=>b.addEventListener("click",(
 document.querySelectorAll("[data-copy]").forEach(b=>b.addEventListener("click",()=>{
   copyText($("#"+b.dataset.copy).textContent,"Çıktı");
 }));
+/* APIWRAPPER: tek bağımsız istek; cevap choices[0].message.content alanından gelir */
+async function sendWrapper(){
+  const input=$("#wrapperText"),btn=$("#wrapperSend"),st=$("#wrapperStatus");
+  const text=(input.value||"").trim();
+  if(!text){toast("Önce bir metin yazın",true);input.focus();return;}
+  btn.disabled=true;st.className="muted";
+  st.textContent="ApiWrapper'a gönderiliyor… (zaman aşımı 180 sn)";
+  $("#wrapperWrap").hidden=true;
+  try{
+    const r=await fetch("/api/wrapper",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text:text})});
+    const j=await r.json();
+    if(!j.ok){
+      const parts=["HTTP "+(j.http_status!==undefined?j.http_status:r.status)];
+      if(j.error_code)parts.push("ApiWrapper kod: "+j.error_code);
+      st.className="muted err";
+      st.textContent="Hata · "+parts.join(" · ")+" — "+(j.error||"İstek başarısız.");
+      toast("ApiWrapper hatası",true);return;
+    }
+    $("#wrapperAnswer").textContent=j.answer||"";
+    const usage=(j.usage&&j.usage.total_tokens)?(" · "+j.usage.total_tokens+" token"):"";
+    $("#wrapperMeta").textContent="Yanıt · model "+(j.model||"max")+" · stream kapalı"+usage;
+    $("#wrapperWrap").hidden=false;
+    st.className="muted";st.textContent="Tamamlandı · tek istek gönderildi, sohbet geçmişine eklenmedi.";
+  }catch(e){
+    st.className="muted err";st.textContent="Bağlantı hatası: yerel sunucuya ulaşılamadı.";
+  }finally{btn.disabled=false;}
+}
+const wrapperSendEl=$("#wrapperSend");
+if(wrapperSendEl)wrapperSendEl.addEventListener("click",sendWrapper);
+const wrapperTextEl=$("#wrapperText");
+if(wrapperTextEl)wrapperTextEl.addEventListener("keydown",e=>{
+  if(e.key==="Enter"){e.preventDefault();sendWrapper();}
+});
+
 setInterval(ping,20000);
 load();
 </script>

@@ -257,7 +257,13 @@ class GeminiAdvisor(OpenAICompatibleAdvisor):
 
 
 def advisor_from_environment():
-    """Recognize official native and compatibility Gemini addresses safely."""
+    """ApiWrapper varsa onu, yoksa resmi Gemini/OpenAI uyumlu ayarları seçer."""
+    # Birincil yol: kullanıcının OpenAI uyumlu ApiWrapper servisi. Adres/anahtar
+    # yalnızca WRAPPER_URL ve WRAPPER_API_KEY ortam değişkenlerinden okunur;
+    # kodda sabitlenmez. Gecikmeli içe aktarma döngüsel yüklemeyi önler.
+    if (os.environ.get('WRAPPER_URL') or '').strip():
+        from .wrapper_api import wrapper_from_environment
+        return wrapper_from_environment()
     endpoint=os.environ.get('PEOPLE1000_API_ENDPOINT','').strip();model=os.environ.get('PEOPLE1000_API_MODEL','').strip()
     if not os.environ.get('PEOPLE1000_API_KEY'):raise ValueError('API anahtarı ortamda ayarlanmalı.')
     if not endpoint and not model:
