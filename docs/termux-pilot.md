@@ -5,6 +5,10 @@ ve araştırma sonuçları değiştirilmedi. API öz-denetiminin test kanıtı v
 `reports/api-self-audit/report.md` içindedir. Gerçek sağlayıcıya istek gönderilmedi;
 HTTP kontrollü yanıtlarla test edildi.
 
+> ApiWrapper (OpenAI uyumlu kendi servisiniz) kullanacaksanız bu belgedeki
+> Gemini adımları yerine [termux-apiwrapper.md](termux-apiwrapper.md) izleyin:
+> `WRAPPER_URL` + `WRAPPER_API_KEY`, model `max`, akış kapalı, 180 sn.
+
 **Güncel kod `main` dalındadır** (kartlı web arayüzü düzeltmeleri PR #3 ile
 birleşti). Daha önce bir oturum dalını (`arena/...`) klonladıysanız `main`'e
 geçin; `runs/` altındaki kayıtlar korunur:

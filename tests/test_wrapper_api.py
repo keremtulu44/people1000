@@ -437,6 +437,25 @@ class RepositoryHygieneTests(unittest.TestCase):
         self.assertNotRegex(source, r'sk-[A-Za-z0-9]{12,}')
         self.assertNotIn('Bearer ' + 'hardcoded', source)
 
+    def test_termux_setup_script_is_valid_and_wired(self):
+        from subprocess import run
+        script = ROOT / 'tools' / 'termux_wrapper_setup.sh'
+        text = script.read_text(encoding='utf-8')
+        self.assertIn('python -m society.web_ui --state runs/wrapper-pilot.json --open', text)
+        self.assertIn('python -m society.wrapper_api --check', text)
+        self.assertIn('WRAPPER_API_KEY', text)
+        self.assertIn('wrapper.env', text)
+        self.assertIn('chmod 600', text)
+        checked = run(['bash', '-n', str(script)], capture_output=True, text=True)
+        self.assertEqual(checked.returncode, 0, checked.stderr)
+
+    def test_termux_guide_has_no_live_secret(self):
+        text = (ROOT / 'docs' / 'termux-apiwrapper.md').read_text(encoding='utf-8')
+        self.assertIn('git pull --ff-only', text)
+        self.assertIn('WRAPPER_URL', text)
+        self.assertNotRegex(text, r'sk-[A-Za-z0-9]{12,}')
+        self.assertNotIn(KEY, text)
+
 
 if __name__ == '__main__':
     unittest.main()

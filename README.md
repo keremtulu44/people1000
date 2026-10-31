@@ -34,6 +34,9 @@ python -m society.web_ui --state runs/wrapper-pilot.json
 - `WRAPPER_URL` boşsa eski Gemini/OpenAI-uyumlu ayarlar aynen çalışır.
 - `.env.example` yalnızca placeholder içerir. Ayrıntı:
   [ApiWrapper entegrasyonu](docs/apiwrapper-integration.md).
+- Termux için tüm komutlar (pull, kurulum, arka plan, hata kodları):
+  [Termux ApiWrapper kılavuzu](docs/termux-apiwrapper.md);
+  tek komut: `bash tools/termux_wrapper_setup.sh`.
 
 ## Web arayüzü — kart bağlantıları (27 Ekim 2026)
 
